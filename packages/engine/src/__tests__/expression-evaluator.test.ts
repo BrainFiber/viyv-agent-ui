@@ -50,6 +50,30 @@ describe('resolveValue', () => {
 	it('returns undefined for missing hook paths', () => {
 		expect(resolveValue('$hook.missing', ctx)).toBeUndefined();
 	});
+
+	it('resolves $item (whole object)', () => {
+		const itemCtx: EvalContext = { ...ctx, item: { name: 'Widget', price: 100 } };
+		expect(resolveValue('$item', itemCtx)).toEqual({ name: 'Widget', price: 100 });
+	});
+
+	it('resolves $item.name', () => {
+		const itemCtx: EvalContext = { ...ctx, item: { name: 'Widget', price: 100 } };
+		expect(resolveValue('$item.name', itemCtx)).toBe('Widget');
+	});
+
+	it('resolves $item.nested.path', () => {
+		const itemCtx: EvalContext = { ...ctx, item: { address: { city: 'Tokyo' } } };
+		expect(resolveValue('$item.address.city', itemCtx)).toBe('Tokyo');
+	});
+
+	it('returns undefined for $item when no item in context', () => {
+		expect(resolveValue('$item.name', ctx)).toBeUndefined();
+	});
+
+	it('returns undefined for $item with invalid path', () => {
+		const itemCtx: EvalContext = { ...ctx, item: { name: 'Widget' } };
+		expect(resolveValue('$item.nonexistent.deep', itemCtx)).toBeUndefined();
+	});
 });
 
 describe('resolveProps', () => {

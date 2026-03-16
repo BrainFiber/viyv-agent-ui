@@ -5,6 +5,7 @@ export interface EvalContext {
 	hooks: Record<string, unknown>;
 	state: Record<string, unknown>;
 	actions: Record<string, (...args: unknown[]) => void>;
+	item?: unknown;
 }
 
 /**
@@ -34,6 +35,17 @@ export function resolveValue(value: unknown, ctx: EvalContext): unknown {
 			return ctx.state[ref.key];
 		case 'action':
 			return ctx.actions[ref.actionId];
+		case 'item': {
+			let result: unknown = ctx.item;
+			for (const key of ref.path) {
+				if (result != null && typeof result === 'object') {
+					result = (result as Record<string, unknown>)[key];
+				} else {
+					return undefined;
+				}
+			}
+			return result;
+		}
 		case 'expr':
 			return evaluateSafeExpression(ref.code, ctx);
 	}

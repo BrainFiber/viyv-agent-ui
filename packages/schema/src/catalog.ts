@@ -4,7 +4,7 @@ export interface ComponentMeta {
 	type: string;
 	label: string;
 	description: string;
-	category: 'layout' | 'display' | 'data' | 'chart' | 'input';
+	category: 'layout' | 'display' | 'data' | 'chart' | 'input' | 'control';
 	propsSchema: z.ZodType;
 	acceptsChildren: boolean;
 }

@@ -34,6 +34,7 @@ export function evaluateSafeExpression(code: string, ctx: EvalContext): unknown 
 	const scope: Record<string, unknown> = {
 		hook: ctx.hooks,
 		state: ctx.state,
+		item: ctx.item ?? null,
 		Math,
 		Number,
 		String,

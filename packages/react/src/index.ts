@@ -35,3 +35,11 @@ export type {
 export { useHookData, useHookLoading, useHookError } from './hooks/use-hook-data.js';
 export { useElementProps, useEvalContext } from './hooks/use-element-props.js';
 export { usePageState, useAction } from './hooks/use-page-interaction.js';
+
+// Item context (Repeater)
+export { ItemProvider, useItemContext } from './providers/item-provider.js';
+export type { ItemContextValue } from './providers/item-provider.js';
+
+// Type handlers
+export { getTypeHandler } from './renderers/index.js';
+export type { TypeHandler } from './renderers/index.js';

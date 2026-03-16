@@ -147,4 +147,43 @@ describe('validatePageSpec', () => {
 		expect(result.valid).toBe(false);
 		expect(result.errors.some((e) => e.path.includes('visible.expr'))).toBe(true);
 	});
+
+	it('no warning for $item inside Repeater descendant', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			elements: {
+				root: {
+					type: 'Repeater',
+					props: { data: '$hook.items' },
+					children: ['itemText'],
+				},
+				itemText: {
+					type: 'Text',
+					props: { content: '$item.name' },
+				},
+			},
+			hooks: {
+				items: {
+					use: 'useSqlQuery',
+					params: { connection: 'viyv-db', query: 'SELECT name FROM items' },
+				},
+			},
+		});
+		expect(result.valid).toBe(true);
+		expect(result.warnings).toHaveLength(0);
+	});
+
+	it('warns for $item outside Repeater context', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			elements: {
+				root: {
+					type: 'Text',
+					props: { content: '$item.name' },
+				},
+			},
+		});
+		expect(result.valid).toBe(true); // warning, not error
+		expect(result.warnings.some((w) => w.message.includes('$item expression used outside Repeater'))).toBe(true);
+	});
 });

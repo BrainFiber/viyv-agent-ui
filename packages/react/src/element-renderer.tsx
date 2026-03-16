@@ -2,6 +2,7 @@ import { evaluateVisibility } from '@viyv/agent-ui-engine';
 import { useMemo } from 'react';
 import { useElementProps, useEvalContext } from './hooks/use-element-props.js';
 import { useComponent, usePageSpec } from './providers/page-provider.js';
+import { getTypeHandler } from './renderers/index.js';
 
 export interface ElementRendererProps {
 	elementId: string;
@@ -15,9 +16,20 @@ export function ElementRenderer({ elementId }: ElementRendererProps) {
 	const visible = useMemo(() => evaluateVisibility(element?.visible, ctx), [element?.visible, ctx]);
 
 	const resolvedProps = useElementProps(element?.props ?? {});
+
+	// useComponent must be called unconditionally (React hooks rules)
 	const Component = useComponent(element?.type ?? '');
 
-	if (!element || !visible || !Component) return null;
+	if (!element || !visible) return null;
+
+	// Type handler (Repeater etc.)
+	const typeHandler = getTypeHandler(element.type);
+	if (typeHandler) {
+		return <>{typeHandler(element, resolvedProps)}</>;
+	}
+
+	// Normal component rendering
+	if (!Component) return null;
 
 	return (
 		<Component {...resolvedProps}>

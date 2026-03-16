@@ -70,6 +70,21 @@ describe('parseExpression', () => {
 		expect(ref).toEqual({ type: 'expr', code: 'Math.max(hook.a, hook.b)' });
 	});
 
+	it('parses $item (whole object)', () => {
+		const ref = parseExpression('$item');
+		expect(ref).toEqual({ type: 'item', path: [] });
+	});
+
+	it('parses $item.name', () => {
+		const ref = parseExpression('$item.name');
+		expect(ref).toEqual({ type: 'item', path: ['name'] });
+	});
+
+	it('parses $item.a.b.c (deep path)', () => {
+		const ref = parseExpression('$item.a.b.c');
+		expect(ref).toEqual({ type: 'item', path: ['a', 'b', 'c'] });
+	});
+
 	it('returns null for invalid expressions', () => {
 		expect(parseExpression('$invalid')).toBeNull();
 		expect(parseExpression('$')).toBeNull();

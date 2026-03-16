@@ -60,10 +60,15 @@ export const defaultCatalog = defineCatalog([
 	{
 		type: 'Text',
 		label: 'Text',
-		description: 'Text content',
+		description: 'Styled text content with variant, size, weight, and truncation support',
 		category: 'display',
 		propsSchema: z.object({
 			content: z.string(),
+			variant: z.enum(['heading', 'subheading', 'body', 'caption', 'price']).optional(),
+			size: z.enum(['xs', 'sm', 'md', 'lg', 'xl', '2xl']).optional(),
+			weight: z.enum(['normal', 'medium', 'semibold', 'bold']).optional(),
+			color: z.enum(['default', 'muted', 'primary', 'success', 'warning', 'danger']).optional(),
+			truncate: z.union([z.boolean(), z.number()]).optional(),
 		}),
 		acceptsChildren: false,
 	},
@@ -241,6 +246,17 @@ export const defaultCatalog = defineCatalog([
 			title: z.string().optional(),
 		}),
 		acceptsChildren: false,
+	},
+	{
+		type: 'Repeater',
+		label: 'Repeater',
+		description: 'Iterates over data array, renders child template for each item. Use $item.xxx in children.',
+		category: 'control',
+		propsSchema: z.object({
+			data: z.unknown(),
+			keyField: z.string().optional(),
+		}),
+		acceptsChildren: true,
 	},
 	{
 		type: 'Button',

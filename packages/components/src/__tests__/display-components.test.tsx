@@ -5,6 +5,7 @@ import { Badge } from '../display/badge.js';
 import { Divider } from '../display/divider.js';
 import { Image } from '../display/image.js';
 import { Link } from '../display/link.js';
+import { Text } from '../display/text.js';
 
 afterEach(cleanup);
 
@@ -146,5 +147,75 @@ describe('Divider', () => {
 		const { container } = render(<Divider className="my-4" />);
 		const hr = container.querySelector('hr');
 		expect(hr?.className).toContain('my-4');
+	});
+});
+
+describe('Text', () => {
+	it('renders content', () => {
+		render(<Text content="Hello" />);
+		expect(screen.getByText('Hello')).toBeTruthy();
+	});
+
+	it('applies heading variant classes', () => {
+		const { container } = render(<Text content="Title" variant="heading" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-xl');
+		expect(p?.className).toContain('font-bold');
+		expect(p?.className).toContain('text-gray-900');
+	});
+
+	it('applies caption variant classes', () => {
+		const { container } = render(<Text content="Note" variant="caption" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-sm');
+		expect(p?.className).toContain('font-normal');
+		expect(p?.className).toContain('text-gray-500');
+	});
+
+	it('applies price variant classes', () => {
+		const { container } = render(<Text content="$99" variant="price" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-lg');
+		expect(p?.className).toContain('font-bold');
+	});
+
+	it('overrides variant defaults with individual props', () => {
+		const { container } = render(
+			<Text content="Custom" variant="heading" size="sm" weight="normal" color="muted" />,
+		);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-sm');
+		expect(p?.className).toContain('font-normal');
+		expect(p?.className).toContain('text-gray-500');
+	});
+
+	it('applies truncate true', () => {
+		const { container } = render(<Text content="Long text" truncate />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('truncate');
+	});
+
+	it('applies truncate number (line-clamp)', () => {
+		const { container } = render(<Text content="Multi-line" truncate={2} />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('line-clamp-2');
+	});
+
+	it('applies custom className', () => {
+		const { container } = render(<Text content="Styled" className="mt-4" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('mt-4');
+	});
+
+	it('applies color prop', () => {
+		const { container } = render(<Text content="Danger" color="danger" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-red-600');
+	});
+
+	it('defaults to text-gray-700 without variant', () => {
+		const { container } = render(<Text content="Default" />);
+		const p = container.querySelector('p');
+		expect(p?.className).toContain('text-gray-700');
 	});
 });

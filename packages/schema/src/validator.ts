@@ -110,13 +110,41 @@ function validateExpressionRef(
 			severity: 'error',
 		});
 	}
+	// $item is validated for Repeater ancestry in validateExpressions
+}
+
+function buildParentMap(elements: Record<string, { children?: string[] }>): Record<string, string> {
+	const parentMap: Record<string, string> = {};
+	for (const [id, element] of Object.entries(elements)) {
+		if (element.children) {
+			for (const childId of element.children) {
+				parentMap[childId] = id;
+			}
+		}
+	}
+	return parentMap;
+}
+
+function hasRepeaterAncestor(
+	elemId: string,
+	elements: Record<string, { type: string; children?: string[] }>,
+	parentMap: Record<string, string>,
+): boolean {
+	let current = parentMap[elemId];
+	while (current) {
+		if (elements[current]?.type === 'Repeater') return true;
+		current = parentMap[current];
+	}
+	return false;
 }
 
 function validateExpressions(
 	spec: PageSpec,
 	errors: ValidationError[],
-	_warnings: ValidationError[],
+	warnings: ValidationError[],
 ): void {
+	const parentMap = buildParentMap(spec.elements);
+
 	for (const [elemId, element] of Object.entries(spec.elements)) {
 		// Validate prop expressions
 		for (const [propKey, propValue] of Object.entries(element.props)) {
@@ -131,6 +159,14 @@ function validateExpressions(
 					continue;
 				}
 				validateExpressionRef(ref, spec, `elements.${elemId}.props.${propKey}`, errors);
+
+				if (ref.type === 'item' && !hasRepeaterAncestor(elemId, spec.elements, parentMap)) {
+					warnings.push({
+						path: `elements.${elemId}.props.${propKey}`,
+						message: '$item expression used outside Repeater context',
+						severity: 'warning',
+					});
+				}
 			}
 		}
 

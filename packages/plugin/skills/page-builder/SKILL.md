@@ -45,7 +45,9 @@ description: >
 
 ### 表示
 - **Header**: `{ title: string, subtitle?: string, level?: 1|2|3 }`
-- **Text**: `{ content: string }` Markdown 対応
+- **Text**: `{ content: string, variant?: 'heading'|'subheading'|'body'|'caption'|'price', size?: 'xs'|'sm'|'md'|'lg'|'xl'|'2xl', weight?: 'normal'|'medium'|'semibold'|'bold', color?: 'default'|'muted'|'primary'|'success'|'warning'|'danger', truncate?: boolean|number }`
+  - `variant` がベーススタイルを決定、個別 props でオーバーライド可能
+  - `truncate: true` = 1行省略、`truncate: N` = N行省略（line-clamp）
 - **Stat**: `{ label: string, value: "$hook.xxx" 参照, format?: 'number'|'currency'|'percent', trend?: { direction: 'up'|'down', value: string } }`
 - **Badge**: `{ text: string, variant?: 'default'|'success'|'warning'|'error' }`
 - **Markdown**: `{ content: string }`
@@ -61,6 +63,13 @@ description: >
 - **LineChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
 - **PieChart**: `{ data: "$hook.xxx" 参照, nameKey: string, valueKey: string, title?: string }`（スライス色は自動割当）
 - **AreaChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
+
+### 制御
+- **Repeater**: `{ data: "$hook.xxx" 参照, keyField?: string }` children あり
+  - データ配列の各要素に対して children テンプレートを繰り返し描画
+  - 子要素内で `$item.xxx` を使ってアイテムのプロパティを参照
+  - `keyField` でアイテムのユニークキーを指定（React key の最適化）
+  - Fragment でラップされるため、親レイアウト（Grid 等）を壊さない
 
 ### 入力
 - **TextInput**: `{ placeholder?: string, label?: string }` bind: `$bindState.xxx`
@@ -123,7 +132,9 @@ description: >
 - `$state.key` — ページ状態を読み取り（読み取り専用）
 - `$bindState.key` — 入力コンポーネントの双方向バインディング（TextInput, Select, DatePicker に使用）
 - `$action.actionId` — アクション参照（Button の click, Form の submit に使用）
-- `$expr(式)` — 条件式（例: `$expr(hook.sales.length > 0)`）
+- `$item` — Repeater 内でイテレーションアイテム全体を参照
+- `$item.xxx` — Repeater 内でアイテムのプロパティを参照（例: `$item.name`, `$item.address.city`）
+- `$expr(式)` — 条件式（例: `$expr(hook.sales.length > 0)`）。Repeater 内では `$expr(item.price * item.quantity)` のように `item` を使用可能
 - `$hook._params.xxx` — URL クエリパラメータ参照（例: `$hook._params.id` で `?id=123` の値を取得）
 
 ## Action 定義
@@ -309,3 +320,62 @@ description: >
 
 ユーザー: 「フィルター機能を追加して」
 → state に `filterProduct` を追加、TextInput 要素を追加、useDerived に filter パラメータを追加
+
+## Repeater を使ったカード型グリッドの例
+
+```json
+{
+  "id": "product-cards",
+  "title": "商品一覧",
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Stack",
+      "props": { "direction": "vertical", "gap": 24 },
+      "children": ["header", "productGrid"]
+    },
+    "header": {
+      "type": "Header",
+      "props": { "title": "商品一覧", "level": 1 }
+    },
+    "productGrid": {
+      "type": "Grid",
+      "props": { "columns": 3, "gap": 16 },
+      "children": ["productRepeater"]
+    },
+    "productRepeater": {
+      "type": "Repeater",
+      "props": { "data": "$hook.products", "keyField": "id" },
+      "children": ["productCard"]
+    },
+    "productCard": {
+      "type": "Card",
+      "props": {},
+      "children": ["productImage", "productName", "productPrice"]
+    },
+    "productImage": {
+      "type": "Image",
+      "props": { "src": "$item.image_url", "alt": "$item.name" }
+    },
+    "productName": {
+      "type": "Text",
+      "props": { "content": "$item.name", "variant": "subheading" }
+    },
+    "productPrice": {
+      "type": "Text",
+      "props": { "content": "$item.price", "variant": "price", "color": "primary" }
+    }
+  },
+  "hooks": {
+    "products": {
+      "use": "useSqlQuery",
+      "params": {
+        "connection": "viyv-db",
+        "query": "SELECT id, name, price, image_url FROM products ORDER BY name"
+      }
+    }
+  },
+  "state": {},
+  "actions": {}
+}
+```
