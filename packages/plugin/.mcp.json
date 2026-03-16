@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"agent-ui": {
+			"command": "npx",
+			"args": ["@viyv/agent-ui-mcp"],
+			"env": {
+				"AGENT_UI_API_URL": "http://localhost:3000/api/agent-ui"
+			}
+		}
+	}
+}

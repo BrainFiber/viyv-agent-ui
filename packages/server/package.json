@@ -1,0 +1,33 @@
+{
+	"name": "@viyv/agent-ui-server",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"exports": {
+		".": {
+			"development": "./src/index.ts",
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./next": {
+			"development": "./src/api/next-adapter.ts",
+			"import": "./dist/api/next-adapter.js",
+			"types": "./dist/api/next-adapter.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"clean": "rm -rf dist"
+	},
+	"dependencies": {
+		"@viyv/agent-ui-schema": "workspace:*",
+		"nanoid": "^5.0.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.7.0",
+		"vitest": "^2.1.0"
+	}
+}

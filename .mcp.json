@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "viyv-db": {
+      "command": "node",
+      "args": [
+        "/Users/hiroki/myworkspace/ai_project/viyv-db/packages/mcp-server/dist/index.js",
+        "--postgres-url",
+        "postgres://postgres:test@localhost:5433/viyvdb",
+        "--tenant",
+        "default"
+      ]
+    }
+  }
+}

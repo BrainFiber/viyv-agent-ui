@@ -1,0 +1,7 @@
+{
+	"name": "@viyv/agent-ui-plugin",
+	"version": "0.1.0",
+	"description": "Claude Code plugin for AI-driven page builder",
+	"files": [".claude-plugin", "skills", ".mcp.json", "commands"],
+	"keywords": ["claude-code-plugin", "agent-ui", "page-builder"]
+}
