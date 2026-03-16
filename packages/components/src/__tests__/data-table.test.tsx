@@ -126,6 +126,229 @@ describe('DataTable', () => {
 		});
 	});
 
+	describe('filter', () => {
+		const filterColumns = [
+			{ key: 'name', label: 'Name', sortable: true, filter: { type: 'text' as const, placeholder: 'Search...' } },
+			{
+				key: 'status',
+				label: 'Status',
+				sortable: true,
+				filter: {
+					type: 'select' as const,
+					options: [
+						{ value: 'active', label: 'Active' },
+						{ value: 'inactive', label: 'Inactive' },
+					],
+				},
+			},
+			{ key: 'amount', label: 'Amount', format: 'currency' },
+		];
+
+		const filterData = [
+			{ name: 'Widget Alpha', status: 'active', amount: 100 },
+			{ name: 'Gadget Beta', status: 'inactive', amount: 200 },
+			{ name: 'Widget Gamma', status: 'active', amount: 300 },
+		];
+
+		it('does not render filter row when no columns have filter', () => {
+			const { container } = render(<DataTable data={data} columns={columns} />);
+			const theadRows = container.querySelectorAll('thead tr');
+			expect(theadRows.length).toBe(1);
+		});
+
+		it('renders filter row when columns have filter config', () => {
+			const { container } = render(<DataTable data={filterData} columns={filterColumns} />);
+			const theadRows = container.querySelectorAll('thead tr');
+			expect(theadRows.length).toBe(2);
+		});
+
+		it('filters rows by text input', () => {
+			const { container } = render(<DataTable data={filterData} columns={filterColumns} />);
+			const textInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+			fireEvent.change(textInput, { target: { value: 'Widget' } });
+			const bodyRows = container.querySelectorAll('tbody tr');
+			expect(bodyRows.length).toBe(2);
+			expect(screen.getByText('Widget Alpha')).toBeTruthy();
+			expect(screen.getByText('Widget Gamma')).toBeTruthy();
+		});
+
+		it('filters rows by select input', () => {
+			const { container } = render(<DataTable data={filterData} columns={filterColumns} />);
+			const selectEl = container.querySelector('select') as HTMLSelectElement;
+			fireEvent.change(selectEl, { target: { value: 'inactive' } });
+			const bodyRows = container.querySelectorAll('tbody tr');
+			expect(bodyRows.length).toBe(1);
+			expect(screen.getByText('Gadget Beta')).toBeTruthy();
+		});
+
+		it('shows noMatchMessage when filter yields no results', () => {
+			render(
+				<DataTable
+					data={filterData}
+					columns={filterColumns}
+					noMatchMessage="No matches found"
+				/>,
+			);
+			const textInput = screen.getByLabelText('Nameで絞り込み') as HTMLInputElement;
+			fireEvent.change(textInput, { target: { value: 'ZZZZZZZ' } });
+			expect(screen.getByText('No matches found')).toBeTruthy();
+		});
+
+		it('filter and sort work together', () => {
+			const { container } = render(<DataTable data={filterData} columns={filterColumns} />);
+			// Filter to active only
+			const selectEl = container.querySelector('select') as HTMLSelectElement;
+			fireEvent.change(selectEl, { target: { value: 'active' } });
+			// Sort by name
+			const nameHeader = screen.getByText('Name');
+			fireEvent.click(nameHeader);
+			const bodyRows = container.querySelectorAll('tbody tr');
+			expect(bodyRows.length).toBe(2);
+			// Sorted ascending: Widget Alpha, Widget Gamma
+			const cells = container.querySelectorAll('tbody tr td');
+			expect(cells[0].textContent).toBe('Widget Alpha');
+		});
+
+		it('shows default noMatchMessage when filter yields no results', () => {
+			render(<DataTable data={filterData} columns={filterColumns} />);
+			const textInput = screen.getByLabelText('Nameで絞り込み') as HTMLInputElement;
+			fireEvent.change(textInput, { target: { value: 'ZZZZZZZ' } });
+			expect(screen.getByText('No matching data')).toBeTruthy();
+		});
+
+		it('restores all rows when filter is cleared', () => {
+			const { container } = render(<DataTable data={filterData} columns={filterColumns} />);
+			const textInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+			fireEvent.change(textInput, { target: { value: 'Widget' } });
+			expect(container.querySelectorAll('tbody tr').length).toBe(2);
+			fireEvent.change(textInput, { target: { value: '' } });
+			expect(container.querySelectorAll('tbody tr').length).toBe(3);
+		});
+
+		it('renders auto-derived options for select without explicit options', () => {
+			const autoColumns = [
+				{ key: 'name', label: 'Name' },
+				{ key: 'status', label: 'Status', filter: { type: 'select' as const } },
+			];
+			const autoData = [
+				{ name: 'A', status: 'running' },
+				{ name: 'B', status: 'completed' },
+				{ name: 'C', status: 'running' },
+			];
+			const { container } = render(<DataTable data={autoData} columns={autoColumns} />);
+			const options = container.querySelectorAll('select option');
+			// "すべて" + "completed" + "running" = 3
+			expect(options.length).toBe(3);
+			expect(options[1].textContent).toBe('completed');
+			expect(options[2].textContent).toBe('running');
+		});
+	});
+
+	describe('badge format', () => {
+		it('renders Badge component with correct color from badgeMap', () => {
+			const cols = [
+				{ key: 'status', label: 'Status', format: 'badge', badgeMap: { active: 'green' as const, inactive: 'red' as const } },
+			];
+			const { container } = render(<DataTable data={[{ status: 'active' }]} columns={cols} />);
+			const badge = container.querySelector('span.inline-flex');
+			expect(badge).toBeTruthy();
+			expect(badge!.textContent).toBe('active');
+			expect(badge!.className).toContain('bg-green-100');
+		});
+
+		it('falls back to gray when value not in badgeMap', () => {
+			const cols = [
+				{ key: 'status', label: 'Status', format: 'badge', badgeMap: { active: 'green' as const } },
+			];
+			const { container } = render(<DataTable data={[{ status: 'unknown' }]} columns={cols} />);
+			const badge = container.querySelector('span.inline-flex');
+			expect(badge).toBeTruthy();
+			expect(badge!.className).toContain('bg-gray-100');
+		});
+	});
+
+	describe('truncation', () => {
+		it('adds max-w-xs to td when truncate is true', () => {
+			const cols = [{ key: 'desc', label: 'Description', truncate: true }];
+			const { container } = render(<DataTable data={[{ desc: 'Long text here' }]} columns={cols} />);
+			const td = container.querySelector('td');
+			expect(td!.className).toContain('max-w-xs');
+		});
+
+		it('adds truncate class to content span', () => {
+			const cols = [{ key: 'desc', label: 'Description', truncate: true }];
+			const { container } = render(<DataTable data={[{ desc: 'Long text here' }]} columns={cols} />);
+			const span = container.querySelector('td span.truncate');
+			expect(span).toBeTruthy();
+		});
+
+		it('sets title attribute for hover text', () => {
+			const cols = [{ key: 'desc', label: 'Description', truncate: true }];
+			const { container } = render(<DataTable data={[{ desc: 'Long text here' }]} columns={cols} />);
+			const span = container.querySelector('td span[title]');
+			expect(span!.getAttribute('title')).toBe('Long text here');
+		});
+	});
+
+	describe('emptyValue', () => {
+		it('shows emptyValue text when cell is null', () => {
+			const cols = [{ key: 'assignee', label: 'Assignee', emptyValue: '未割当' }];
+			render(<DataTable data={[{ assignee: null }]} columns={cols} />);
+			expect(screen.getByText('未割当')).toBeTruthy();
+		});
+
+		it('shows emptyValue text when cell is empty string', () => {
+			const cols = [{ key: 'assignee', label: 'Assignee', emptyValue: '未割当' }];
+			render(<DataTable data={[{ assignee: '' }]} columns={cols} />);
+			expect(screen.getByText('未割当')).toBeTruthy();
+		});
+
+		it('shows actual value when present', () => {
+			const cols = [{ key: 'assignee', label: 'Assignee', emptyValue: '未割当' }];
+			render(<DataTable data={[{ assignee: '田中' }]} columns={cols} />);
+			expect(screen.getByText('田中')).toBeTruthy();
+			expect(screen.queryByText('未割当')).toBeNull();
+		});
+	});
+
+	describe('rowHighlight', () => {
+		it('applies className to tr when rule matches', () => {
+			const { container } = render(
+				<DataTable
+					data={[{ stock: 0 }]}
+					columns={[{ key: 'stock', label: 'Stock' }]}
+					rowHighlight={[{ key: 'stock', op: 'eq', value: 0, className: 'bg-red-50' }]}
+				/>,
+			);
+			const tr = container.querySelector('tbody tr');
+			expect(tr!.className).toContain('bg-red-50');
+		});
+
+		it('does not apply className when no rule matches', () => {
+			const { container } = render(
+				<DataTable
+					data={[{ stock: 100 }]}
+					columns={[{ key: 'stock', label: 'Stock' }]}
+					rowHighlight={[{ key: 'stock', op: 'eq', value: 0, className: 'bg-red-50' }]}
+				/>,
+			);
+			const tr = container.querySelector('tbody tr');
+			expect(tr!.className).not.toContain('bg-red-50');
+		});
+	});
+
+	describe('valueClassName', () => {
+		it('wraps cell in span with matching className', () => {
+			const cols = [
+				{ key: 'code', label: 'Code', valueClassName: { '500': 'font-bold text-red-600' } },
+			];
+			const { container } = render(<DataTable data={[{ code: 500 }]} columns={cols} />);
+			const span = container.querySelector('span.font-bold');
+			expect(span).toBeTruthy();
+			expect(span!.textContent).toBe('500');
+		});
+	});
+
 	describe('formatCell', () => {
 		it('formats number', () => {
 			const cols = [{ key: 'val', label: 'Value', format: 'number' }];

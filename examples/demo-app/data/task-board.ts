@@ -194,9 +194,34 @@ export const taskBoardSpec: PageSpec = {
 				emptyMessage: 'タスクがありません',
 				columns: [
 					{ key: 'id', label: 'ID' },
-					{ key: 'title', label: 'タスク名', sortable: true },
-					{ key: 'status', label: 'ステータス', sortable: true },
-					{ key: 'priority', label: '優先度', sortable: true },
+					{ key: 'title', label: 'タスク名', sortable: true, filter: { type: 'text', placeholder: 'タスク検索...' } },
+					{
+						key: 'status',
+						label: 'ステータス',
+						sortable: true,
+						filter: {
+							type: 'select',
+							options: [
+								{ value: '完了', label: '完了' },
+								{ value: '進行中', label: '進行中' },
+								{ value: '未着手', label: '未着手' },
+								{ value: 'レビュー中', label: 'レビュー中' },
+							],
+						},
+					},
+					{
+						key: 'priority',
+						label: '優先度',
+						sortable: true,
+						filter: {
+							type: 'select',
+							options: [
+								{ value: '高', label: '高' },
+								{ value: '中', label: '中' },
+								{ value: '低', label: '低' },
+							],
+						},
+					},
 					{ key: 'assignee', label: '担当者', sortable: true },
 					{ key: 'dueDate', label: '期限', sortable: true, format: 'date' },
 					{ key: 'estimate', label: '見積(pt)', sortable: true, format: 'number' },

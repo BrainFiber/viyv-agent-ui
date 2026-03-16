@@ -71,9 +71,9 @@ export const reportsDashboardSpec: PageSpec = {
 			props: {
 				data: '$hook.reports.rows',
 				columns: [
-					{ key: 'report_id', label: 'レポートID', sortable: true },
-					{ key: 'scenario_label', label: 'シナリオ', sortable: true },
-					{ key: 'status', label: 'ステータス', sortable: true },
+					{ key: 'report_id', label: 'レポートID', sortable: true, filter: { type: 'text', placeholder: 'ID検索...' } },
+					{ key: 'scenario_label', label: 'シナリオ', sortable: true, filter: { type: 'text', placeholder: 'シナリオ検索...' } },
+					{ key: 'status', label: 'ステータス', sortable: true, filter: { type: 'select' } },
 					{ key: 'duration_ms', label: '実行時間(ms)', sortable: true },
 					{ key: 'entry_count', label: 'エントリ数', sortable: true },
 					{ key: 'error_count', label: 'エラー数', sortable: true },

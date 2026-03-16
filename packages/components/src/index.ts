@@ -30,7 +30,7 @@ export type { DividerProps } from './display/divider.js';
 
 // Data
 export { DataTable } from './data/data-table.js';
-export type { DataTableProps, DataTableColumn } from './data/data-table.js';
+export type { DataTableProps, DataTableColumn, DataTableFilterConfig, RowHighlightRule } from './data/data-table.js';
 
 // Input
 export { Button } from './input/button.js';

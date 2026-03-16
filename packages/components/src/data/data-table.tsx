@@ -1,11 +1,20 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Badge } from '../display/badge.js';
 import { cn } from '../lib/cn.js';
+import { applyFilters, deriveSelectOptions, evaluateRowHighlight, type DataTableFilterConfig, type RowHighlightRule } from './data-table-filter.js';
+
+export type { DataTableFilterConfig, RowHighlightRule } from './data-table-filter.js';
 
 export interface DataTableColumn {
 	key: string;
 	label: string;
 	sortable?: boolean;
 	format?: string;
+	filter?: DataTableFilterConfig;
+	badgeMap?: Record<string, 'gray' | 'blue' | 'green' | 'yellow' | 'red'>;
+	truncate?: boolean;
+	emptyValue?: string;
+	valueClassName?: Record<string, string>;
 }
 
 export interface DataTableProps {
@@ -15,7 +24,9 @@ export interface DataTableProps {
 	onRowClick?: (row: Record<string, unknown>) => void;
 	keyField?: string;
 	emptyMessage?: string;
+	noMatchMessage?: string;
 	className?: string;
+	rowHighlight?: RowHighlightRule[];
 }
 
 function interpolateTemplate(template: string, row: Record<string, unknown>): string {
@@ -56,6 +67,28 @@ function formatCell(value: unknown, format?: string): string {
 	return String(value);
 }
 
+function renderCellContent(col: DataTableColumn, value: unknown): React.ReactNode {
+	// 1. 空値フォールバック
+	if (value == null || value === '') {
+		if (col.emptyValue) return <span className="text-gray-400">{col.emptyValue}</span>;
+		return formatCell(value, col.format);
+	}
+	// 2. Badge フォーマット
+	if (col.format === 'badge') {
+		const strVal = String(value);
+		const color = col.badgeMap?.[strVal] ?? 'gray';
+		return <Badge text={strVal} color={color} />;
+	}
+	// 3. 通常フォーマット
+	const formatted = formatCell(value, col.format);
+	// 4. 値ベースクラス
+	if (col.valueClassName) {
+		const cls = col.valueClassName[String(value)];
+		if (cls) return <span className={cls}>{formatted}</span>;
+	}
+	return formatted;
+}
+
 function getAriaSortValue(
 	col: DataTableColumn,
 	sortKey: string | null,
@@ -73,7 +106,9 @@ export function DataTable({
 	onRowClick,
 	keyField,
 	emptyMessage = 'No data',
+	noMatchMessage = 'No matching data',
 	className,
+	rowHighlight,
 }: DataTableProps) {
 	const [sort, setSort] = useState<{ key: string | null; order: 'asc' | 'desc' }>({
 		key: null,
@@ -82,12 +117,31 @@ export function DataTable({
 	const sortKey = sort.key;
 	const sortOrder = sort.order;
 
+	const [filters, setFilters] = useState<Record<string, string>>({});
+
+	const handleFilterChange = useCallback((columnKey: string, value: string) => {
+		setFilters((prev) => {
+			const next = { ...prev };
+			if (value === '') {
+				delete next[columnKey];
+			} else {
+				next[columnKey] = value;
+			}
+			return next;
+		});
+	}, []);
+
+	const selectOptions = useMemo(
+		() => deriveSelectOptions(Array.isArray(data) ? (data as Record<string, unknown>[]) : [], columns),
+		[data, columns],
+	);
+
 	const rows = useMemo(() => {
 		if (!Array.isArray(data)) return [];
-		const result = [...data] as Record<string, unknown>[];
+		const filtered = applyFilters([...data] as Record<string, unknown>[], columns, filters);
 
 		if (sortKey) {
-			result.sort((a, b) => {
+			filtered.sort((a, b) => {
 				const aVal = a[sortKey];
 				const bVal = b[sortKey];
 				if (aVal == null && bVal == null) return 0;
@@ -99,8 +153,8 @@ export function DataTable({
 			});
 		}
 
-		return result;
-	}, [data, sortKey, sortOrder]);
+		return filtered;
+	}, [data, columns, filters, sortKey, sortOrder]);
 
 	const handleSort = useCallback((key: string) => {
 		setSort((prev) =>
@@ -111,6 +165,8 @@ export function DataTable({
 	}, []);
 
 	const isClickable = !!(rowHref || onRowClick);
+	const hasFilters = columns.some((col) => col.filter);
+	const isFiltered = Object.keys(filters).length > 0;
 
 	return (
 		<section className={cn('overflow-auto rounded-lg border', className)} aria-label="Data table">
@@ -149,6 +205,39 @@ export function DataTable({
 							</th>
 						))}
 					</tr>
+					{hasFilters && (
+						<tr className="border-b bg-white">
+							{columns.map((col) => (
+								<th key={`filter-${col.key}`} className="px-4 py-2 font-normal">
+									{col.filter?.type === 'text' && (
+										<input
+											type="text"
+											value={filters[col.key] ?? ''}
+											placeholder={col.filter.placeholder ?? '検索...'}
+											onChange={(e) => handleFilterChange(col.key, e.target.value)}
+											className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+											aria-label={`${col.label}で絞り込み`}
+										/>
+									)}
+									{col.filter?.type === 'select' && (
+										<select
+											value={filters[col.key] ?? ''}
+											onChange={(e) => handleFilterChange(col.key, e.target.value)}
+											className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+											aria-label={`${col.label}で絞り込み`}
+										>
+											<option value="">{col.filter.placeholder ?? 'すべて'}</option>
+											{(col.filter.options ?? selectOptions[col.key] ?? []).map((opt) => (
+												<option key={opt.value} value={opt.value}>
+													{opt.label}
+												</option>
+											))}
+										</select>
+									)}
+								</th>
+							))}
+						</tr>
+					)}
 				</thead>
 				<tbody>
 					{rows.map((row, index) => {
@@ -164,32 +253,42 @@ export function DataTable({
 								className={cn(
 									'border-b last:border-b-0 hover:bg-gray-50',
 									isClickable && 'cursor-pointer',
+									evaluateRowHighlight(row, rowHighlight),
 								)}
 								onClick={
 									onRowClick ? () => onRowClick(row) : undefined
 								}
 							>
-								{columns.map((col) => (
-									<td key={col.key} className={href ? '' : 'px-4 py-3'}>
-										{href ? (
-											<a
-												href={href}
-												className="block px-4 py-3 no-underline text-inherit"
-											>
-												{formatCell(row[col.key], col.format)}
-											</a>
-										) : (
-											formatCell(row[col.key], col.format)
-										)}
-									</td>
-								))}
+								{columns.map((col) => {
+									const content = renderCellContent(col, row[col.key]);
+									const isTruncated = col.truncate && col.format !== 'badge';
+									const titleText = isTruncated ? String(row[col.key] ?? '') : undefined;
+
+									return (
+										<td key={col.key} className={cn(href ? '' : 'px-4 py-3', isTruncated && 'max-w-xs')}>
+											{href ? (
+												<a
+													href={href}
+													className={cn('block px-4 py-3 no-underline text-inherit', isTruncated && 'truncate')}
+													title={titleText}
+												>
+													{content}
+												</a>
+											) : isTruncated ? (
+												<span className="block truncate" title={titleText}>{content}</span>
+											) : (
+												content
+											)}
+										</td>
+									);
+								})}
 							</tr>
 						);
 					})}
 					{rows.length === 0 && (
 						<tr>
 							<td colSpan={columns.length} className="px-4 py-8 text-center text-gray-400">
-								{emptyMessage}
+								{isFiltered ? noMatchMessage : emptyMessage}
 							</td>
 						</tr>
 					)}

@@ -18,7 +18,7 @@ export function Badge({ text, color = 'gray', className }: BadgeProps) {
 	return (
 		<span
 			className={cn(
-				'inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium',
+				'inline-flex whitespace-nowrap w-fit h-fit rounded-full px-2.5 py-0.5 text-xs font-medium',
 				colorMap[color] ?? colorMap.gray,
 				className,
 			)}
