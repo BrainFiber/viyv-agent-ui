@@ -28,8 +28,15 @@ function ErrorDisplay({ error }: { error: Error }) {
 	);
 }
 
-export default function PageView({ params }: { params: Promise<{ pageId: string }> }) {
+export default function PageView({
+	params,
+	searchParams,
+}: {
+	params: Promise<{ pageId: string }>;
+	searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
 	const { pageId } = use(params);
+	const sp = use(searchParams);
 
 	return (
 		<PageRenderer
@@ -38,6 +45,7 @@ export default function PageView({ params }: { params: Promise<{ pageId: string 
 			registry={defaultRegistry}
 			loading={<LoadingSkeleton />}
 			error={ErrorDisplay}
+			searchParams={sp}
 		/>
 	);
 }

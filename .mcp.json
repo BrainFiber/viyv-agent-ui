@@ -9,6 +9,15 @@
         "--tenant",
         "default"
       ]
+    },
+    "agent-ui": {
+      "command": "node",
+      "args": [
+        "/Users/hiroki/myworkspace/ai_project/viyv-agent-ui/packages/mcp/dist/cli.js"
+      ],
+      "env": {
+        "AGENT_UI_API_URL": "http://localhost:3100/api/agent-ui"
+      }
     }
   }
 }

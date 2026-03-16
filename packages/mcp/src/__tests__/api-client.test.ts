@@ -11,10 +11,10 @@ describe('ApiClient', () => {
 		vi.spyOn(globalThis, 'fetch').mockResolvedValue(mockResponse as Response);
 
 		const client = new ApiClient({ baseUrl: 'http://localhost:3000/api/agent-ui' });
-		const result = await client.get('/sources');
+		const result = await client.get('/pages');
 
 		expect(fetch).toHaveBeenCalledWith(
-			'http://localhost:3000/api/agent-ui/sources',
+			'http://localhost:3000/api/agent-ui/pages',
 			expect.objectContaining({ method: 'GET' }),
 		);
 		expect(result).toEqual([{ id: 'test' }]);
@@ -44,7 +44,7 @@ describe('ApiClient', () => {
 			baseUrl: 'http://localhost:3000/api/agent-ui',
 			apiKey: 'test-key',
 		});
-		await client.get('/sources');
+		await client.get('/pages');
 
 		expect(fetch).toHaveBeenCalledWith(
 			expect.any(String),

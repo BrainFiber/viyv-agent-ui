@@ -28,7 +28,7 @@ export function createHandler(options: AgentUiHandlerOptions) {
 
 	return async (req: HandlerRequest): Promise<HandlerResponse> => {
 		try {
-			return await route(req, pageStore, registry, executor);
+			return await route(req, pageStore, executor);
 		} catch (err) {
 			// Return known domain errors with their message; hide details of unexpected errors
 			if (err instanceof Error) {
@@ -57,7 +57,6 @@ export function createHandler(options: AgentUiHandlerOptions) {
 async function route(
 	req: HandlerRequest,
 	pageStore: PageStore,
-	registry: DataSourceRegistry,
 	executor: QueryExecutor,
 ): Promise<HandlerResponse> {
 	const { method, path } = req;
@@ -139,29 +138,6 @@ async function route(
 		}
 		const page = await pageStore.save(result.data);
 		return json(201, { id: page.id, createdAt: page.createdAt.toISOString() });
-	}
-
-	// Sources
-	if (method === 'GET' && path === '/sources') {
-		return json(200, registry.list());
-	}
-
-	const sourceMatch = path.match(/^\/sources\/([^/]+)$/);
-	if (sourceMatch && method === 'GET') {
-		const meta = await registry.describe(sourceMatch[1]);
-		if (!meta) return json(404, { error: 'Source not found' });
-		return json(200, meta);
-	}
-
-	const sourceQueryMatch = path.match(/^\/sources\/([^/]+)\/query$/);
-	if (sourceQueryMatch && method === 'POST') {
-		const connector = registry.get(sourceQueryMatch[1]);
-		if (!connector) return json(404, { error: 'Source not found' });
-		if (req.body !== undefined && (typeof req.body !== 'object' || req.body === null)) {
-			return json(400, { error: 'Request body must be a JSON object' });
-		}
-		const data = await connector.query((req.body as Record<string, unknown>) ?? {});
-		return json(200, { data });
 	}
 
 	// Hook execution

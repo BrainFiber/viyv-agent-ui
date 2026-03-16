@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { cn } from '../lib/cn.js';
 
 export interface AlertProps {
 	message: string;
 	type?: 'info' | 'success' | 'warning' | 'error';
 	title?: string;
+	closable?: boolean;
+	onClose?: () => void;
 	className?: string;
 }
 
@@ -14,18 +17,40 @@ const typeStyles: Record<string, string> = {
 	error: 'border-red-200 bg-red-50 text-red-800',
 };
 
-export function Alert({ message, type = 'info', title, className }: AlertProps) {
+export function Alert({ message, type = 'info', title, closable, onClose, className }: AlertProps) {
+	const [visible, setVisible] = useState(true);
+
+	if (!visible) return null;
+
+	const handleClose = () => {
+		setVisible(false);
+		onClose?.();
+	};
+
 	return (
 		<div
 			role="alert"
 			className={cn(
 				'rounded-lg border p-4',
+				closable && 'flex justify-between',
 				typeStyles[type] ?? typeStyles.info,
 				className,
 			)}
 		>
-			{title && <p className="mb-1 font-medium">{title}</p>}
-			<p>{message}</p>
+			<div>
+				{title && <p className="mb-1 font-medium">{title}</p>}
+				<p>{message}</p>
+			</div>
+			{closable && (
+				<button
+					type="button"
+					className="ml-4 shrink-0 opacity-60 hover:opacity-100"
+					onClick={handleClose}
+					aria-label="Close"
+				>
+					&#x2715;
+				</button>
+			)}
 		</div>
 	);
 }

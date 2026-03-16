@@ -27,9 +27,11 @@ type Row = Record<string, unknown>;
  * Apply derived operations to source data (pure function).
  */
 export function applyDerivedOperations(data: unknown, params: DerivedParams): unknown {
-	if (!Array.isArray(data)) return data;
+	// Unwrap { rows: [...] } from useSqlQuery / connector results
+	const unwrapped = isRowsWrapper(data) ? data.rows : data;
+	if (!Array.isArray(unwrapped)) return data;
 
-	let result: Row[] = [...data] as Row[];
+	let result: Row[] = [...unwrapped] as Row[];
 
 	// Filter
 	if (params.filter) {
@@ -70,9 +72,10 @@ export function applyDerivedOperations(data: unknown, params: DerivedParams): un
 
 		if (params.aggregate) {
 			const { fn, key } = params.aggregate;
+			const aggregateKey = params.groupBy === key ? `${key}_${fn}` : key;
 			result = [...groups.entries()].map(([groupKey, rows]) => ({
 				[params.groupBy!]: groupKey,
-				[key]: computeAggregate(rows, fn, key),
+				[aggregateKey]: computeAggregate(rows, fn, key),
 			}));
 		} else {
 			result = [...groups.entries()].map(([groupKey, rows]) => ({
@@ -93,6 +96,15 @@ export function applyDerivedOperations(data: unknown, params: DerivedParams): un
 	}
 
 	return result;
+}
+
+function isRowsWrapper(data: unknown): data is { rows: unknown[] } {
+	return (
+		data !== null &&
+		typeof data === 'object' &&
+		'rows' in data &&
+		Array.isArray((data as Record<string, unknown>).rows)
+	);
 }
 
 function computeAggregate(rows: Row[], fn: AggregateParams['fn'], key: string): number | null {

@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -9,15 +10,24 @@ export interface GridProps {
 }
 
 export function Grid({ columns = 2, gap = 16, children, className }: GridProps) {
+	const id = useId().replace(/:/g, '');
+	const gridId = `grid-${id}`;
 	return (
-		<div
-			className={cn('grid', className)}
-			style={{
-				gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-				gap: `${gap}px`,
-			}}
-		>
-			{children}
-		</div>
+		<>
+			<style>{`
+@media(max-width:640px){#${gridId}{grid-template-columns:1fr!important}}
+@media(min-width:641px) and (max-width:1024px){#${gridId}{grid-template-columns:repeat(${Math.min(columns, 2)},minmax(0,1fr))!important}}
+			`}</style>
+			<div
+				id={gridId}
+				className={cn('grid', className)}
+				style={{
+					gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+					gap: `${gap}px`,
+				}}
+			>
+				{children}
+			</div>
+		</>
 	);
 }

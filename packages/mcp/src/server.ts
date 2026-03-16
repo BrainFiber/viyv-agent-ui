@@ -8,65 +8,20 @@ export function createMcpServer(client: ApiClient): McpServer {
 		version: '0.1.0',
 	});
 
-	// list_data_sources
-	server.tool(
-		'list_data_sources',
-		'List all available data sources (databases, APIs, etc.)',
-		{},
-		async () => {
-			const sources = await client.get('/sources');
-			return { content: [{ type: 'text', text: JSON.stringify(sources, null, 2) }] };
-		},
-	);
+	// list_pages
+	server.tool('list_pages', 'List all saved pages.', {}, async () => {
+		const pages = await client.get('/pages');
+		return { content: [{ type: 'text', text: JSON.stringify(pages, null, 2) }] };
+	});
 
-	// describe_source
+	// get_page
 	server.tool(
-		'describe_source',
-		'Get detailed schema information about a data source (tables, columns, endpoints)',
-		{ sourceId: z.string().describe('The data source ID') },
-		async ({ sourceId }) => {
-			const meta = await client.get(`/sources/${sourceId}`);
-			return { content: [{ type: 'text', text: JSON.stringify(meta, null, 2) }] };
-		},
-	);
-
-	// query_data
-	server.tool(
-		'query_data',
-		'Query sample data from a data source to understand the data shape',
-		{
-			sourceId: z.string().describe('The data source ID'),
-			params: z
-				.record(z.unknown())
-				.describe('Query parameters (e.g. { table: "sales", limit: 5 })'),
-		},
-		async ({ sourceId, params }) => {
-			const result = await client.post(`/sources/${sourceId}/query`, params);
-			return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
-		},
-	);
-
-	// preview_page
-	server.tool(
-		'preview_page',
-		'Create a temporary preview of a page spec. Returns a preview URL for the user to review.',
-		{
-			spec: z.record(z.unknown()).describe('The PageSpec JSON object'),
-		},
-		async ({ spec }) => {
-			const result = await client.post<{
-				previewId: string;
-				previewUrl: string;
-				expiresAt: string;
-			}>('/pages/preview', spec);
-			return {
-				content: [
-					{
-						type: 'text',
-						text: `Preview created!\n\nPreview URL: ${result.previewUrl}\nExpires at: ${result.expiresAt}\n\nPlease ask the user to open this URL in their browser to review the page.`,
-					},
-				],
-			};
+		'get_page',
+		'Get the full PageSpec of a saved page.',
+		{ pageId: z.string().describe('The page ID to retrieve') },
+		async ({ pageId }) => {
+			const spec = await client.get(`/pages/${pageId}`);
+			return { content: [{ type: 'text', text: JSON.stringify(spec, null, 2) }] };
 		},
 	);
 
@@ -122,11 +77,29 @@ export function createMcpServer(client: ApiClient): McpServer {
 		},
 	);
 
-	// list_pages
-	server.tool('list_pages', 'List all saved pages.', {}, async () => {
-		const pages = await client.get('/pages');
-		return { content: [{ type: 'text', text: JSON.stringify(pages, null, 2) }] };
-	});
+	// preview_page
+	server.tool(
+		'preview_page',
+		'Create a temporary preview of a page spec. Returns a preview URL for the user to review.',
+		{
+			spec: z.record(z.unknown()).describe('The PageSpec JSON object'),
+		},
+		async ({ spec }) => {
+			const result = await client.post<{
+				previewId: string;
+				previewUrl: string;
+				expiresAt: string;
+			}>('/pages/preview', spec);
+			return {
+				content: [
+					{
+						type: 'text',
+						text: `Preview created!\n\nPreview URL: ${result.previewUrl}\nExpires at: ${result.expiresAt}\n\nPlease ask the user to open this URL in their browser to review the page.`,
+					},
+				],
+			};
+		},
+	);
 
 	return server;
 }

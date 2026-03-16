@@ -10,15 +10,30 @@ description: >
 あなたは @viyv/agent-ui を使ってページを設計する AI です。
 ユーザーの要求を理解し、適切なデータソースとコンポーネントを組み合わせて PageSpec JSON を作成します。
 
+## 前提条件
+
+このスキルは以下の MCP サーバーが設定されていることを前提とします：
+
+| MCP サーバー | 用途 |
+|---|---|
+| **viyv-db** | DB スキーマ確認・データクエリ（`get_schema`, `query`, `execute_sql`） |
+| **agent-ui** | ページの作成・管理（`list_pages`, `get_page`, `save_page`, `update_page`, `delete_page`, `preview_page`） |
+
 ## ワークフロー
 
-1. `list_data_sources` でデータソース一覧を取得
-2. `describe_source` でテーブル/API 構造を確認
-3. 必要に応じて `query_data` でデータサンプルを確認（limit: 5 推奨）
-4. 以下のコンポーネントカタログと hooks を使って PageSpec JSON を設計
-5. `preview_page` でプレビューを生成し、ユーザーに URL を伝える
-6. ユーザーの修正指示があれば spec を修正して再プレビュー
-7. ユーザーが承認したら `save_page` で保存
+1. **[viyv-db]** `get_schema` でデータベーススキーマ（テーブル・カラム）を確認
+2. **[viyv-db]** 必要に応じて `query` でデータサンプルを確認（LIMIT 5 推奨）
+3. 以下のコンポーネントカタログと hooks を使って PageSpec JSON を設計
+4. **[agent-ui]** `preview_page` でプレビューを生成し、ユーザーに URL を伝える
+5. ユーザーの修正指示があれば spec を修正して再プレビュー
+6. ユーザーが承認したら **[agent-ui]** `save_page` で保存
+
+### 既存ページの更新
+
+1. **[agent-ui]** `list_pages` で対象ページの ID を確認
+2. **[agent-ui]** `get_page` で現在の PageSpec を取得
+3. spec を修正し、**[agent-ui]** `preview_page` でプレビュー
+4. ユーザーが承認したら **[agent-ui]** `update_page` で更新
 
 ## コンポーネントカタログ
 
@@ -42,10 +57,10 @@ description: >
 - **KeyValue**: `{ data: "$hook.xxx" 参照 }` — オブジェクトを key-value ペアで表示
 
 ### チャート
-- **BarChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string }`
-- **LineChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string }`
-- **PieChart**: `{ data: "$hook.xxx" 参照, nameKey: string, valueKey: string, title?: string }`
-- **AreaChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string }`
+- **BarChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
+- **LineChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
+- **PieChart**: `{ data: "$hook.xxx" 参照, nameKey: string, valueKey: string, title?: string }`（スライス色は自動割当）
+- **AreaChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
 
 ### 入力
 - **TextInput**: `{ placeholder?: string, label?: string }` bind: `$bindState.xxx`
@@ -76,6 +91,7 @@ description: >
 }
 ```
 ※ params の各プロパティは全てオプション。必要なものだけ指定。
+※ `groupBy` と `aggregate.key` が同じカラム名の場合、aggregate 結果のキーは自動で `${key}_${fn}` にリネームされる（例: `groupBy: "status"` + `aggregate: { fn: "count", key: "status" }` → `{ status: "active", status_count: 2 }`）。
 
 ### useFetch — REST API 呼び出し
 ```json
@@ -97,6 +113,8 @@ description: >
 }
 ```
 ※ **SELECT のみ使用可**。INSERT/UPDATE/DELETE/DROP は禁止。サーバーでバリデーションされる。
+※ `connection` にはサーバーに登録されたデータソースIDを指定する。
+  viyv-db 接続の場合は `"viyv-db"` を使用する。
 
 ## 参照構文
 
@@ -106,6 +124,7 @@ description: >
 - `$bindState.key` — 入力コンポーネントの双方向バインディング（TextInput, Select, DatePicker に使用）
 - `$action.actionId` — アクション参照（Button の click, Form の submit に使用）
 - `$expr(式)` — 条件式（例: `$expr(hook.sales.length > 0)`）
+- `$hook._params.xxx` — URL クエリパラメータ参照（例: `$hook._params.id` で `?id=123` の値を取得）
 
 ## Action 定義
 
@@ -234,7 +253,7 @@ description: >
     "rawSales": {
       "use": "useSqlQuery",
       "params": {
-        "connection": "main-db",
+        "connection": "viyv-db",
         "query": "SELECT s.id, s.date, p.name as product_name, s.amount, s.quantity FROM sales s JOIN products p ON s.product_id = p.id WHERE s.date >= '2024-03-01' ORDER BY s.date DESC",
         "refreshInterval": 300000
       }

@@ -22,6 +22,7 @@ export interface HookDataProviderProps {
 	queryEndpoint: string;
 	pageId?: string;
 	previewId?: string;
+	searchParams?: Record<string, string | string[] | undefined>;
 	children: ReactNode;
 }
 
@@ -57,6 +58,7 @@ export function HookDataProvider({
 	queryEndpoint,
 	pageId,
 	previewId,
+	searchParams,
 	children,
 }: HookDataProviderProps) {
 	const dag = useMemo(() => buildHookDAG(spec.hooks), [spec.hooks]);
@@ -89,6 +91,16 @@ export function HookDataProvider({
 	const value = useMemo(() => {
 		const hookData: Record<string, unknown> = {};
 		const errors: Record<string, Error> = {};
+
+		// Inject URL search params as _params
+		if (searchParams) {
+			const flat: Record<string, string> = {};
+			for (const [k, v] of Object.entries(searchParams)) {
+				if (typeof v === 'string') flat[k] = v;
+				else if (Array.isArray(v) && v.length > 0) flat[k] = v[0];
+			}
+			hookData['_params'] = flat;
+		}
 
 		// Set useState hooks
 		for (const [id, hook] of Object.entries(spec.hooks)) {
@@ -123,7 +135,7 @@ export function HookDataProvider({
 		const isLoading = queries.some((q) => q.isLoading);
 
 		return { hookData, isLoading, errors };
-	}, [queries, dag.order, spec.hooks, serverHookIds]);
+	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams]);
 
 	return <HookDataContext.Provider value={value}>{children}</HookDataContext.Provider>;
 }

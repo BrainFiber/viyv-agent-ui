@@ -21,6 +21,8 @@ export interface PageRendererProps {
 	loading?: React.ReactNode;
 	/** Error component */
 	error?: React.ComponentType<{ error: Error }>;
+	/** URL search params (forwarded to hooks as _params) */
+	searchParams?: Record<string, string | string[] | undefined>;
 }
 
 export function PageRenderer({
@@ -31,6 +33,7 @@ export function PageRenderer({
 	registry,
 	loading,
 	error: ErrorComponent,
+	searchParams,
 }: PageRendererProps) {
 	const [spec, setSpec] = useState<PageSpec | null>(directSpec ?? null);
 	const [loadError, setLoadError] = useState<Error | null>(null);
@@ -110,6 +113,7 @@ export function PageRenderer({
 				queryEndpoint={queryEndpoint}
 				pageId={pageId}
 				previewId={previewId}
+				searchParams={searchParams}
 			>
 				<InteractionProvider spec={spec}>
 					<ElementRenderer elementId={spec.root} />

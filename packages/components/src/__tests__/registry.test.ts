@@ -7,6 +7,7 @@ describe('defaultRegistry', () => {
 			'Stack',
 			'Grid',
 			'Card',
+			'Tabs',
 			'Header',
 			'Text',
 			'Stat',
@@ -14,7 +15,12 @@ describe('defaultRegistry', () => {
 			'Link',
 			'Alert',
 			'Divider',
+			'Image',
 			'DataTable',
+			'BarChart',
+			'LineChart',
+			'AreaChart',
+			'PieChart',
 			'Button',
 			'TextInput',
 			'Select',
@@ -24,7 +30,7 @@ describe('defaultRegistry', () => {
 		}
 	});
 
-	it('has exactly 14 components', () => {
-		expect(defaultRegistry.size).toBe(14);
+	it('has exactly 20 components', () => {
+		expect(defaultRegistry.size).toBe(20);
 	});
 });

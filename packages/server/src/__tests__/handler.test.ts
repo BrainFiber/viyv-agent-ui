@@ -81,28 +81,6 @@ describe('API Handler', () => {
 		expect((res.body as Record<string, unknown>).previewId).toBeTruthy();
 	});
 
-	it('GET /sources lists data sources', async () => {
-		const res = await handler({ method: 'GET', path: '/sources' });
-		expect(res.status).toBe(200);
-		expect(res.body).toHaveLength(1);
-	});
-
-	it('GET /sources/:id describes a source', async () => {
-		const res = await handler({ method: 'GET', path: '/sources/demo' });
-		expect(res.status).toBe(200);
-		expect((res.body as Record<string, unknown>).name).toBe('Demo DB');
-	});
-
-	it('POST /sources/:id/query queries a source', async () => {
-		const res = await handler({
-			method: 'POST',
-			path: '/sources/demo/query',
-			body: { table: 'sales' },
-		});
-		expect(res.status).toBe(200);
-		expect((res.body as Record<string, unknown>).data).toHaveLength(2);
-	});
-
 	it('rejects invalid page spec', async () => {
 		const res = await handler({
 			method: 'POST',

@@ -1,8 +1,9 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Alert } from '../display/alert.js';
 import { Badge } from '../display/badge.js';
 import { Divider } from '../display/divider.js';
+import { Image } from '../display/image.js';
 import { Link } from '../display/link.js';
 
 afterEach(cleanup);
@@ -83,6 +84,54 @@ describe('Alert', () => {
 		const { container } = render(<Alert message="Info" />);
 		const div = container.querySelector('[role="alert"]');
 		expect(div?.className).toContain('border-blue-200');
+	});
+});
+
+describe('Alert closable', () => {
+	it('shows close button when closable', () => {
+		render(<Alert message="Closable" closable />);
+		expect(screen.getByLabelText('Close')).toBeTruthy();
+	});
+
+	it('hides alert when close button is clicked', () => {
+		render(<Alert message="Will hide" closable />);
+		fireEvent.click(screen.getByLabelText('Close'));
+		expect(screen.queryByText('Will hide')).toBeNull();
+	});
+
+	it('does not show close button by default', () => {
+		render(<Alert message="Not closable" />);
+		expect(screen.queryByLabelText('Close')).toBeNull();
+	});
+});
+
+describe('Image', () => {
+	it('renders with src and alt', () => {
+		const { container } = render(<Image src="/test.png" alt="Test image" />);
+		const img = container.querySelector('img');
+		expect(img).toBeTruthy();
+		expect(img?.getAttribute('src')).toBe('/test.png');
+		expect(img?.getAttribute('alt')).toBe('Test image');
+	});
+
+	it('applies width and height', () => {
+		const { container } = render(<Image src="/test.png" width={200} height={100} />);
+		const img = container.querySelector('img');
+		expect(img?.getAttribute('width')).toBe('200');
+		expect(img?.getAttribute('height')).toBe('100');
+	});
+
+	it('applies default classes', () => {
+		const { container } = render(<Image src="/test.png" />);
+		const img = container.querySelector('img');
+		expect(img?.className).toContain('max-w-full');
+		expect(img?.className).toContain('rounded');
+	});
+
+	it('applies custom className', () => {
+		const { container } = render(<Image src="/test.png" className="shadow-lg" />);
+		const img = container.querySelector('img');
+		expect(img?.className).toContain('shadow-lg');
 	});
 });
 

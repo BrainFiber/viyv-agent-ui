@@ -25,6 +25,16 @@ export const defaultCatalog = defineCatalog([
 		acceptsChildren: true,
 	},
 	{
+		type: 'Tabs',
+		label: 'Tabs',
+		description: 'Tabbed content switcher',
+		category: 'layout',
+		propsSchema: z.object({
+			tabs: z.array(z.object({ id: z.string(), label: z.string() })),
+		}),
+		acceptsChildren: true,
+	},
+	{
 		type: 'Card',
 		label: 'Card',
 		description: 'Container card with optional title',
@@ -70,6 +80,7 @@ export const defaultCatalog = defineCatalog([
 				.object({
 					direction: z.enum(['up', 'down']),
 					value: z.string(),
+					color: z.enum(['green', 'red', 'auto']).optional(),
 				})
 				.optional(),
 		}),
@@ -97,6 +108,7 @@ export const defaultCatalog = defineCatalog([
 								.optional(),
 						})
 						.optional(),
+					minWidth: z.number().optional(),
 					badgeMap: z.record(z.enum(['gray', 'blue', 'green', 'yellow', 'red'])).optional(),
 					truncate: z.boolean().optional(),
 					emptyValue: z.string().optional(),
@@ -142,6 +154,19 @@ export const defaultCatalog = defineCatalog([
 		acceptsChildren: false,
 	},
 	{
+		type: 'Image',
+		label: 'Image',
+		description: 'Responsive image display',
+		category: 'display',
+		propsSchema: z.object({
+			src: z.string(),
+			alt: z.string().optional(),
+			width: z.number().optional(),
+			height: z.number().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
 		type: 'Alert',
 		label: 'Alert',
 		description: 'Feedback message (info, success, warning, error)',
@@ -150,6 +175,7 @@ export const defaultCatalog = defineCatalog([
 			message: z.string(),
 			type: z.enum(['info', 'success', 'warning', 'error']).default('info'),
 			title: z.string().optional(),
+			closable: z.boolean().optional(),
 		}),
 		acceptsChildren: false,
 	},
@@ -159,6 +185,61 @@ export const defaultCatalog = defineCatalog([
 		description: 'Visual section separator',
 		category: 'display',
 		propsSchema: z.object({}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'BarChart',
+		label: 'Bar Chart',
+		description: 'Vertical bar chart for category comparison',
+		category: 'chart',
+		propsSchema: z.object({
+			data: z.unknown(),
+			xKey: z.string(),
+			yKey: z.string(),
+			title: z.string().optional(),
+			color: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'LineChart',
+		label: 'Line Chart',
+		description: 'Line chart for trends and time series',
+		category: 'chart',
+		propsSchema: z.object({
+			data: z.unknown(),
+			xKey: z.string(),
+			yKey: z.string(),
+			title: z.string().optional(),
+			color: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'AreaChart',
+		label: 'Area Chart',
+		description: 'Filled area chart for cumulative trends',
+		category: 'chart',
+		propsSchema: z.object({
+			data: z.unknown(),
+			xKey: z.string(),
+			yKey: z.string(),
+			title: z.string().optional(),
+			color: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'PieChart',
+		label: 'Pie Chart',
+		description: 'Pie chart for proportional distribution (auto-colored slices)',
+		category: 'chart',
+		propsSchema: z.object({
+			data: z.unknown(),
+			nameKey: z.string(),
+			valueKey: z.string(),
+			title: z.string().optional(),
+		}),
 		acceptsChildren: false,
 	},
 	{

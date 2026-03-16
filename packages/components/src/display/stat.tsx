@@ -4,7 +4,7 @@ export interface StatProps {
 	label: string;
 	value: unknown;
 	format?: 'number' | 'currency' | 'percent';
-	trend?: { direction: 'up' | 'down'; value: string };
+	trend?: { direction: 'up' | 'down'; value: string; color?: 'green' | 'red' | 'auto' };
 	className?: string;
 }
 
@@ -49,7 +49,12 @@ export function Stat({ label, value, format, trend, className }: StatProps) {
 					<span
 						className={cn(
 							'text-sm font-medium',
-							trend.direction === 'up' ? 'text-green-600' : 'text-red-600',
+							(() => {
+								const c = trend.color ?? 'auto';
+								if (c === 'green') return 'text-green-600';
+								if (c === 'red') return 'text-red-600';
+								return trend.direction === 'up' ? 'text-green-600' : 'text-red-600';
+							})(),
 						)}
 					>
 						{trend.direction === 'up' ? '\u2191' : '\u2193'} {trend.value}

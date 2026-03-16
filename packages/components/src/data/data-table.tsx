@@ -11,6 +11,7 @@ export interface DataTableColumn {
 	sortable?: boolean;
 	format?: string;
 	filter?: DataTableFilterConfig;
+	minWidth?: number;
 	badgeMap?: Record<string, 'gray' | 'blue' | 'green' | 'yellow' | 'red'>;
 	truncate?: boolean;
 	emptyValue?: string;
@@ -181,6 +182,7 @@ export function DataTable({
 									'px-4 py-3 text-left font-medium text-gray-700',
 									col.sortable && 'cursor-pointer select-none hover:bg-gray-100',
 								)}
+								style={col.minWidth ? { minWidth: col.minWidth } : undefined}
 								onClick={col.sortable ? () => handleSort(col.key) : undefined}
 								onKeyDown={
 									col.sortable
@@ -265,7 +267,7 @@ export function DataTable({
 									const titleText = isTruncated ? String(row[col.key] ?? '') : undefined;
 
 									return (
-										<td key={col.key} className={cn(href ? '' : 'px-4 py-3', isTruncated && 'max-w-xs')}>
+										<td key={col.key} className={cn(href ? '' : 'px-4 py-3', isTruncated && 'max-w-xs')} style={col.minWidth ? { minWidth: col.minWidth } : undefined}>
 											{href ? (
 												<a
 													href={href}
