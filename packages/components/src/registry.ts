@@ -14,12 +14,16 @@ import { Stat } from './display/stat.js';
 import { Text } from './display/text.js';
 import { Map } from './map/map.js';
 import { Button } from './input/button.js';
+import { Checkbox } from './input/checkbox.js';
+import { RadioGroup } from './input/radio-group.js';
 import { Select } from './input/select.js';
+import { Textarea } from './input/textarea.js';
 import { TextInput } from './input/text-input.js';
 import { Card } from './layout/card.js';
 import { Grid } from './layout/grid.js';
 import { Stack } from './layout/stack.js';
 import { Tabs } from './layout/tabs.js';
+import { Dialog } from './overlay/dialog.js';
 
 export const defaultRegistry = defineRegistry({
 	Stack: Stack as any,
@@ -43,4 +47,8 @@ export const defaultRegistry = defineRegistry({
 	Button: Button as any,
 	TextInput: TextInput as any,
 	Select: Select as any,
+	Textarea: Textarea as any,
+	Checkbox: Checkbox as any,
+	RadioGroup: RadioGroup as any,
+	Dialog: Dialog as any,
 });

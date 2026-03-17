@@ -42,6 +42,7 @@ description: >
 - **Grid**: `{ columns: number, gap?: number }` children あり
 - **Card**: `{ title?: string, description?: string }` children あり
 - **Tabs**: `{ tabs: { id: string, label: string }[] }` children は tab ごと
+- **Dialog**: `{ title: string }` children あり — モーダルダイアログ。`visible: { expr: '...' }` で表示制御
 
 ### 表示
 - **Header**: `{ title: string, subtitle?: string, level?: 1|2|3 }`
@@ -50,15 +51,12 @@ description: >
   - `truncate: true` = 1行省略、`truncate: N` = N行省略（line-clamp）
 - **Stat**: `{ label: string, value: "$hook.xxx" 参照, format?: 'number'|'currency'|'percent', trend?: { direction: 'up'|'down', value: string } }`
 - **Badge**: `{ text: string, variant?: 'default'|'success'|'warning'|'error' }`
-- **Markdown**: `{ content: string }`
 - **Image**: `{ src: string, alt?: string, width?: number, height?: number, objectFit?: 'cover'|'contain'|'fill'|'none' }`
 - **Map**: `{ center: [lat, lng], zoom?: number, markers?: "$hook.xxx", latKey?: string, lngKey?: string, labelKey?: string, popupKey?: string, height?: number }` — OpenStreetMap ベースの地図。マーカーにラベル・ポップアップ表示可能
 
 ### データ
 - **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }], pageSize?: number }`
   - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示、フィルタ/ソート変更時は1ページ目にリセット）
-- **List**: `{ data: "$hook.xxx" 参照, renderItem: elementId }`
-- **KeyValue**: `{ data: "$hook.xxx" 参照 }` — オブジェクトを key-value ペアで表示
 
 ### チャート
 - **BarChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
@@ -75,11 +73,12 @@ description: >
   - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示）
 
 ### 入力
-- **TextInput**: `{ placeholder?: string, label?: string }` bind: `$bindState.xxx`
-- **Select**: `{ options: [{ value: string, label: string }], placeholder?: string }` bind: `$bindState.xxx`
-- **Button**: `{ label: string, variant?: 'primary'|'secondary'|'danger' }` on: { click: `$action.xxx` }
-- **Form**: `{ submitLabel?: string }` children あり, on: { submit: `$action.xxx` }
-- **DatePicker**: `{ label?: string }` bind: `$bindState.xxx`
+- **TextInput**: `{ placeholder?: string, label?: string, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }` — `error` 非空時に赤枠 + エラーメッセージ表示
+- **Textarea**: `{ placeholder?: string, label?: string, rows?: number, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }`
+- **Select**: `{ options: [{ value: string, label: string }], placeholder?: string, label?: string, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }`
+- **Checkbox**: `{ label?: string, error?: string, checked: "$bindState.xxx", onChange: "$action.yyy" }`（checked は boolean）
+- **RadioGroup**: `{ options: [{ value: string, label: string }], label?: string, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }`
+- **Button**: `{ label: string, variant?: 'primary'|'secondary'|'danger', onClick: "$action.xxx" }`
 
 ## Hook 定義
 
@@ -133,8 +132,8 @@ description: >
 - `$hook.hookId` — hook の結果データを参照
 - `$hook.hookId.nested.path` — ネストされたプロパティにアクセス
 - `$state.key` — ページ状態を読み取り（読み取り専用）
-- `$bindState.key` — 入力コンポーネントの双方向バインディング（TextInput, Select, DatePicker に使用）
-- `$action.actionId` — アクション参照（Button の click, Form の submit に使用）
+- `$bindState.key` — 入力コンポーネントの双方向バインディング（props の value / checked に使用）
+- `$action.actionId` — アクション参照（props の onChange / onClick に使用）
 - `$item` — Repeater 内でイテレーションアイテム全体を参照
 - `$item.xxx` — Repeater 内でアイテムのプロパティを参照（例: `$item.name`, `$item.address.city`）
 - `$expr(式)` — 条件式（例: `$expr(hook.sales.length > 0)`）。Repeater 内では `$expr(item.price * item.quantity)` のように `item` を使用可能
@@ -145,10 +144,15 @@ description: >
 ```json
 {
   "setState": { "type": "setState", "key": "状態キー", "value": "新しい値" },
+  "setField": { "type": "setState", "key": "fieldName" },
   "refreshData": { "type": "refreshHook", "hookId": "再取得するhookのID" },
-  "goToDetail": { "type": "navigate", "url": "/pages/detail" }
+  "goToDetail": { "type": "navigate", "url": "/pages/detail" },
+  "submit": { "type": "submitForm", "url": "/api/endpoint", "method": "POST", "stateKey": "result" }
 }
 ```
+
+- `setState` の `value` を省略すると、onChange の引数がそのまま使われる（フォーム双方向バインディングに利用）
+- `submitForm` はページ state 全体を JSON POST する。`stateKey` でレスポンスを state に格納。`onComplete: { key: value }` で送信成功後に追加の state 変更を実行（例: ダイアログを閉じる）
 
 ## PageSpec 構造
 

@@ -97,6 +97,11 @@ export const storeLocatorSpec: PageSpec = {
 		listCard: {
 			type: 'Card',
 			props: { title: '店舗一覧' },
+			children: ['storeList'],
+		},
+		storeList: {
+			type: 'Stack',
+			props: { direction: 'vertical', gap: 12 },
 			children: ['storeRepeater'],
 		},
 		storeRepeater: {

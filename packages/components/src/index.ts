@@ -14,6 +14,10 @@ export type { CardProps } from './layout/card.js';
 export { Tabs } from './layout/tabs.js';
 export type { TabsProps } from './layout/tabs.js';
 
+// Overlay
+export { Dialog } from './overlay/dialog.js';
+export type { DialogProps } from './overlay/dialog.js';
+
 // Display
 export { Header } from './display/header.js';
 export type { HeaderProps } from './display/header.js';
@@ -60,6 +64,12 @@ export { TextInput } from './input/text-input.js';
 export type { TextInputProps } from './input/text-input.js';
 export { Select } from './input/select.js';
 export type { SelectProps, SelectOption } from './input/select.js';
+export { Textarea } from './input/textarea.js';
+export type { TextareaProps } from './input/textarea.js';
+export { Checkbox } from './input/checkbox.js';
+export type { CheckboxProps } from './input/checkbox.js';
+export { RadioGroup } from './input/radio-group.js';
+export type { RadioGroupProps, RadioGroupOption } from './input/radio-group.js';
 
 // Navigation
 export { Pagination } from './navigation/pagination.js';

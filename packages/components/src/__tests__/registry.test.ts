@@ -8,6 +8,7 @@ describe('defaultRegistry', () => {
 			'Grid',
 			'Card',
 			'Tabs',
+			'Dialog',
 			'Header',
 			'Text',
 			'Stat',
@@ -25,13 +26,16 @@ describe('defaultRegistry', () => {
 			'Button',
 			'TextInput',
 			'Select',
+			'Textarea',
+			'Checkbox',
+			'RadioGroup',
 		];
 		for (const type of types) {
 			expect(defaultRegistry.has(type), `Missing component: ${type}`).toBe(true);
 		}
 	});
 
-	it('has exactly 21 components', () => {
-		expect(defaultRegistry.size).toBe(21);
+	it('has exactly 25 components', () => {
+		expect(defaultRegistry.size).toBe(25);
 	});
 });

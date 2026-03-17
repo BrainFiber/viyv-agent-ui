@@ -1,0 +1,39 @@
+import { useId } from 'react';
+import { cn } from '../lib/cn.js';
+
+export interface CheckboxProps {
+	label?: string;
+	checked?: boolean;
+	disabled?: boolean;
+	error?: string;
+	onChange?: (checked: boolean) => void;
+	className?: string;
+}
+
+export function Checkbox({
+	label,
+	checked,
+	disabled,
+	error,
+	onChange,
+	className,
+}: CheckboxProps) {
+	const errorId = useId();
+	return (
+		<div className={className}>
+			<label className={cn('inline-flex items-center gap-2', disabled && 'cursor-not-allowed opacity-50')}>
+				<input
+					type="checkbox"
+					checked={checked ?? false}
+					disabled={disabled}
+					aria-invalid={!!error}
+					aria-describedby={error ? errorId : undefined}
+					onChange={(e) => onChange?.(e.target.checked)}
+					className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+				/>
+				{label && <span className="text-sm text-gray-700">{label}</span>}
+			</label>
+			{error && <span id={errorId} role="alert" className="text-sm text-red-600">{error}</span>}
+		</div>
+	);
+}

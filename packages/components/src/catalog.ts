@@ -49,6 +49,16 @@ export const defaultCatalog = defineCatalog([
 		acceptsChildren: true,
 	},
 	{
+		type: 'Dialog',
+		label: 'Dialog',
+		description: 'Modal dialog overlay with title',
+		category: 'layout',
+		propsSchema: z.object({
+			title: z.string(),
+		}),
+		acceptsChildren: true,
+	},
+	{
 		type: 'Header',
 		label: 'Header',
 		description: 'Page or section header',
@@ -300,6 +310,7 @@ export const defaultCatalog = defineCatalog([
 		propsSchema: z.object({
 			label: z.string().optional(),
 			placeholder: z.string().optional(),
+			error: z.string().optional(),
 		}),
 		acceptsChildren: false,
 	},
@@ -312,6 +323,43 @@ export const defaultCatalog = defineCatalog([
 			options: z.array(z.object({ value: z.string(), label: z.string() })),
 			placeholder: z.string().optional(),
 			label: z.string().optional(),
+			error: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'Textarea',
+		label: 'Textarea',
+		description: 'Multi-line text input',
+		category: 'input',
+		propsSchema: z.object({
+			label: z.string().optional(),
+			placeholder: z.string().optional(),
+			rows: z.number().optional(),
+			error: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'Checkbox',
+		label: 'Checkbox',
+		description: 'Checkbox toggle',
+		category: 'input',
+		propsSchema: z.object({
+			label: z.string().optional(),
+			error: z.string().optional(),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'RadioGroup',
+		label: 'Radio Group',
+		description: 'Radio button group for single selection',
+		category: 'input',
+		propsSchema: z.object({
+			options: z.array(z.object({ value: z.string(), label: z.string() })),
+			label: z.string().optional(),
+			error: z.string().optional(),
 		}),
 		acceptsChildren: false,
 	},

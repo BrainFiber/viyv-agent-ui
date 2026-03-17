@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const SetStateActionSchema = z.object({
 	type: z.literal('setState'),
 	key: z.string().min(1),
-	value: z.unknown(),
+	value: z.unknown().optional(),
 });
 
 export const RefreshHookActionSchema = z.object({
@@ -18,8 +18,10 @@ export const NavigateActionSchema = z.object({
 
 export const SubmitFormActionSchema = z.object({
 	type: z.literal('submitForm'),
-	hookId: z.string().min(1),
+	url: z.string().min(1),
 	method: z.enum(['POST', 'PUT', 'PATCH']).default('POST'),
+	stateKey: z.string().optional(),
+	onComplete: z.record(z.unknown()).optional(),
 });
 
 export const ActionDefSchema = z.discriminatedUnion('type', [

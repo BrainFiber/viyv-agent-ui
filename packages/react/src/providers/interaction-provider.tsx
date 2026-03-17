@@ -1,6 +1,6 @@
 import type { ActionDef, PageSpec } from '@viyv/agent-ui-schema';
 import { interpolateUrl } from '@viyv/agent-ui-engine';
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
 export interface InteractionContextValue {
@@ -27,11 +27,43 @@ export function InteractionProvider({ spec, children }: InteractionProviderProps
 		setPageState((prev) => ({ ...prev, [key]: value }));
 	}, []);
 
+	const stateRef = useRef(pageState);
+	stateRef.current = pageState;
+
 	const actions = useMemo(() => {
 		const result: Record<string, (...args: unknown[]) => void> = {};
 
 		for (const [id, actionDef] of Object.entries(spec.actions)) {
-			result[id] = createActionHandler(actionDef, setState);
+			if (actionDef.type === 'submitForm') {
+				result[id] = async () => {
+					try {
+						const res = await fetch(actionDef.url, {
+							method: actionDef.method ?? 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify(stateRef.current),
+						});
+						if (actionDef.stateKey) {
+							if (!res.ok) {
+								setState(actionDef.stateKey, { success: false, error: `HTTP ${res.status}` });
+								return;
+							}
+							const data = await res.json();
+							setState(actionDef.stateKey, data);
+						}
+						if (actionDef.onComplete) {
+							for (const [key, value] of Object.entries(actionDef.onComplete)) {
+								setState(key, value);
+							}
+						}
+					} catch (err) {
+						if (actionDef.stateKey) {
+							setState(actionDef.stateKey, { success: false, error: String(err) });
+						}
+					}
+				};
+			} else {
+				result[id] = createActionHandler(actionDef, setState);
+			}
 		}
 
 		return result;
@@ -55,7 +87,10 @@ function createActionHandler(
 ): (...args: unknown[]) => void {
 	switch (actionDef.type) {
 		case 'setState':
-			return () => setState(actionDef.key, actionDef.value);
+			return (...args: unknown[]) => {
+				const val = actionDef.value !== undefined ? actionDef.value : args[0];
+				setState(actionDef.key, val);
+			};
 
 		case 'refreshHook':
 			// Hook refresh is handled via React Query invalidation
@@ -73,9 +108,6 @@ function createActionHandler(
 					window.location.href = url;
 				}
 			};
-
-		case 'submitForm':
-			return () => {};
 
 		default:
 			return () => {};
