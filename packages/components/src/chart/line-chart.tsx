@@ -7,8 +7,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts';
-import { cn } from '../lib/cn.js';
-import { CHART_COLORS, ChartEmptyState, normalizeChartData, toNumber, type ChartBaseProps } from './chart-utils.js';
+import { CHART_COLORS, ChartContainer, ChartEmptyState, normalizeChartData, toNumber, type ChartBaseProps } from './chart-utils.js';
 
 export interface LineChartProps extends ChartBaseProps {
 	xKey: string;
@@ -25,8 +24,7 @@ export function LineChart({ data, xKey, yKey, title, color, className }: LineCha
 	const chartData = rows.map((row) => ({ ...row, [yKey]: toNumber(row[yKey]) }));
 
 	return (
-		<div className={cn('min-h-[300px]', className)}>
-			{title && <h4 className="mb-2 text-sm font-medium text-gray-700">{title}</h4>}
+		<ChartContainer title={title} className={className}>
 			<ResponsiveContainer width="100%" height={300}>
 				<RLineChart data={chartData}>
 					<CartesianGrid strokeDasharray="3 3" />
@@ -36,6 +34,6 @@ export function LineChart({ data, xKey, yKey, title, color, className }: LineCha
 					<Line type="monotone" dataKey={yKey} stroke={color ?? CHART_COLORS[0]} dot />
 				</RLineChart>
 			</ResponsiveContainer>
-		</div>
+		</ChartContainer>
 	);
 }

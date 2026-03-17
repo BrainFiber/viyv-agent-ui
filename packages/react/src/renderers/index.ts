@@ -1,16 +1,18 @@
 import type { ElementDef } from '@viyv/agent-ui-schema';
-import type { ReactNode } from 'react';
-import { renderRepeater } from './repeater-renderer.js';
+import type { ComponentType } from 'react';
+import { RepeaterRenderer } from './repeater-renderer.js';
 
-export type TypeHandler = (
-	element: ElementDef,
-	resolvedProps: Record<string, unknown>,
-) => ReactNode;
+export interface TypeHandlerProps {
+	element: ElementDef;
+	resolvedProps: Record<string, unknown>;
+}
 
-const TYPE_HANDLERS: Record<string, TypeHandler> = {
-	Repeater: renderRepeater,
+export type TypeHandlerComponent = ComponentType<TypeHandlerProps>;
+
+const TYPE_HANDLERS: Record<string, TypeHandlerComponent> = {
+	Repeater: RepeaterRenderer,
 };
 
-export function getTypeHandler(type: string): TypeHandler | undefined {
+export function getTypeHandler(type: string): TypeHandlerComponent | undefined {
 	return TYPE_HANDLERS[type];
 }

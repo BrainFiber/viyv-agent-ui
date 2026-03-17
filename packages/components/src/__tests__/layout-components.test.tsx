@@ -1,8 +1,59 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { Stack } from '../layout/stack.js';
 import { Tabs } from '../layout/tabs.js';
 
 afterEach(cleanup);
+
+describe('Stack', () => {
+	it('renders children', () => {
+		render(
+			<Stack>
+				<div>Child</div>
+			</Stack>,
+		);
+		expect(screen.getByText('Child')).toBeTruthy();
+	});
+
+	it('applies align="start"', () => {
+		const { container } = render(
+			<Stack align="start">
+				<div>A</div>
+			</Stack>,
+		);
+		expect(container.firstElementChild?.className).toContain('items-start');
+	});
+
+	it('applies justify="between"', () => {
+		const { container } = render(
+			<Stack justify="between">
+				<div>A</div>
+			</Stack>,
+		);
+		expect(container.firstElementChild?.className).toContain('justify-between');
+	});
+
+	it('applies wrap', () => {
+		const { container } = render(
+			<Stack wrap>
+				<div>A</div>
+			</Stack>,
+		);
+		expect(container.firstElementChild?.className).toContain('flex-wrap');
+	});
+
+	it('does not add alignment classes when props are omitted', () => {
+		const { container } = render(
+			<Stack>
+				<div>A</div>
+			</Stack>,
+		);
+		const className = container.firstElementChild?.className ?? '';
+		expect(className).not.toContain('items-');
+		expect(className).not.toContain('justify-');
+		expect(className).not.toContain('flex-wrap');
+	});
+});
 
 describe('Tabs', () => {
 	const tabs = [
@@ -62,5 +113,33 @@ describe('Tabs', () => {
 		fireEvent.click(screen.getByText('Second'));
 		expect(screen.getByText('First').getAttribute('aria-selected')).toBe('false');
 		expect(screen.getByText('Second').getAttribute('aria-selected')).toBe('true');
+	});
+
+	it('links tabpanel to active tab via aria-labelledby', () => {
+		render(
+			<Tabs tabs={tabs}>
+				<div>Content 1</div>
+				<div>Content 2</div>
+			</Tabs>,
+		);
+		const panel = screen.getByRole('tabpanel');
+		const firstTab = screen.getByText('First');
+		expect(panel.getAttribute('aria-labelledby')).toBe(firstTab.id);
+
+		fireEvent.click(screen.getByText('Second'));
+		const secondTab = screen.getByText('Second');
+		expect(panel.getAttribute('aria-labelledby')).toBe(secondTab.id);
+	});
+
+	it('tab buttons have id attributes', () => {
+		render(
+			<Tabs tabs={tabs}>
+				<div>Content 1</div>
+			</Tabs>,
+		);
+		for (const tab of tabs) {
+			const btn = screen.getByText(tab.label);
+			expect(btn.id).toContain(`tab-${tab.id}`);
+		}
 	});
 });

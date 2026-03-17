@@ -18,6 +18,8 @@
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"recharts": "^3.8.0",
+		"leaflet": "^1.9.4",
+		"react-leaflet": "^5.0.0",
 		"viyv-db-client": "link:../../../viyv-db/packages/client"
 	},
 	"devDependencies": {

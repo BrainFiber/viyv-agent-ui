@@ -5,17 +5,25 @@ export interface ImageProps {
 	alt?: string;
 	width?: number;
 	height?: number;
+	objectFit?: 'cover' | 'contain' | 'fill' | 'none';
 	className?: string;
 }
 
-export function Image({ src, alt = '', width, height, className }: ImageProps) {
+const objectFitMap: Record<string, string> = {
+	cover: 'object-cover',
+	contain: 'object-contain',
+	fill: 'object-fill',
+	none: 'object-none',
+};
+
+export function Image({ src, alt = '', width, height, objectFit, className }: ImageProps) {
 	return (
 		<img
 			src={src}
 			alt={alt}
 			width={width}
 			height={height}
-			className={cn('max-w-full rounded', className)}
+			className={cn('max-w-full rounded', objectFit && objectFitMap[objectFit], className)}
 		/>
 	);
 }

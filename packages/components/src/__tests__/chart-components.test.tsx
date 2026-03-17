@@ -27,6 +27,20 @@ const samplePie = [
 	{ category: 'Y', count: 60 },
 ];
 
+// ---------- aria-label on chart wrapper ----------
+
+describe('Chart aria-label', () => {
+	it('sets aria-label to title when provided', () => {
+		render(<BarChart data={sampleXY} xKey="name" yKey="value" title="Sales" />);
+		expect(screen.getByLabelText('Sales')).toBeTruthy();
+	});
+
+	it('falls back to "Chart" when title is omitted', () => {
+		render(<BarChart data={sampleXY} xKey="name" yKey="value" />);
+		expect(screen.getByLabelText('Chart')).toBeTruthy();
+	});
+});
+
 // ---------- BarChart ----------
 
 describe('BarChart', () => {

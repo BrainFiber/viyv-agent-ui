@@ -349,6 +349,86 @@ describe('DataTable', () => {
 		});
 	});
 
+	describe('pagination', () => {
+		const paginationData = Array.from({ length: 5 }, (_, i) => ({
+			name: `Item ${i + 1}`,
+			amount: (i + 1) * 100,
+		}));
+
+		it('shows all rows when pageSize is not set (backward compat)', () => {
+			const { container } = render(<DataTable data={paginationData} columns={columns} />);
+			const rows = container.querySelectorAll('tbody tr');
+			expect(rows.length).toBe(5);
+			// No pagination UI
+			expect(screen.queryByText('前へ')).toBeNull();
+		});
+
+		it('shows only pageSize rows when set', () => {
+			const { container } = render(
+				<DataTable data={paginationData} columns={columns} pageSize={2} />,
+			);
+			const rows = container.querySelectorAll('tbody tr');
+			expect(rows.length).toBe(2);
+			expect(screen.getByText('Item 1')).toBeTruthy();
+			expect(screen.getByText('Item 2')).toBeTruthy();
+		});
+
+		it('shows pagination UI with correct count', () => {
+			render(<DataTable data={paginationData} columns={columns} pageSize={2} />);
+			expect(screen.getByText(/5件中 1–2件/)).toBeTruthy();
+			expect(screen.getByText('1 / 3')).toBeTruthy();
+		});
+
+		it('navigates to next page', () => {
+			const { container } = render(
+				<DataTable data={paginationData} columns={columns} pageSize={2} />,
+			);
+			fireEvent.click(screen.getByText('次へ'));
+			const rows = container.querySelectorAll('tbody tr');
+			expect(rows.length).toBe(2);
+			expect(screen.getByText('Item 3')).toBeTruthy();
+			expect(screen.getByText('Item 4')).toBeTruthy();
+		});
+
+		it('shows last page with remaining items', () => {
+			render(<DataTable data={paginationData} columns={columns} pageSize={2} />);
+			fireEvent.click(screen.getByText('次へ'));
+			fireEvent.click(screen.getByText('次へ'));
+			expect(screen.getByText('Item 5')).toBeTruthy();
+			expect(screen.getByText(/5件中 5–5件/)).toBeTruthy();
+		});
+
+		it('resets to page 0 when filter changes', () => {
+			const filterCols = [
+				{ key: 'name', label: 'Name', filter: { type: 'text' as const } },
+				{ key: 'amount', label: 'Amount', format: 'currency' },
+			];
+			const { container } = render(
+				<DataTable data={paginationData} columns={filterCols} pageSize={2} />,
+			);
+			// Go to page 2
+			fireEvent.click(screen.getByText('次へ'));
+			expect(screen.getByText('2 / 3')).toBeTruthy();
+			// Apply filter — should reset to page 1
+			const textInput = container.querySelector('input[type="text"]') as HTMLInputElement;
+			fireEvent.change(textInput, { target: { value: 'Item' } });
+			expect(screen.getByText(/1 \//)).toBeTruthy();
+		});
+
+		it('resets to page 0 when sort changes', () => {
+			const sortCols = [
+				{ key: 'name', label: 'Name', sortable: true },
+				{ key: 'amount', label: 'Amount' },
+			];
+			render(<DataTable data={paginationData} columns={sortCols} pageSize={2} />);
+			fireEvent.click(screen.getByText('次へ'));
+			expect(screen.getByText('2 / 3')).toBeTruthy();
+			// Sort — should reset to page 1
+			fireEvent.click(screen.getByText('Name'));
+			expect(screen.getByText(/1 \//)).toBeTruthy();
+		});
+	});
+
 	describe('formatCell', () => {
 		it('formats number', () => {
 			const cols = [{ key: 'val', label: 'Value', format: 'number' }];

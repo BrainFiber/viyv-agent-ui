@@ -22,10 +22,19 @@ const FORBIDDEN_PATTERNS = [
 	/\b\w+`/, // tagged template literals
 ];
 
+/** Replace string literal contents with spaces so forbidden-pattern checks skip them. */
+function stripStringLiterals(code: string): string {
+	return code.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, (match) => {
+		const quote = match[0];
+		return quote + ' '.repeat(match.length - 2) + quote;
+	});
+}
+
 export function evaluateSafeExpression(code: string, ctx: EvalContext): unknown {
-	// Safety check
+	// Safety check — strip string literals so patterns like = inside URLs aren't rejected
+	const codeForCheck = stripStringLiterals(code);
 	for (const pattern of FORBIDDEN_PATTERNS) {
-		if (pattern.test(code)) {
+		if (pattern.test(codeForCheck)) {
 			throw new Error(`Unsafe expression: "${code}" matches forbidden pattern ${pattern.source}`);
 		}
 	}

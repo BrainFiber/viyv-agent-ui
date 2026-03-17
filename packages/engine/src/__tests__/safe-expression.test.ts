@@ -68,4 +68,22 @@ describe('evaluateSafeExpression', () => {
 	it('allows negative numbers in subtraction', () => {
 		expect(evaluateSafeExpression('hook.stats.total - 50', ctx)).toBe(50);
 	});
+
+	it('allows = inside single-quoted string literals', () => {
+		expect(evaluateSafeExpression("'https://x.com?id=123'", ctx)).toBe('https://x.com?id=123');
+	});
+
+	it('allows = inside double-quoted string literals', () => {
+		expect(evaluateSafeExpression('"key=value"', ctx)).toBe('key=value');
+	});
+
+	it('allows = in string within ternary', () => {
+		expect(evaluateSafeExpression("hook.stats.total > 50 ? 'a=1' : 'b=2'", ctx)).toBe('a=1');
+	});
+
+	it('still rejects bare assignment even with string literals present', () => {
+		expect(() => evaluateSafeExpression("hook.stats.total = 'x=y'", ctx)).toThrow(
+			'Unsafe expression',
+		);
+	});
 });

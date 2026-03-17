@@ -78,6 +78,7 @@ export const reportsDashboardSpec: PageSpec = {
 					{ key: 'entry_count', label: 'エントリ数', sortable: true },
 					{ key: 'error_count', label: 'エラー数', sortable: true },
 				],
+				pageSize: 10,
 			},
 		},
 	},

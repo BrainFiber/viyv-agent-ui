@@ -7,8 +7,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts';
-import { cn } from '../lib/cn.js';
-import { CHART_COLORS, ChartEmptyState, normalizeChartData, toNumber, type ChartBaseProps } from './chart-utils.js';
+import { CHART_COLORS, ChartContainer, ChartEmptyState, normalizeChartData, toNumber, type ChartBaseProps } from './chart-utils.js';
 
 export interface AreaChartProps extends ChartBaseProps {
 	xKey: string;
@@ -26,8 +25,7 @@ export function AreaChart({ data, xKey, yKey, title, color, className }: AreaCha
 	const fill = color ?? CHART_COLORS[0];
 
 	return (
-		<div className={cn('min-h-[300px]', className)}>
-			{title && <h4 className="mb-2 text-sm font-medium text-gray-700">{title}</h4>}
+		<ChartContainer title={title} className={className}>
 			<ResponsiveContainer width="100%" height={300}>
 				<RAreaChart data={chartData}>
 					<CartesianGrid strokeDasharray="3 3" />
@@ -37,6 +35,6 @@ export function AreaChart({ data, xKey, yKey, title, color, className }: AreaCha
 					<Area type="monotone" dataKey={yKey} stroke={fill} fill={fill} fillOpacity={0.3} />
 				</RAreaChart>
 			</ResponsiveContainer>
-		</div>
+		</ChartContainer>
 	);
 }

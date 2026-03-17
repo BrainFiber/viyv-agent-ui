@@ -1,32 +1,53 @@
-import type { ElementDef } from '@viyv/agent-ui-schema';
-import type { ReactNode } from 'react';
 import { ElementRenderer } from '../element-renderer.js';
 import { ItemProvider } from '../providers/item-provider.js';
+import type { TypeHandlerProps } from './index.js';
+import { Pagination, usePagination } from './pagination.js';
 
-export function renderRepeater(
-	element: ElementDef,
-	resolvedProps: Record<string, unknown>,
-): ReactNode {
+export function RepeaterRenderer({ element, resolvedProps }: TypeHandlerProps) {
 	const data = resolvedProps.data;
 	const keyField = resolvedProps.keyField as string | undefined;
+	const pageSize = resolvedProps.pageSize as number | undefined;
 
-	if (!Array.isArray(data) || data.length === 0) return null;
+	const items = Array.isArray(data) ? (data as unknown[]) : [];
+
+	const {
+		pagedData,
+		currentPage,
+		totalPages,
+		totalItems,
+		pageSize: effectivePageSize,
+		setCurrentPage,
+	} = usePagination({ data: items, pageSize });
+
+	if (items.length === 0) return null;
 
 	return (
 		<>
-			{data.map((item, index) => {
+			{pagedData.map((item, localIndex) => {
+				const globalIndex = pageSize ? currentPage * pageSize + localIndex : localIndex;
 				const key =
 					keyField && item && typeof item === 'object'
 						? String((item as Record<string, unknown>)[keyField])
-						: String(index);
+						: String(globalIndex);
 				return (
-					<ItemProvider key={key} item={item} index={index}>
+					<ItemProvider key={key} item={item} index={globalIndex}>
 						{element.children?.map((childId) => (
 							<ElementRenderer key={childId} elementId={childId} />
 						))}
 					</ItemProvider>
 				);
 			})}
+			{pageSize && pageSize > 0 && totalPages > 1 && (
+				<div style={{ gridColumn: '1 / -1' }}>
+					<Pagination
+						currentPage={currentPage}
+						totalPages={totalPages}
+						totalItems={totalItems}
+						pageSize={effectivePageSize}
+						onPageChange={setCurrentPage}
+					/>
+				</div>
+			)}
 		</>
 	);
 }

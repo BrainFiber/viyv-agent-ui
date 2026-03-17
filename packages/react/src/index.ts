@@ -42,4 +42,4 @@ export type { ItemContextValue } from './providers/item-provider.js';
 
 // Type handlers
 export { getTypeHandler } from './renderers/index.js';
-export type { TypeHandler } from './renderers/index.js';
+export type { TypeHandlerComponent, TypeHandlerProps } from './renderers/index.js';

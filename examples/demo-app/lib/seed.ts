@@ -14,6 +14,8 @@ import { ecOrdersSpec } from '../data/ec-orders';
 import { analyticsSpec } from '../data/analytics';
 import { userManagementSpec } from '../data/user-management';
 import { monitoringV2Spec } from '../data/monitoring-v2';
+import { searchResultsSpec } from '../data/search-results';
+import { storeLocatorSpec } from '../data/store-locator';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -33,6 +35,8 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(analyticsSpec);
 			await pageStore.save(userManagementSpec);
 			await pageStore.save(monitoringV2Spec);
+			await pageStore.save(searchResultsSpec);
+			await pageStore.save(storeLocatorSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

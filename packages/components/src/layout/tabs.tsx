@@ -1,4 +1,4 @@
-import { useState, Children } from 'react';
+import { useState, Children, useId } from 'react';
 import type { ReactNode } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -11,6 +11,7 @@ export interface TabsProps {
 export function Tabs({ tabs, children, className }: TabsProps) {
 	const [activeIndex, setActiveIndex] = useState(0);
 	const childArray = Children.toArray(children);
+	const instanceId = useId();
 
 	return (
 		<div className={cn(className)}>
@@ -18,6 +19,7 @@ export function Tabs({ tabs, children, className }: TabsProps) {
 				{tabs.map((tab, i) => (
 					<button
 						key={tab.id}
+						id={`${instanceId}-tab-${tab.id}`}
 						role="tab"
 						aria-selected={i === activeIndex}
 						className={cn(
@@ -32,7 +34,7 @@ export function Tabs({ tabs, children, className }: TabsProps) {
 					</button>
 				))}
 			</div>
-			<div className="pt-4" role="tabpanel">
+			<div className="pt-4" role="tabpanel" aria-labelledby={`${instanceId}-tab-${tabs[activeIndex].id}`}>
 				{childArray[activeIndex] ?? null}
 			</div>
 		</div>

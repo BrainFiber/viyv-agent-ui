@@ -12,6 +12,7 @@ import { Image } from './display/image.js';
 import { Link } from './display/link.js';
 import { Stat } from './display/stat.js';
 import { Text } from './display/text.js';
+import { Map } from './map/map.js';
 import { Button } from './input/button.js';
 import { Select } from './input/select.js';
 import { TextInput } from './input/text-input.js';
@@ -33,6 +34,7 @@ export const defaultRegistry = defineRegistry({
 	Alert: Alert as any,
 	Divider: Divider as any,
 	Image: Image as any,
+	Map: Map as any,
 	DataTable: DataTable as any,
 	BarChart: BarChart as any,
 	LineChart: LineChart as any,

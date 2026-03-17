@@ -1,5 +1,6 @@
 /** Shared types, colors, and utilities for chart components. */
 
+import type React from 'react';
 import { cn } from '../lib/cn.js';
 
 /** Common props inherited by all chart components. */
@@ -42,6 +43,16 @@ export function normalizeChartData(data: unknown): Record<string, unknown>[] {
 export function toNumber(val: unknown): number {
 	const n = Number(val);
 	return Number.isNaN(n) ? 0 : n;
+}
+
+/** Shared wrapper for all chart components — provides title + aria-label. */
+export function ChartContainer({ title, className, children }: { title?: string; className?: string; children: React.ReactNode }) {
+	return (
+		<div className={cn('min-h-[300px]', className)} aria-label={title ?? 'Chart'}>
+			{title && <h4 className="mb-2 text-sm font-medium text-gray-700">{title}</h4>}
+			{children}
+		</div>
+	);
 }
 
 /** Shared empty state rendered when chart has no data rows. */

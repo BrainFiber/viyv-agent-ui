@@ -136,6 +136,26 @@ describe('Image', () => {
 	});
 });
 
+describe('Image objectFit', () => {
+	it('applies objectFit="cover"', () => {
+		const { container } = render(<Image src="/test.png" objectFit="cover" />);
+		const img = container.querySelector('img');
+		expect(img?.className).toContain('object-cover');
+	});
+
+	it('applies objectFit="contain"', () => {
+		const { container } = render(<Image src="/test.png" objectFit="contain" />);
+		const img = container.querySelector('img');
+		expect(img?.className).toContain('object-contain');
+	});
+
+	it('does not add object- class when objectFit is omitted', () => {
+		const { container } = render(<Image src="/test.png" />);
+		const img = container.querySelector('img');
+		expect(img?.className).not.toContain('object-');
+	});
+});
+
 describe('Divider', () => {
 	it('renders an hr element', () => {
 		const { container } = render(<Divider />);

@@ -56,6 +56,7 @@ export function Stat({ label, value, format, trend, className }: StatProps) {
 								return trend.direction === 'up' ? 'text-green-600' : 'text-red-600';
 							})(),
 						)}
+						aria-label={`${trend.direction === 'up' ? '上昇' : '下降'} ${trend.value}`}
 					>
 						{trend.direction === 'up' ? '\u2191' : '\u2193'} {trend.value}
 					</span>

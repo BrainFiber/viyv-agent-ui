@@ -38,7 +38,7 @@ description: >
 ## コンポーネントカタログ
 
 ### レイアウト
-- **Stack**: `{ direction: 'vertical'|'horizontal', gap?: number }` children あり
+- **Stack**: `{ direction: 'vertical'|'horizontal', gap?: number, align?: 'start'|'center'|'end'|'stretch'|'baseline', justify?: 'start'|'center'|'end'|'between'|'around', wrap?: boolean }` children あり
 - **Grid**: `{ columns: number, gap?: number }` children あり
 - **Card**: `{ title?: string, description?: string }` children あり
 - **Tabs**: `{ tabs: { id: string, label: string }[] }` children は tab ごと
@@ -51,10 +51,12 @@ description: >
 - **Stat**: `{ label: string, value: "$hook.xxx" 参照, format?: 'number'|'currency'|'percent', trend?: { direction: 'up'|'down', value: string } }`
 - **Badge**: `{ text: string, variant?: 'default'|'success'|'warning'|'error' }`
 - **Markdown**: `{ content: string }`
-- **Image**: `{ src: string, alt?: string }`
+- **Image**: `{ src: string, alt?: string, width?: number, height?: number, objectFit?: 'cover'|'contain'|'fill'|'none' }`
+- **Map**: `{ center: [lat, lng], zoom?: number, markers?: "$hook.xxx", latKey?: string, lngKey?: string, labelKey?: string, popupKey?: string, height?: number }` — OpenStreetMap ベースの地図。マーカーにラベル・ポップアップ表示可能
 
 ### データ
-- **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }] }`
+- **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }], pageSize?: number }`
+  - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示、フィルタ/ソート変更時は1ページ目にリセット）
 - **List**: `{ data: "$hook.xxx" 参照, renderItem: elementId }`
 - **KeyValue**: `{ data: "$hook.xxx" 参照 }` — オブジェクトを key-value ペアで表示
 
@@ -65,11 +67,12 @@ description: >
 - **AreaChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
 
 ### 制御
-- **Repeater**: `{ data: "$hook.xxx" 参照, keyField?: string }` children あり
+- **Repeater**: `{ data: "$hook.xxx" 参照, keyField?: string, pageSize?: number }` children あり
   - データ配列の各要素に対して children テンプレートを繰り返し描画
   - 子要素内で `$item.xxx` を使ってアイテムのプロパティを参照
   - `keyField` でアイテムのユニークキーを指定（React key の最適化）
   - Fragment でラップされるため、親レイアウト（Grid 等）を壊さない
+  - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示）
 
 ### 入力
 - **TextInput**: `{ placeholder?: string, label?: string }` bind: `$bindState.xxx`
@@ -179,6 +182,19 @@ description: >
   }
 }
 ```
+
+## className によるスタイル調整
+
+全コンポーネントは `className` prop で Tailwind CSS クラスを追加できる。レイアウト微調整に有用：
+
+| クラス | 用途 |
+|---|---|
+| `flex-1` | 残りスペースを埋める（Stack の子要素で使用） |
+| `min-w-0` | flex 子要素のオーバーフロー防止（テキスト省略と組み合わせ） |
+| `shrink-0` | flex 子要素の縮小を防止（固定サイズの画像等） |
+| `w-full` | 幅100% |
+| `rounded`, `rounded-lg` | 角丸 |
+| `overflow-hidden` | はみ出しを隠す |
 
 ## 設計ガイドライン
 
@@ -372,6 +388,147 @@ description: >
       "params": {
         "connection": "viyv-db",
         "query": "SELECT id, name, price, image_url FROM products ORDER BY name"
+      }
+    }
+  },
+  "state": {},
+  "actions": {}
+}
+```
+
+## 検索結果風レイアウトの例（Stack align + Image objectFit）
+
+```json
+{
+  "id": "search-results",
+  "title": "検索結果",
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Stack",
+      "props": { "direction": "vertical", "gap": 24 },
+      "children": ["header", "resultRepeater"]
+    },
+    "header": {
+      "type": "Header",
+      "props": { "title": "検索結果", "level": 1 }
+    },
+    "resultRepeater": {
+      "type": "Repeater",
+      "props": { "data": "$hook.results", "keyField": "id" },
+      "children": ["resultRow"]
+    },
+    "resultRow": {
+      "type": "Stack",
+      "props": { "direction": "horizontal", "align": "start", "gap": 12 },
+      "children": ["resultText", "resultThumb"]
+    },
+    "resultText": {
+      "type": "Stack",
+      "props": { "direction": "vertical", "gap": 4, "className": "flex-1 min-w-0" },
+      "children": ["resultSite", "resultLink", "resultDesc"]
+    },
+    "resultSite": {
+      "type": "Text",
+      "props": { "content": "$item.site", "variant": "caption", "color": "muted" }
+    },
+    "resultLink": {
+      "type": "Link",
+      "props": { "href": "$item.url", "label": "$item.title" }
+    },
+    "resultDesc": {
+      "type": "Text",
+      "props": { "content": "$item.description", "variant": "body", "truncate": 2, "color": "muted" }
+    },
+    "resultThumb": {
+      "type": "Image",
+      "props": { "src": "$item.thumbnail", "alt": "$item.title", "width": 120, "height": 80, "objectFit": "cover", "className": "rounded shrink-0" }
+    }
+  },
+  "hooks": {
+    "results": {
+      "use": "useState",
+      "params": {
+        "initial": [
+          { "id": 1, "site": "example.com", "url": "/page/1", "title": "検索結果タイトル1", "description": "検索結果の説明文がここに入ります。", "thumbnail": "https://picsum.photos/seed/s1/120/80" },
+          { "id": 2, "site": "example.org", "url": "/page/2", "title": "検索結果タイトル2", "description": "もう一つの検索結果の説明文です。", "thumbnail": "https://picsum.photos/seed/s2/120/80" }
+        ]
+      }
+    }
+  },
+  "state": {},
+  "actions": {}
+}
+```
+
+## 店舗マップの例（Map + Repeater）
+
+```json
+{
+  "id": "store-locator",
+  "title": "店舗マップ",
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Stack",
+      "props": { "direction": "vertical", "gap": 24 },
+      "children": ["header", "mainGrid"]
+    },
+    "header": {
+      "type": "Header",
+      "props": { "title": "店舗マップ", "level": 1 }
+    },
+    "mainGrid": {
+      "type": "Grid",
+      "props": { "columns": 2, "gap": 16 },
+      "children": ["mapCard", "listCard"]
+    },
+    "mapCard": {
+      "type": "Card",
+      "props": { "title": "マップ" },
+      "children": ["storeMap"]
+    },
+    "storeMap": {
+      "type": "Map",
+      "props": {
+        "center": [35.68, 139.74],
+        "zoom": 12,
+        "markers": "$hook.stores",
+        "labelKey": "name",
+        "popupKey": "address",
+        "height": 500
+      }
+    },
+    "listCard": {
+      "type": "Card",
+      "props": { "title": "店舗一覧" },
+      "children": ["storeRepeater"]
+    },
+    "storeRepeater": {
+      "type": "Repeater",
+      "props": { "data": "$hook.stores", "keyField": "id" },
+      "children": ["storeItem"]
+    },
+    "storeItem": {
+      "type": "Card",
+      "props": {},
+      "children": ["storeName", "storeAddress"]
+    },
+    "storeName": {
+      "type": "Text",
+      "props": { "content": "$item.name", "variant": "subheading" }
+    },
+    "storeAddress": {
+      "type": "Text",
+      "props": { "content": "$item.address", "variant": "body", "color": "muted" }
+    }
+  },
+  "hooks": {
+    "stores": {
+      "use": "useSqlQuery",
+      "params": {
+        "connection": "viyv-db",
+        "query": "SELECT id, name, address, lat, lng FROM stores"
       }
     }
   },

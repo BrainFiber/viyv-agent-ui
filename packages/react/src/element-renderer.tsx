@@ -23,9 +23,9 @@ export function ElementRenderer({ elementId }: ElementRendererProps) {
 	if (!element || !visible) return null;
 
 	// Type handler (Repeater etc.)
-	const typeHandler = getTypeHandler(element.type);
-	if (typeHandler) {
-		return <>{typeHandler(element, resolvedProps)}</>;
+	const TypeHandler = getTypeHandler(element.type);
+	if (TypeHandler) {
+		return <TypeHandler element={element} resolvedProps={resolvedProps} />;
 	}
 
 	// Normal component rendering

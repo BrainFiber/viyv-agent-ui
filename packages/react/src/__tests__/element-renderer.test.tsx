@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import type { PageSpec } from '@viyv/agent-ui-schema';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ElementRenderer } from '../element-renderer.js';
@@ -180,6 +180,112 @@ describe('Repeater', () => {
 		};
 		const { container } = renderWithProviders('repeater', repeaterSpec);
 		expect(container.innerHTML).toBe('');
+	});
+
+	it('shows all items when pageSize is not set (backward compat)', () => {
+		const repeaterSpec: PageSpec = {
+			id: 'test',
+			title: 'Test',
+			root: 'repeater',
+			elements: {
+				repeater: {
+					type: 'Repeater',
+					props: { data: '$hook.items' },
+					children: ['itemText'],
+				},
+				itemText: {
+					type: 'Text',
+					props: { content: '$item.name' },
+				},
+			},
+			hooks: {
+				items: {
+					use: 'useState',
+					params: {
+						initial: Array.from({ length: 5 }, (_, i) => ({ name: `Item${i}` })),
+					},
+				},
+			},
+			state: {},
+			actions: {},
+		};
+		renderWithProviders('repeater', repeaterSpec);
+		const texts = screen.getAllByTestId('test-text');
+		expect(texts).toHaveLength(5);
+		// No pagination UI
+		expect(screen.queryByText('前へ')).toBeNull();
+	});
+
+	it('paginates when pageSize is set', () => {
+		const repeaterSpec: PageSpec = {
+			id: 'test',
+			title: 'Test',
+			root: 'repeater',
+			elements: {
+				repeater: {
+					type: 'Repeater',
+					props: { data: '$hook.items', pageSize: 2 },
+					children: ['itemText'],
+				},
+				itemText: {
+					type: 'Text',
+					props: { content: '$item.name' },
+				},
+			},
+			hooks: {
+				items: {
+					use: 'useState',
+					params: {
+						initial: Array.from({ length: 5 }, (_, i) => ({ name: `Item${i}` })),
+					},
+				},
+			},
+			state: {},
+			actions: {},
+		};
+		renderWithProviders('repeater', repeaterSpec);
+		// Only 2 items visible
+		const texts = screen.getAllByTestId('test-text');
+		expect(texts).toHaveLength(2);
+		expect(texts[0]).toHaveTextContent('Item0');
+		expect(texts[1]).toHaveTextContent('Item1');
+		// Pagination UI visible
+		expect(screen.getByText(/5件中 1–2件/)).toBeTruthy();
+	});
+
+	it('navigates to next page in repeater', () => {
+		const repeaterSpec: PageSpec = {
+			id: 'test',
+			title: 'Test',
+			root: 'repeater',
+			elements: {
+				repeater: {
+					type: 'Repeater',
+					props: { data: '$hook.items', pageSize: 2 },
+					children: ['itemText'],
+				},
+				itemText: {
+					type: 'Text',
+					props: { content: '$item.name' },
+				},
+			},
+			hooks: {
+				items: {
+					use: 'useState',
+					params: {
+						initial: Array.from({ length: 5 }, (_, i) => ({ name: `Item${i}` })),
+					},
+				},
+			},
+			state: {},
+			actions: {},
+		};
+		renderWithProviders('repeater', repeaterSpec);
+		fireEvent.click(screen.getByText('次へ'));
+		const texts = screen.getAllByTestId('test-text');
+		expect(texts).toHaveLength(2);
+		expect(texts[0]).toHaveTextContent('Item2');
+		expect(texts[1]).toHaveTextContent('Item3');
 	});
 
 	it('does not add wrapper element (Grid > Repeater > Card)', () => {

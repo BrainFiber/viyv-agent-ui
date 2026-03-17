@@ -32,6 +32,11 @@ export type { DividerProps } from './display/divider.js';
 export { Image } from './display/image.js';
 export type { ImageProps } from './display/image.js';
 
+// Map
+export { Map } from './map/map.js';
+export type { MapProps } from './map/map.js';
+export type { MapMarker } from './map/map-utils.js';
+
 // Data
 export { DataTable } from './data/data-table.js';
 export type { DataTableProps, DataTableColumn, DataTableFilterConfig, RowHighlightRule } from './data/data-table.js';
@@ -56,5 +61,11 @@ export type { TextInputProps } from './input/text-input.js';
 export { Select } from './input/select.js';
 export type { SelectProps, SelectOption } from './input/select.js';
 
+// Navigation
+export { Pagination } from './navigation/pagination.js';
+export type { PaginationProps } from './navigation/pagination.js';
+
 // Utility
 export { cn } from './lib/cn.js';
+export { usePagination } from './lib/use-pagination.js';
+export type { UsePaginationOptions, UsePaginationResult } from './lib/use-pagination.js';

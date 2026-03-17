@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge } from '../display/badge.js';
 import { cn } from '../lib/cn.js';
+import { usePagination } from '../lib/use-pagination.js';
+import { Pagination } from '../navigation/pagination.js';
 import { applyFilters, deriveSelectOptions, evaluateRowHighlight, type DataTableFilterConfig, type RowHighlightRule } from './data-table-filter.js';
 
 export type { DataTableFilterConfig, RowHighlightRule } from './data-table-filter.js';
@@ -28,6 +30,7 @@ export interface DataTableProps {
 	noMatchMessage?: string;
 	className?: string;
 	rowHighlight?: RowHighlightRule[];
+	pageSize?: number;
 }
 
 function interpolateTemplate(template: string, row: Record<string, unknown>): string {
@@ -110,6 +113,7 @@ export function DataTable({
 	noMatchMessage = 'No matching data',
 	className,
 	rowHighlight,
+	pageSize,
 }: DataTableProps) {
 	const [sort, setSort] = useState<{ key: string | null; order: 'asc' | 'desc' }>({
 		key: null,
@@ -156,6 +160,21 @@ export function DataTable({
 
 		return filtered;
 	}, [data, columns, filters, sortKey, sortOrder]);
+
+	const {
+		pagedData,
+		currentPage,
+		totalPages,
+		totalItems,
+		pageSize: effectivePageSize,
+		setCurrentPage,
+		resetPage,
+	} = usePagination({ data: rows, pageSize });
+
+	// Reset to first page when filters or sort change
+	useEffect(() => {
+		resetPage();
+	}, [filters, sort, resetPage]);
 
 	const handleSort = useCallback((key: string) => {
 		setSort((prev) =>
@@ -242,7 +261,7 @@ export function DataTable({
 					)}
 				</thead>
 				<tbody>
-					{rows.map((row, index) => {
+					{pagedData.map((row, index) => {
 						const rowKey = keyField
 							? String(row[keyField] ?? index)
 							: columns.map((c) => String(row[c.key] ?? '')).join('|') || String(index);
@@ -296,6 +315,15 @@ export function DataTable({
 					)}
 				</tbody>
 			</table>
+			{pageSize && (
+				<Pagination
+					currentPage={currentPage}
+					totalPages={totalPages}
+					totalItems={totalItems}
+					pageSize={effectivePageSize}
+					onPageChange={setCurrentPage}
+				/>
+			)}
 		</section>
 	);
 }
