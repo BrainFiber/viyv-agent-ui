@@ -17,6 +17,7 @@ import { monitoringV2Spec } from '../data/monitoring-v2';
 import { searchResultsSpec } from '../data/search-results';
 import { storeLocatorSpec } from '../data/store-locator';
 import { contactFormSpec } from '../data/contact-form';
+import { timelineFeedSpec } from '../data/timeline-feed';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -39,6 +40,7 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(searchResultsSpec);
 			await pageStore.save(storeLocatorSpec);
 			await pageStore.save(contactFormSpec);
+			await pageStore.save(timelineFeedSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

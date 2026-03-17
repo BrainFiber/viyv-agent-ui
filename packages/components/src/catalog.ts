@@ -280,6 +280,34 @@ export const defaultCatalog = defineCatalog([
 		acceptsChildren: false,
 	},
 	{
+		type: 'Avatar',
+		label: 'Avatar',
+		description: 'Circular avatar with image or fallback initials',
+		category: 'display',
+		propsSchema: z.object({
+			src: z.string().optional(),
+			name: z.string(),
+			size: z.enum(['sm', 'md', 'lg']).default('md'),
+		}),
+		acceptsChildren: false,
+	},
+	{
+		type: 'Feed',
+		label: 'Feed',
+		description:
+			'Data-driven feed with article semantics. Like Repeater but with role="feed", article wrappers, auto dividers, and empty state. Use $item.xxx in children.',
+		category: 'data',
+		propsSchema: z.object({
+			data: z.unknown(),
+			keyField: z.string().optional(),
+			labelKey: z.string().optional(),
+			pageSize: z.number().int().positive().optional(),
+			emptyMessage: z.string().optional(),
+			divider: z.boolean().optional(),
+		}),
+		acceptsChildren: true,
+	},
+	{
 		type: 'Repeater',
 		label: 'Repeater',
 		description: 'Iterates over data array, renders child template for each item. Use $item.xxx in children.',

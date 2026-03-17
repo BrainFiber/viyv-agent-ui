@@ -31,6 +31,8 @@ export { Link } from './display/link.js';
 export type { LinkProps } from './display/link.js';
 export { Alert } from './display/alert.js';
 export type { AlertProps } from './display/alert.js';
+export { Avatar } from './display/avatar.js';
+export type { AvatarProps } from './display/avatar.js';
 export { Divider } from './display/divider.js';
 export type { DividerProps } from './display/divider.js';
 export { Image } from './display/image.js';

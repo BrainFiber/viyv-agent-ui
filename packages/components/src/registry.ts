@@ -5,6 +5,7 @@ import { LineChart } from './chart/line-chart.js';
 import { PieChart } from './chart/pie-chart.js';
 import { DataTable } from './data/data-table.js';
 import { Alert } from './display/alert.js';
+import { Avatar } from './display/avatar.js';
 import { Badge } from './display/badge.js';
 import { Divider } from './display/divider.js';
 import { Header } from './display/header.js';
@@ -36,6 +37,7 @@ export const defaultRegistry = defineRegistry({
 	Badge: Badge as any,
 	Link: Link as any,
 	Alert: Alert as any,
+	Avatar: Avatar as any,
 	Divider: Divider as any,
 	Image: Image as any,
 	Map: Map as any,

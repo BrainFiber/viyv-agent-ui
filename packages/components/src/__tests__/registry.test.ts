@@ -29,13 +29,14 @@ describe('defaultRegistry', () => {
 			'Textarea',
 			'Checkbox',
 			'RadioGroup',
+			'Avatar',
 		];
 		for (const type of types) {
 			expect(defaultRegistry.has(type), `Missing component: ${type}`).toBe(true);
 		}
 	});
 
-	it('has exactly 25 components', () => {
-		expect(defaultRegistry.size).toBe(25);
+	it('has exactly 26 components', () => {
+		expect(defaultRegistry.size).toBe(26);
 	});
 });

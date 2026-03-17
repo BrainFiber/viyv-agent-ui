@@ -52,11 +52,18 @@ description: >
 - **Stat**: `{ label: string, value: "$hook.xxx" 参照, format?: 'number'|'currency'|'percent', trend?: { direction: 'up'|'down', value: string } }`
 - **Badge**: `{ text: string, variant?: 'default'|'success'|'warning'|'error' }`
 - **Image**: `{ src: string, alt?: string, width?: number, height?: number, objectFit?: 'cover'|'contain'|'fill'|'none' }`
+- **Avatar**: `{ src?: string, name: string, size?: 'sm'|'md'|'lg' }` — 円形アバター。画像エラー時はイニシャルフォールバック
 - **Map**: `{ center: [lat, lng], zoom?: number, markers?: "$hook.xxx", latKey?: string, lngKey?: string, labelKey?: string, popupKey?: string, height?: number }` — OpenStreetMap ベースの地図。マーカーにラベル・ポップアップ表示可能
 
 ### データ
 - **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }], pageSize?: number }`
   - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示、フィルタ/ソート変更時は1ページ目にリセット）
+- **Feed**: `{ data: "$hook.xxx" 参照, keyField?: string, labelKey?: string, pageSize?: number, emptyMessage?: string, divider?: boolean }` children あり
+  - Repeater と同様にデータ配列をイテレーションするが、`role="feed"` + `<article>` ラッパー付き
+  - 子要素内で `$item.xxx` を使ってアイテムのプロパティを参照（Repeater と同様）
+  - `labelKey` で `<article>` の `aria-label` に使うフィールドを指定（AI オペラビリティ用）
+  - アイテム間に自動で区切り線（`divider: false` で非表示）
+  - データ空時に `emptyMessage` を表示（デフォルト: "データがありません"）
 
 ### チャート
 - **BarChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
