@@ -35,6 +35,8 @@ export { Avatar } from './display/avatar.js';
 export type { AvatarProps } from './display/avatar.js';
 export { Divider } from './display/divider.js';
 export type { DividerProps } from './display/divider.js';
+export { ProgressBar } from './display/progress-bar.js';
+export type { ProgressBarProps } from './display/progress-bar.js';
 export { Image } from './display/image.js';
 export type { ImageProps } from './display/image.js';
 
@@ -46,6 +48,8 @@ export type { MapMarker } from './map/map-utils.js';
 // Data
 export { DataTable } from './data/data-table.js';
 export type { DataTableProps, DataTableColumn, DataTableFilterConfig, RowHighlightRule } from './data/data-table.js';
+export { TreeList } from './data/tree-list.js';
+export type { TreeListProps } from './data/tree-list.js';
 
 // Chart
 export { BarChart } from './chart/bar-chart.js';
@@ -56,6 +60,8 @@ export { AreaChart } from './chart/area-chart.js';
 export type { AreaChartProps } from './chart/area-chart.js';
 export { PieChart } from './chart/pie-chart.js';
 export type { PieChartProps } from './chart/pie-chart.js';
+export { GanttChart } from './chart/gantt-chart.js';
+export type { GanttChartProps } from './chart/gantt-chart.js';
 export type { ChartBaseProps } from './chart/chart-utils.js';
 export { CHART_COLORS } from './chart/chart-utils.js';
 

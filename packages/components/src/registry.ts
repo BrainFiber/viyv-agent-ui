@@ -1,9 +1,11 @@
 import { defineRegistry } from '@viyv/agent-ui-react';
 import { AreaChart } from './chart/area-chart.js';
 import { BarChart } from './chart/bar-chart.js';
+import { GanttChart } from './chart/gantt-chart.js';
 import { LineChart } from './chart/line-chart.js';
 import { PieChart } from './chart/pie-chart.js';
 import { DataTable } from './data/data-table.js';
+import { TreeList } from './data/tree-list.js';
 import { Alert } from './display/alert.js';
 import { Avatar } from './display/avatar.js';
 import { Badge } from './display/badge.js';
@@ -11,6 +13,7 @@ import { Divider } from './display/divider.js';
 import { Header } from './display/header.js';
 import { Image } from './display/image.js';
 import { Link } from './display/link.js';
+import { ProgressBar } from './display/progress-bar.js';
 import { Stat } from './display/stat.js';
 import { Text } from './display/text.js';
 import { Map } from './map/map.js';
@@ -42,10 +45,13 @@ export const defaultRegistry = defineRegistry({
 	Image: Image as any,
 	Map: Map as any,
 	DataTable: DataTable as any,
+	TreeList: TreeList as any,
 	BarChart: BarChart as any,
 	LineChart: LineChart as any,
 	AreaChart: AreaChart as any,
 	PieChart: PieChart as any,
+	GanttChart: GanttChart as any,
+	ProgressBar: ProgressBar as any,
 	Button: Button as any,
 	TextInput: TextInput as any,
 	Select: Select as any,

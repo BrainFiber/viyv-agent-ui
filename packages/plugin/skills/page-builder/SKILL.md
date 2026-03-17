@@ -53,11 +53,19 @@ description: >
 - **Badge**: `{ text: string, variant?: 'default'|'success'|'warning'|'error' }`
 - **Image**: `{ src: string, alt?: string, width?: number, height?: number, objectFit?: 'cover'|'contain'|'fill'|'none' }`
 - **Avatar**: `{ src?: string, name: string, size?: 'sm'|'md'|'lg' }` — 円形アバター。画像エラー時はイニシャルフォールバック
+- **ProgressBar**: `{ value: number, label?: string, color?: 'blue'|'green'|'yellow'|'red'|'gray', size?: 'sm'|'md'|'lg', showValue?: boolean }` — プログレスバー。`value` は 0-100。`showValue` で横にパーセント表示
 - **Map**: `{ center: [lat, lng], zoom?: number, markers?: "$hook.xxx", latKey?: string, lngKey?: string, labelKey?: string, popupKey?: string, height?: number }` — OpenStreetMap ベースの地図。マーカーにラベル・ポップアップ表示可能
 
 ### データ
 - **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }], pageSize?: number }`
   - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示、フィルタ/ソート変更時は1ページ目にリセット）
+- **TreeList**: `{ data: "$hook.xxx" 参照, labelKey?: string, childrenKey?: string, idKey?: string, defaultExpanded?: boolean }` — ツリー表示。ネストされた配列データを再帰的に展開/折りたたみ表示
+- **KanbanBoard**: `{ data: "$hook.xxx" 参照, groupKey: string, columns?: [{ value: string, label: string }], keyField?: string, emptyMessage?: string }` children あり
+  - データを `groupKey` でグループ化してカラム表示。子要素内で `$item.xxx` を使ってアイテムのプロパティを参照
+  - `columns` で表示順序を制御（省略時はデータから自動検出）
+- **Timeline**: `{ data: "$hook.xxx" 参照, keyField?: string, labelKey?: string, timestampKey?: string, emptyMessage?: string }` children あり
+  - 縦線 + ドットでイベントを時系列表示。子要素内で `$item.xxx` を使ってアイテムのプロパティを参照
+  - `timestampKey` でタイムスタンプを表示
 - **Feed**: `{ data: "$hook.xxx" 参照, keyField?: string, labelKey?: string, pageSize?: number, emptyMessage?: string, divider?: boolean }` children あり
   - Repeater と同様にデータ配列をイテレーションするが、`role="feed"` + `<article>` ラッパー付き
   - 子要素内で `$item.xxx` を使ってアイテムのプロパティを参照（Repeater と同様）
@@ -70,6 +78,7 @@ description: >
 - **LineChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
 - **PieChart**: `{ data: "$hook.xxx" 参照, nameKey: string, valueKey: string, title?: string }`（スライス色は自動割当）
 - **AreaChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`
+- **GanttChart**: `{ data: "$hook.xxx" 参照, taskKey: string, startKey: string, endKey: string, progressKey?: string, groupKey?: string, title?: string }` — ガントチャート。日付ベースのタスクバー表示。`progressKey` でバー内に進捗表示、`groupKey` でグループ別色分け。今日マーカー付き
 
 ### 制御
 - **Repeater**: `{ data: "$hook.xxx" 参照, keyField?: string, pageSize?: number }` children あり

@@ -18,6 +18,11 @@ import { searchResultsSpec } from '../data/search-results';
 import { storeLocatorSpec } from '../data/store-locator';
 import { contactFormSpec } from '../data/contact-form';
 import { timelineFeedSpec } from '../data/timeline-feed';
+import { projectStructureSpec } from '../data/project-structure';
+import { ganttScheduleSpec } from '../data/gantt-schedule';
+import { kanbanBoardSpec } from '../data/kanban-board';
+import { backlogSpec } from '../data/backlog';
+import { ticketDetailPmSpec } from '../data/ticket-detail-pm';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -41,6 +46,11 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(storeLocatorSpec);
 			await pageStore.save(contactFormSpec);
 			await pageStore.save(timelineFeedSpec);
+			await pageStore.save(projectStructureSpec);
+			await pageStore.save(ganttScheduleSpec);
+			await pageStore.save(kanbanBoardSpec);
+			await pageStore.save(backlogSpec);
+			await pageStore.save(ticketDetailPmSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

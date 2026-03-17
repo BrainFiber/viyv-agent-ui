@@ -19,10 +19,13 @@ describe('defaultRegistry', () => {
 			'Image',
 			'Map',
 			'DataTable',
+			'TreeList',
 			'BarChart',
 			'LineChart',
 			'AreaChart',
 			'PieChart',
+			'GanttChart',
+			'ProgressBar',
 			'Button',
 			'TextInput',
 			'Select',
@@ -36,7 +39,7 @@ describe('defaultRegistry', () => {
 		}
 	});
 
-	it('has exactly 26 components', () => {
-		expect(defaultRegistry.size).toBe(26);
+	it('has exactly 29 components', () => {
+		expect(defaultRegistry.size).toBe(29);
 	});
 });
