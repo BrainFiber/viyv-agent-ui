@@ -29,7 +29,8 @@ export function Dialog({ title, children, className }: DialogProps) {
 				aria-modal="true"
 				aria-labelledby={titleId}
 				tabIndex={-1}
-				className={cn('relative z-10 w-full max-w-md rounded-lg bg-white p-6 shadow-xl focus:outline-none', className)}
+				style={{ maxWidth: '32rem' }}
+				className={cn('relative z-10 w-full rounded-lg bg-white p-6 shadow-xl focus:outline-none', className)}
 			>
 				<h2 id={titleId} className="text-lg font-semibold text-gray-900">{title}</h2>
 				<div className="mt-4">{children}</div>

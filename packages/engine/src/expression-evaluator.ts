@@ -73,6 +73,10 @@ export function evaluateVisibility(
 	ctx: EvalContext,
 ): boolean {
 	if (!condition) return true;
-	const result = evaluateSafeExpression(condition.expr, ctx);
-	return Boolean(result);
+	const { expr } = condition;
+	// Support $-prefixed references (e.g. $state.showDialog, $hook.count)
+	if (isExpression(expr)) {
+		return Boolean(resolveValue(expr, ctx));
+	}
+	return Boolean(evaluateSafeExpression(expr, ctx));
 }

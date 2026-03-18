@@ -49,6 +49,7 @@ export function createHandler(options: AgentUiHandlerOptions) {
 					return json(400, { error: err.message });
 				}
 			}
+			console.error('[agent-ui] Unhandled handler error:', err);
 			return json(500, { error: 'Internal server error' });
 		}
 	};

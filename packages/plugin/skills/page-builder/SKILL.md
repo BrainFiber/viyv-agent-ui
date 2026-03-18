@@ -89,7 +89,7 @@ description: >
   - `pageSize` 指定時はクライアントサイドページネーション（前へ/次へ UI 自動表示）
 
 ### 入力
-- **TextInput**: `{ placeholder?: string, label?: string, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }` — `error` 非空時に赤枠 + エラーメッセージ表示
+- **TextInput**: `{ placeholder?: string, label?: string, error?: string, type?: 'text'|'number'|'date'|'email'|'tel'|'url', value: "$bindState.xxx", onChange: "$action.yyy" }` — `error` 非空時に赤枠 + エラーメッセージ表示。`type="number"` は onChange で Number 型を返す
 - **Textarea**: `{ placeholder?: string, label?: string, rows?: number, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }`
 - **Select**: `{ options: [{ value: string, label: string }], placeholder?: string, label?: string, error?: string, value: "$bindState.xxx", onChange: "$action.yyy" }`
 - **Checkbox**: `{ label?: string, error?: string, checked: "$bindState.xxx", onChange: "$action.yyy" }`（checked は boolean）
@@ -168,7 +168,15 @@ description: >
 ```
 
 - `setState` の `value` を省略すると、onChange の引数がそのまま使われる（フォーム双方向バインディングに利用）
+- `setState` は `onComplete: { key: value }` でメインの setState 後に追加の state 変更を実行
+- `setState` はドット記法をサポート: `key: 'editingTask.title'` でネストオブジェクトの部分更新（1段階のみ）
 - `submitForm` はページ state 全体を JSON POST する。`stateKey` でレスポンスを state に格納。`onComplete: { key: value }` で送信成功後に追加の state 変更を実行（例: ダイアログを閉じる）
+
+### CRUD アクション（useState hook の配列を操作）
+
+- `addItem`: `{ hookId, stateKey, idField?, idPrefix?, onComplete? }` — state[stateKey] のオブジェクトを hook 配列に追加。`idPrefix` 指定時は自動 ID 生成
+- `removeItem`: `{ hookId, key, stateKey, onComplete? }` — state[stateKey] から key フィールドの値を取得し、一致するアイテムを削除
+- `updateItem`: `{ hookId, key, stateKey, onComplete? }` — state[stateKey] のオブジェクトで key が一致するアイテムを置換
 
 ## PageSpec 構造
 

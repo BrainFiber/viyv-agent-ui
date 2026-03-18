@@ -68,6 +68,9 @@ export function validatePageSpec(input: unknown): ValidationResult {
 	// 6. SQL safety check
 	validateSqlSafety(spec.hooks, errors, warnings);
 
+	// 7. CRUD action hookId validation
+	validateActions(spec, errors);
+
 	return {
 		valid: errors.length === 0,
 		errors,
@@ -230,6 +233,27 @@ function validateHookCycles(hooks: Record<string, HookDef>, errors: ValidationEr
 
 	for (const hookId of Object.keys(hooks)) {
 		dfs(hookId);
+	}
+}
+
+function validateActions(spec: PageSpec, errors: ValidationError[]): void {
+	for (const [actionId, action] of Object.entries(spec.actions)) {
+		if ('hookId' in action && action.type !== 'refreshHook') {
+			const hook = spec.hooks[action.hookId];
+			if (!hook) {
+				errors.push({
+					path: `actions.${actionId}.hookId`,
+					message: `Hook "${action.hookId}" not defined`,
+					severity: 'error',
+				});
+			} else if (hook.use !== 'useState') {
+				errors.push({
+					path: `actions.${actionId}.hookId`,
+					message: `Hook "${action.hookId}" is not useState (cannot mutate ${hook.use} hooks)`,
+					severity: 'error',
+				});
+			}
+		}
 	}
 }
 

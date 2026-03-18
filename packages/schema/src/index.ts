@@ -31,6 +31,9 @@ export {
 	RefreshHookActionSchema,
 	NavigateActionSchema,
 	SubmitFormActionSchema,
+	AddItemActionSchema,
+	RemoveItemActionSchema,
+	UpdateItemActionSchema,
 } from './action-def.js';
 export type { ActionDef } from './action-def.js';
 

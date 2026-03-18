@@ -7,6 +7,7 @@ export interface TextInputProps {
 	value?: string;
 	disabled?: boolean;
 	error?: string;
+	type?: 'text' | 'number' | 'date' | 'email' | 'tel' | 'url';
 	onChange?: (value: string) => void;
 	className?: string;
 }
@@ -17,6 +18,7 @@ export function TextInput({
 	value,
 	disabled,
 	error,
+	type,
 	onChange,
 	className,
 }: TextInputProps) {
@@ -25,13 +27,16 @@ export function TextInput({
 		<label className={cn('block space-y-1', className)}>
 			{label && <span className="text-sm font-medium text-gray-700">{label}</span>}
 			<input
-				type="text"
+				type={type ?? 'text'}
 				value={value ?? ''}
 				placeholder={placeholder}
 				disabled={disabled}
 				aria-invalid={!!error}
 				aria-describedby={error ? errorId : undefined}
-				onChange={(e) => onChange?.(e.target.value)}
+				onChange={(e) => {
+					const v = e.target.value;
+					onChange?.(type === 'number' ? (v === '' ? '' : Number(v)) as any : v);
+				}}
 				className={cn(
 					'block w-full rounded-md border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500',
 					disabled && 'cursor-not-allowed bg-gray-100 opacity-50',

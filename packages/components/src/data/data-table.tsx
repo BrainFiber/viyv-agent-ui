@@ -190,7 +190,7 @@ export function DataTable({
 
 	return (
 		<section className={cn('overflow-auto rounded-lg border', className)} aria-label="Data table">
-			<table className="w-full text-sm">
+			<table className="w-full text-sm" style={{ tableLayout: 'auto', wordBreak: 'break-word' }}>
 				<thead className="border-b bg-gray-50">
 					<tr>
 						{columns.map((col) => (

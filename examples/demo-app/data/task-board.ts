@@ -79,7 +79,7 @@ export const taskBoardSpec: PageSpec = {
 	id: 'task-board',
 	title: 'タスク管理ボード',
 	description:
-		'DataTable の rowHref による詳細遷移、Badge でステータス/優先度表示、Alert/Link/Divider を活用したタスク管理画面。',
+		'タスクの追加・編集・削除が可能なCRUD対応タスク管理画面。',
 	hooks: {
 		tasks: {
 			use: 'useState',
@@ -121,7 +121,18 @@ export const taskBoardSpec: PageSpec = {
 		root: {
 			type: 'Stack',
 			props: { gap: 6 },
-			children: ['header', 'alertInfo', 'statsGrid', 'divider1', 'tableCard', 'footer'],
+			children: [
+				'header',
+				'alertInfo',
+				'statsGrid',
+				'divider1',
+				'addBtn',
+				'tableCard',
+				'footer',
+				'addDialog',
+				'editDialog',
+				'deleteConfirmDialog',
+			],
 		},
 		header: {
 			type: 'Header',
@@ -136,7 +147,7 @@ export const taskBoardSpec: PageSpec = {
 				type: 'info',
 				title: 'Sprint 進行中',
 				message:
-					'このスプリントの期間は 2026/3/1 〜 3/31 です。各行をクリックするとタスク詳細に遷移します。',
+					'このスプリントの期間は 2026/3/1 〜 3/31 です。各行をクリックするとタスクを編集できます。',
 			},
 		},
 		statsGrid: {
@@ -180,6 +191,14 @@ export const taskBoardSpec: PageSpec = {
 			type: 'Divider',
 			props: {},
 		},
+		addBtn: {
+			type: 'Button',
+			props: {
+				label: 'タスク追加',
+				variant: 'primary',
+				onClick: '$action.openAddDialog',
+			},
+		},
 		tableCard: {
 			type: 'Card',
 			props: { title: 'タスク一覧' },
@@ -189,12 +208,17 @@ export const taskBoardSpec: PageSpec = {
 			type: 'DataTable',
 			props: {
 				data: '$hook.tasks',
-				rowHref: '/pages/task-detail?id={{id}}',
+				onRowClick: '$action.selectTask',
 				keyField: 'id',
 				emptyMessage: 'タスクがありません',
 				columns: [
 					{ key: 'id', label: 'ID' },
-					{ key: 'title', label: 'タスク名', sortable: true, filter: { type: 'text', placeholder: 'タスク検索...' } },
+					{
+						key: 'title',
+						label: 'タスク名',
+						sortable: true,
+						filter: { type: 'text', placeholder: 'タスク検索...' },
+					},
 					{
 						key: 'status',
 						label: 'ステータス',
@@ -244,11 +268,356 @@ export const taskBoardSpec: PageSpec = {
 				label: '売上ダッシュボードを見る',
 			},
 		},
+
+		// --- Add Dialog ---
+		addDialog: {
+			type: 'Dialog',
+			props: { title: 'タスク追加' },
+			visible: { expr: '$state.showAddDialog' },
+			children: ['addForm'],
+		},
+		addForm: {
+			type: 'Stack',
+			props: { gap: 4 },
+			children: [
+				'addTitle',
+				'addStatusPriorityRow',
+				'addAssignee',
+				'addDateEstimateRow',
+				'addActions',
+			],
+		},
+		addTitle: {
+			type: 'TextInput',
+			props: {
+				label: 'タスク名',
+				placeholder: 'タスク名を入力',
+				value: '$expr(state.newTask?.title ?? "")',
+				onChange: '$action.setNewTitle',
+			},
+		},
+		addStatusPriorityRow: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 4 },
+			children: ['addStatus', 'addPriority'],
+		},
+		addStatus: {
+			type: 'Select',
+			props: {
+				label: 'ステータス',
+				options: [
+					{ value: '未着手', label: '未着手' },
+					{ value: '進行中', label: '進行中' },
+					{ value: 'レビュー中', label: 'レビュー中' },
+					{ value: '完了', label: '完了' },
+				],
+				value: '$expr(state.newTask?.status ?? "未着手")',
+				onChange: '$action.setNewStatus',
+			},
+		},
+		addPriority: {
+			type: 'Select',
+			props: {
+				label: '優先度',
+				options: [
+					{ value: '高', label: '高' },
+					{ value: '中', label: '中' },
+					{ value: '低', label: '低' },
+				],
+				value: '$expr(state.newTask?.priority ?? "中")',
+				onChange: '$action.setNewPriority',
+			},
+		},
+		addAssignee: {
+			type: 'TextInput',
+			props: {
+				label: '担当者',
+				placeholder: '担当者名を入力',
+				value: '$expr(state.newTask?.assignee ?? "")',
+				onChange: '$action.setNewAssignee',
+			},
+		},
+		addDateEstimateRow: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 4 },
+			children: ['addDueDate', 'addEstimate'],
+		},
+		addDueDate: {
+			type: 'TextInput',
+			props: {
+				label: '期限',
+				type: 'date',
+				value: '$expr(state.newTask?.dueDate ?? "")',
+				onChange: '$action.setNewDueDate',
+			},
+		},
+		addEstimate: {
+			type: 'TextInput',
+			props: {
+				label: '見積 (pt)',
+				type: 'number',
+				placeholder: '0',
+				value: '$expr(state.newTask?.estimate ?? "")',
+				onChange: '$action.setNewEstimate',
+			},
+		},
+		addActions: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 2, justify: 'end' },
+			children: ['addCancelBtn', 'addSubmitBtn'],
+		},
+		addCancelBtn: {
+			type: 'Button',
+			props: {
+				label: 'キャンセル',
+				variant: 'secondary',
+				onClick: '$action.closeAddDialog',
+			},
+		},
+		addSubmitBtn: {
+			type: 'Button',
+			props: {
+				label: '追加',
+				variant: 'primary',
+				onClick: '$action.addTask',
+			},
+		},
+
+		// --- Edit Dialog ---
+		editDialog: {
+			type: 'Dialog',
+			props: { title: 'タスク編集' },
+			visible: { expr: '$state.showEditDialog' },
+			children: ['editForm'],
+		},
+		editForm: {
+			type: 'Stack',
+			props: { gap: 4 },
+			children: [
+				'editTitle',
+				'editStatusPriorityRow',
+				'editAssignee',
+				'editDateEstimateRow',
+				'editActions',
+			],
+		},
+		editTitle: {
+			type: 'TextInput',
+			props: {
+				label: 'タスク名',
+				value: '$expr(state.editingTask?.title ?? "")',
+				onChange: '$action.setEditTitle',
+			},
+		},
+		editStatusPriorityRow: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 4 },
+			children: ['editStatus', 'editPriority'],
+		},
+		editStatus: {
+			type: 'Select',
+			props: {
+				label: 'ステータス',
+				options: [
+					{ value: '未着手', label: '未着手' },
+					{ value: '進行中', label: '進行中' },
+					{ value: 'レビュー中', label: 'レビュー中' },
+					{ value: '完了', label: '完了' },
+				],
+				value: '$expr(state.editingTask?.status ?? "")',
+				onChange: '$action.setEditStatus',
+			},
+		},
+		editPriority: {
+			type: 'Select',
+			props: {
+				label: '優先度',
+				options: [
+					{ value: '高', label: '高' },
+					{ value: '中', label: '中' },
+					{ value: '低', label: '低' },
+				],
+				value: '$expr(state.editingTask?.priority ?? "")',
+				onChange: '$action.setEditPriority',
+			},
+		},
+		editAssignee: {
+			type: 'TextInput',
+			props: {
+				label: '担当者',
+				value: '$expr(state.editingTask?.assignee ?? "")',
+				onChange: '$action.setEditAssignee',
+			},
+		},
+		editDateEstimateRow: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 4 },
+			children: ['editDueDate', 'editEstimate'],
+		},
+		editDueDate: {
+			type: 'TextInput',
+			props: {
+				label: '期限',
+				type: 'date',
+				value: '$expr(state.editingTask?.dueDate ?? "")',
+				onChange: '$action.setEditDueDate',
+			},
+		},
+		editEstimate: {
+			type: 'TextInput',
+			props: {
+				label: '見積 (pt)',
+				type: 'number',
+				value: '$expr(state.editingTask?.estimate ?? "")',
+				onChange: '$action.setEditEstimate',
+			},
+		},
+		editActions: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 2, justify: 'end' },
+			children: ['editDeleteBtn', 'editCancelBtn', 'editSubmitBtn'],
+		},
+		editDeleteBtn: {
+			type: 'Button',
+			props: {
+				label: '削除',
+				variant: 'danger',
+				onClick: '$action.openDeleteConfirm',
+			},
+		},
+		editCancelBtn: {
+			type: 'Button',
+			props: {
+				label: 'キャンセル',
+				variant: 'secondary',
+				onClick: '$action.closeEditDialog',
+			},
+		},
+		editSubmitBtn: {
+			type: 'Button',
+			props: {
+				label: '保存',
+				variant: 'primary',
+				onClick: '$action.updateTask',
+			},
+		},
+
+		// --- Delete Confirm Dialog ---
+		deleteConfirmDialog: {
+			type: 'Dialog',
+			props: { title: 'タスク削除の確認' },
+			visible: { expr: '$state.showDeleteConfirm' },
+			children: ['deleteConfirmContent'],
+		},
+		deleteConfirmContent: {
+			type: 'Stack',
+			props: { gap: 4 },
+			children: ['deleteConfirmText', 'deleteConfirmActions'],
+		},
+		deleteConfirmText: {
+			type: 'Text',
+			props: {
+				content: 'このタスクを削除しますか？この操作は取り消せません。',
+			},
+		},
+		deleteConfirmActions: {
+			type: 'Stack',
+			props: { direction: 'horizontal', gap: 2, justify: 'end' },
+			children: ['deleteCancelBtn', 'deleteConfirmBtn'],
+		},
+		deleteCancelBtn: {
+			type: 'Button',
+			props: {
+				label: 'キャンセル',
+				variant: 'secondary',
+				onClick: '$action.closeDeleteConfirm',
+			},
+		},
+		deleteConfirmBtn: {
+			type: 'Button',
+			props: {
+				label: '削除',
+				variant: 'danger',
+				onClick: '$action.deleteTask',
+			},
+		},
 	},
-	state: {},
-	actions: {},
+	state: {
+		showAddDialog: false,
+		newTask: null,
+		editingTask: null,
+		showEditDialog: false,
+		showDeleteConfirm: false,
+	},
+	actions: {
+		// Add
+		openAddDialog: {
+			type: 'setState',
+			key: 'showAddDialog',
+			value: true,
+			onComplete: {
+				newTask: { title: '', status: '未着手', priority: '中', assignee: '', dueDate: '', estimate: 0 },
+			},
+		},
+		closeAddDialog: {
+			type: 'setState',
+			key: 'showAddDialog',
+			value: false,
+			onComplete: { newTask: null },
+		},
+		setNewTitle: { type: 'setState', key: 'newTask.title' },
+		setNewStatus: { type: 'setState', key: 'newTask.status' },
+		setNewPriority: { type: 'setState', key: 'newTask.priority' },
+		setNewAssignee: { type: 'setState', key: 'newTask.assignee' },
+		setNewDueDate: { type: 'setState', key: 'newTask.dueDate' },
+		setNewEstimate: { type: 'setState', key: 'newTask.estimate' },
+		addTask: {
+			type: 'addItem',
+			hookId: 'tasks',
+			stateKey: 'newTask',
+			idPrefix: 'TASK',
+			onComplete: { showAddDialog: false, newTask: null },
+		},
+
+		// Edit
+		selectTask: {
+			type: 'setState',
+			key: 'editingTask',
+			onComplete: { showEditDialog: true },
+		},
+		closeEditDialog: {
+			type: 'setState',
+			key: 'showEditDialog',
+			value: false,
+			onComplete: { editingTask: null },
+		},
+		setEditTitle: { type: 'setState', key: 'editingTask.title' },
+		setEditStatus: { type: 'setState', key: 'editingTask.status' },
+		setEditPriority: { type: 'setState', key: 'editingTask.priority' },
+		setEditAssignee: { type: 'setState', key: 'editingTask.assignee' },
+		setEditDueDate: { type: 'setState', key: 'editingTask.dueDate' },
+		setEditEstimate: { type: 'setState', key: 'editingTask.estimate' },
+		updateTask: {
+			type: 'updateItem',
+			hookId: 'tasks',
+			key: 'id',
+			stateKey: 'editingTask',
+			onComplete: { showEditDialog: false, editingTask: null },
+		},
+
+		// Delete
+		openDeleteConfirm: { type: 'setState', key: 'showDeleteConfirm', value: true },
+		closeDeleteConfirm: { type: 'setState', key: 'showDeleteConfirm', value: false },
+		deleteTask: {
+			type: 'removeItem',
+			hookId: 'tasks',
+			key: 'id',
+			stateKey: 'editingTask',
+			onComplete: { showDeleteConfirm: false, showEditDialog: false, editingTask: null },
+		},
+	},
 	meta: {
 		createdBy: 'seed',
-		tags: ['demo', 'task-management', 'datatable-rowhref'],
+		tags: ['demo', 'task-management', 'crud'],
 	},
 };

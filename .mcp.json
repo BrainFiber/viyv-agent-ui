@@ -7,7 +7,8 @@
         "--postgres-url",
         "postgres://postgres:test@localhost:5433/viyvdb",
         "--tenant",
-        "default"
+        "default",
+        "--embedding"
       ]
     },
     "agent-ui": {

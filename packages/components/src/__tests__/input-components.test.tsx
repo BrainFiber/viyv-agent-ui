@@ -34,6 +34,40 @@ describe('TextInput', () => {
 		expect(describedBy).toBeTruthy();
 		expect(document.getElementById(describedBy!)?.textContent).toBe('bad');
 	});
+
+	it('renders with type="number"', () => {
+		render(<TextInput type="number" />);
+		const input = document.querySelector('input')!;
+		expect(input.getAttribute('type')).toBe('number');
+	});
+
+	it('renders with type="date"', () => {
+		render(<TextInput type="date" />);
+		const input = document.querySelector('input')!;
+		expect(input.getAttribute('type')).toBe('date');
+	});
+
+	it('defaults to type="text"', () => {
+		render(<TextInput />);
+		const input = document.querySelector('input')!;
+		expect(input.getAttribute('type')).toBe('text');
+	});
+
+	it('type="number" onChange returns Number', () => {
+		const onChange = vi.fn();
+		render(<TextInput type="number" onChange={onChange} />);
+		const input = document.querySelector('input')!;
+		fireEvent.change(input, { target: { value: '42' } });
+		expect(onChange).toHaveBeenCalledWith(42);
+	});
+
+	it('type="text" onChange returns string', () => {
+		const onChange = vi.fn();
+		render(<TextInput onChange={onChange} />);
+		const input = document.querySelector('input')!;
+		fireEvent.change(input, { target: { value: 'hello' } });
+		expect(onChange).toHaveBeenCalledWith('hello');
+	});
 });
 
 describe('Textarea', () => {

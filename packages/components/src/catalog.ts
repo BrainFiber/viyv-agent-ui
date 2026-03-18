@@ -411,6 +411,7 @@ export const defaultCatalog = defineCatalog([
 			label: z.string().optional(),
 			placeholder: z.string().optional(),
 			error: z.string().optional(),
+			type: z.enum(['text', 'number', 'date', 'email', 'tel', 'url']).optional(),
 		}),
 		acceptsChildren: false,
 	},

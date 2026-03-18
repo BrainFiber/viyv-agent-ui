@@ -2,19 +2,21 @@ import { useQueries } from '@tanstack/react-query';
 import { applyDerivedOperations, buildHookDAG } from '@viyv/agent-ui-engine';
 import type { DerivedParams } from '@viyv/agent-ui-engine';
 import type { HookDef, PageSpec } from '@viyv/agent-ui-schema';
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 export interface HookDataContextValue {
 	hookData: Record<string, unknown>;
 	isLoading: boolean;
 	errors: Record<string, Error>;
+	setHookData: (hookId: string, value: unknown) => void;
 }
 
 const HookDataContext = createContext<HookDataContextValue>({
 	hookData: {},
 	isLoading: false,
 	errors: {},
+	setHookData: () => {},
 });
 
 export interface HookDataProviderProps {
@@ -61,6 +63,12 @@ export function HookDataProvider({
 	searchParams,
 	children,
 }: HookDataProviderProps) {
+	const [useStateOverrides, setUseStateOverrides] = useState<Record<string, unknown>>({});
+
+	const setHookData = useCallback((hookId: string, value: unknown) => {
+		setUseStateOverrides((prev) => ({ ...prev, [hookId]: value }));
+	}, []);
+
 	const dag = useMemo(() => buildHookDAG(spec.hooks), [spec.hooks]);
 
 	// Identify server-side hooks (need API call) vs client-side hooks
@@ -105,7 +113,7 @@ export function HookDataProvider({
 		// Set useState hooks
 		for (const [id, hook] of Object.entries(spec.hooks)) {
 			if (hook.use === 'useState') {
-				hookData[id] = hook.params.initial;
+				hookData[id] = id in useStateOverrides ? useStateOverrides[id] : hook.params.initial;
 			}
 		}
 
@@ -134,8 +142,8 @@ export function HookDataProvider({
 
 		const isLoading = queries.some((q) => q.isLoading);
 
-		return { hookData, isLoading, errors };
-	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams]);
+		return { hookData, isLoading, errors, setHookData };
+	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams, useStateOverrides, setHookData]);
 
 	return <HookDataContext.Provider value={value}>{children}</HookDataContext.Provider>;
 }
