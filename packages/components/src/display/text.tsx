@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
+import type { CSSProperties } from 'react';
 import { cn } from '../lib/cn.js';
 
 export interface TextProps {
@@ -45,10 +46,19 @@ const colorMap: Record<string, string> = {
 	danger: 'text-danger',
 };
 
-function getTruncateClass(truncate?: boolean | number): string | undefined {
-	if (truncate === true) return 'truncate';
-	if (typeof truncate === 'number' && truncate > 0) return `line-clamp-${truncate}`;
-	return undefined;
+function getTruncateStyles(truncate?: boolean | number): { className?: string; style?: CSSProperties } {
+	if (truncate === true) return { className: 'truncate' };
+	if (typeof truncate === 'number' && truncate > 0) {
+		return {
+			style: {
+				display: '-webkit-box',
+				WebkitLineClamp: truncate,
+				WebkitBoxOrient: 'vertical' as const,
+				overflow: 'hidden',
+			},
+		};
+	}
+	return {};
 }
 
 export function Text({ content, variant, size, weight, color, truncate, className }: TextProps) {
@@ -57,10 +67,13 @@ export function Text({ content, variant, size, weight, color, truncate, classNam
 	const sizeClass = size ? sizeMap[size] : defaults?.size;
 	const weightClass = weight ? weightMap[weight] : defaults?.weight;
 	const colorClass = color ? colorMap[color] : (defaults?.color ?? 'text-fg-secondary');
-	const truncateClass = getTruncateClass(truncate);
+	const truncStyles = getTruncateStyles(truncate);
 
 	return (
-		<p className={cn(sizeClass, weightClass, colorClass, truncateClass, className)}>
+		<p
+			className={cn(sizeClass, weightClass, colorClass, truncStyles.className, className)}
+			style={truncStyles.style}
+		>
 			{content}
 		</p>
 	);

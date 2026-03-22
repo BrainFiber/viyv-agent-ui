@@ -1,5 +1,6 @@
 import { evaluateVisibility } from '@viyv/agent-ui-engine';
 import { useMemo } from 'react';
+import { ElementErrorBoundary } from './error-boundary.js';
 import { useElementProps, useEvalContext } from './hooks/use-element-props.js';
 import { useComponent, usePageSpec } from './providers/page-provider.js';
 import { getTypeHandler } from './renderers/index.js';
@@ -25,17 +26,23 @@ export function ElementRenderer({ elementId }: ElementRendererProps) {
 	// Type handler (Repeater etc.)
 	const TypeHandler = getTypeHandler(element.type);
 	if (TypeHandler) {
-		return <TypeHandler element={element} resolvedProps={resolvedProps} />;
+		return (
+			<ElementErrorBoundary elementId={elementId} elementType={element.type}>
+				<TypeHandler element={element} resolvedProps={resolvedProps} />
+			</ElementErrorBoundary>
+		);
 	}
 
 	// Normal component rendering
 	if (!Component) return null;
 
 	return (
-		<Component {...resolvedProps}>
-			{element.children?.map((childId) => (
-				<ElementRenderer key={childId} elementId={childId} />
-			))}
-		</Component>
+		<ElementErrorBoundary elementId={elementId} elementType={element.type}>
+			<Component {...resolvedProps}>
+				{element.children?.map((childId) => (
+					<ElementRenderer key={childId} elementId={childId} />
+				))}
+			</Component>
+		</ElementErrorBoundary>
 	);
 }

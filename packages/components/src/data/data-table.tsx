@@ -3,6 +3,7 @@ import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge } from '../display/badge.js';
 import { cn } from '../lib/cn.js';
+import { normalizeData } from '../lib/normalize-data.js';
 import { usePagination } from '../lib/use-pagination.js';
 import { Pagination } from '../navigation/pagination.js';
 import { applyFilters, deriveSelectOptions, evaluateRowHighlight, type DataTableFilterConfig, type RowHighlightRule } from './data-table-filter.js';
@@ -139,13 +140,14 @@ export function DataTable({
 	}, []);
 
 	const selectOptions = useMemo(
-		() => deriveSelectOptions(Array.isArray(data) ? (data as Record<string, unknown>[]) : [], columns),
+		() => deriveSelectOptions(normalizeData(data, 'DataTable'), columns),
 		[data, columns],
 	);
 
 	const rows = useMemo(() => {
-		if (!Array.isArray(data)) return [];
-		const filtered = applyFilters([...data] as Record<string, unknown>[], columns, filters);
+		const normalized = normalizeData(data, 'DataTable');
+		if (normalized.length === 0) return [];
+		const filtered = applyFilters([...normalized], columns, filters);
 
 		if (sortKey) {
 			filtered.sort((a, b) => {

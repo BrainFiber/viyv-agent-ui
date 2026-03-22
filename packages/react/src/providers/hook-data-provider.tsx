@@ -2,7 +2,7 @@ import { useQueries } from '@tanstack/react-query';
 import { applyDerivedOperations, buildHookDAG } from '@viyv/agent-ui-engine';
 import type { DerivedParams } from '@viyv/agent-ui-engine';
 import type { HookDef, PageSpec } from '@viyv/agent-ui-schema';
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
 export interface HookDataContextValue {
@@ -10,6 +10,7 @@ export interface HookDataContextValue {
 	isLoading: boolean;
 	errors: Record<string, Error>;
 	setHookData: (hookId: string, value: unknown) => void;
+	refetchHook: (hookId: string) => void;
 }
 
 const HookDataContext = createContext<HookDataContextValue>({
@@ -17,6 +18,7 @@ const HookDataContext = createContext<HookDataContextValue>({
 	isLoading: false,
 	errors: {},
 	setHookData: () => {},
+	refetchHook: () => {},
 });
 
 export interface HookDataProviderProps {
@@ -96,6 +98,20 @@ export function HookDataProvider({
 		}),
 	});
 
+	// C5: refetchHook — map serverHookId to query for refetch
+	const refetchHook = useCallback(
+		(hookId: string) => {
+			const idx = serverHookIds.indexOf(hookId);
+			if (idx >= 0 && queries[idx]) {
+				queries[idx].refetch();
+			}
+		},
+		[serverHookIds, queries],
+	);
+
+	// C3: useDerived memoization cache
+	const derivedCacheRef = useRef<Map<string, { sourceData: unknown; result: unknown }>>(new Map());
+
 	const value = useMemo(() => {
 		const hookData: Record<string, unknown> = {};
 		const errors: Record<string, Error> = {};
@@ -129,21 +145,28 @@ export function HookDataProvider({
 			}
 		}
 
-		// Compute derived hooks in DAG order
+		// Compute derived hooks in DAG order (with memoization)
 		for (const hookId of dag.order) {
 			const hook = spec.hooks[hookId];
 			if (hook.use === 'useDerived') {
 				const sourceData = hookData[hook.from];
 				if (sourceData !== undefined) {
-					hookData[hookId] = applyDerivedOperations(sourceData, hook.params as DerivedParams);
+					const cached = derivedCacheRef.current.get(hookId);
+					if (cached && cached.sourceData === sourceData) {
+						hookData[hookId] = cached.result;
+					} else {
+						const result = applyDerivedOperations(sourceData, hook.params as DerivedParams);
+						hookData[hookId] = result;
+						derivedCacheRef.current.set(hookId, { sourceData, result });
+					}
 				}
 			}
 		}
 
 		const isLoading = queries.some((q) => q.isLoading);
 
-		return { hookData, isLoading, errors, setHookData };
-	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams, useStateOverrides, setHookData]);
+		return { hookData, isLoading, errors, setHookData, refetchHook };
+	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams, useStateOverrides, setHookData, refetchHook]);
 
 	return <HookDataContext.Provider value={value}>{children}</HookDataContext.Provider>;
 }

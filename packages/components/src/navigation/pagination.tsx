@@ -39,7 +39,7 @@ export function Pagination({
 					type="button"
 					disabled={currentPage === 0}
 					onClick={() => onPageChange(currentPage - 1)}
-					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:hover:bg-transparent"
+					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:text-fg-disabled disabled:cursor-not-allowed disabled:hover:bg-transparent"
 				>
 					前へ
 				</button>
@@ -50,7 +50,7 @@ export function Pagination({
 					type="button"
 					disabled={currentPage >= totalPages - 1}
 					onClick={() => onPageChange(currentPage + 1)}
-					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:hover:bg-transparent"
+					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:text-fg-disabled disabled:cursor-not-allowed disabled:hover:bg-transparent"
 				>
 					次へ
 				</button>

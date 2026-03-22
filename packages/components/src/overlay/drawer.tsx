@@ -27,7 +27,7 @@ export function Drawer({ title, position = 'right', width = 400, onClose, childr
 				tabIndex={-1}
 				style={{ width: `${width}px` }}
 				className={cn(
-					'relative z-10 flex h-full flex-col bg-surface shadow-xl focus:outline-none',
+					'relative z-10 flex h-full max-w-full flex-col bg-surface shadow-xl focus:outline-none',
 					position === 'right' ? 'ml-auto' : 'mr-auto',
 					className,
 				)}

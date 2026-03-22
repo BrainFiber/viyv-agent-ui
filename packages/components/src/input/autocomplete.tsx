@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
-import { useState, useRef, useId } from 'react';
+import { useState, useRef, useId, useEffect } from 'react';
 import { cn } from '../lib/cn.js';
 
 export interface AutocompleteProps {
@@ -29,6 +29,15 @@ export function Autocomplete({
 	const listboxId = useId();
 	const errorId = useId();
 	const inputRef = useRef<HTMLInputElement>(null);
+	const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(() => {
+		return () => {
+			if (blurTimerRef.current !== null) {
+				clearTimeout(blurTimerRef.current);
+			}
+		};
+	}, []);
 
 	const selectedLabel = options.find((o) => o.value === value)?.label ?? '';
 	const displayValue = open ? query : selectedLabel;
@@ -63,10 +72,16 @@ export function Autocomplete({
 					setOpen(true);
 				}}
 				onFocus={() => {
+					if (blurTimerRef.current) {
+						clearTimeout(blurTimerRef.current);
+						blurTimerRef.current = null;
+					}
 					setQuery('');
 					setOpen(true);
 				}}
-				onBlur={() => setTimeout(() => setOpen(false), 150)}
+				onBlur={() => {
+					blurTimerRef.current = setTimeout(() => setOpen(false), 150);
+				}}
 				className={cn(
 					'w-full rounded-md border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
 					disabled && 'cursor-not-allowed bg-muted opacity-50',

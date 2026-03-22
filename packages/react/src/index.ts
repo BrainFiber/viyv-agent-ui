@@ -40,6 +40,10 @@ export { usePageState, useAction } from './hooks/use-page-interaction.js';
 export { ItemProvider, useItemContext } from './providers/item-provider.js';
 export type { ItemContextValue } from './providers/item-provider.js';
 
+// Error Boundary
+export { ElementErrorBoundary } from './error-boundary.js';
+export type { ElementErrorBoundaryProps } from './error-boundary.js';
+
 // Theme
 export { ThemeWrapper } from './theme-wrapper.js';
 export type { ThemeWrapperProps } from './theme-wrapper.js';

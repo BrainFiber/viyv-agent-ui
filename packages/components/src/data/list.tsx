@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
+import { normalizeData } from '../lib/normalize-data.js';
 
 export interface ListProps {
 	data: unknown;
@@ -36,7 +37,7 @@ export function List({
 	emptyMessage = 'データがありません',
 	className,
 }: ListProps) {
-	const items = Array.isArray(data) ? data : [];
+	const items = normalizeData(data, 'List');
 	if (items.length === 0) {
 		return <p className={cn('py-8 text-center text-sm text-fg-muted', className)}>{emptyMessage}</p>;
 	}

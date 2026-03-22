@@ -1,3 +1,4 @@
+import type { ComponentCatalog } from './catalog.js';
 import { isExpression, parseExpression } from './expression.js';
 import type { HookDef } from './hook-def.js';
 import type { PageSpec } from './page-spec.js';
@@ -15,7 +16,7 @@ export interface ValidationResult {
 	warnings: ValidationError[];
 }
 
-export function validatePageSpec(input: unknown): ValidationResult {
+export function validatePageSpec(input: unknown, catalog?: ComponentCatalog): ValidationResult {
 	const errors: ValidationError[] = [];
 	const warnings: ValidationError[] = [];
 
@@ -70,6 +71,11 @@ export function validatePageSpec(input: unknown): ValidationResult {
 
 	// 7. CRUD action hookId validation
 	validateActions(spec, errors);
+
+	// 8. Component props validation against catalog
+	if (catalog) {
+		validateComponentProps(spec, catalog, warnings);
+	}
 
 	return {
 		valid: errors.length === 0,
@@ -251,6 +257,45 @@ function validateActions(spec: PageSpec, errors: ValidationError[]): void {
 					path: `actions.${actionId}.hookId`,
 					message: `Hook "${action.hookId}" is not useState (cannot mutate ${hook.use} hooks)`,
 					severity: 'error',
+				});
+			}
+		}
+	}
+}
+
+function validateComponentProps(
+	spec: PageSpec,
+	catalog: ComponentCatalog,
+	warnings: ValidationError[],
+): void {
+	for (const [elemId, element] of Object.entries(spec.elements)) {
+		const meta = catalog.components[element.type];
+		if (!meta) {
+			warnings.push({
+				path: `elements.${elemId}.type`,
+				message: `Unknown component type "${element.type}"`,
+				severity: 'warning',
+			});
+			continue;
+		}
+
+		// Build a props object with only static (non-expression) values
+		const staticProps: Record<string, unknown> = {};
+		for (const [key, value] of Object.entries(element.props)) {
+			if (isExpression(value)) continue;
+			staticProps[key] = value;
+		}
+
+		// Skip validation if all props are expressions
+		if (Object.keys(staticProps).length === 0) continue;
+
+		const result = meta.propsSchema.safeParse(staticProps);
+		if (!result.success) {
+			for (const issue of result.error.issues) {
+				warnings.push({
+					path: `elements.${elemId}.props.${issue.path.join('.')}`,
+					message: issue.message,
+					severity: 'warning',
 				});
 			}
 		}

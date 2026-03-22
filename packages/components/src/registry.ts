@@ -31,6 +31,7 @@ import { Switch } from './input/switch.js';
 import { Slider } from './input/slider.js';
 import { Autocomplete } from './input/autocomplete.js';
 import { Rating } from './input/rating.js';
+import { DatePicker } from './input/date-picker.js';
 import { Select } from './input/select.js';
 import { Textarea } from './input/textarea.js';
 import { TextInput } from './input/text-input.js';
@@ -45,6 +46,7 @@ import { Breadcrumbs } from './navigation/breadcrumbs.js';
 import { Stepper } from './navigation/stepper.js';
 import { Menu } from './navigation/menu.js';
 import { Toast } from './overlay/toast.js';
+import { ToastContainer } from './overlay/toast-container.js';
 import { Tooltip } from './overlay/tooltip.js';
 import { Calendar } from './display/calendar.js';
 
@@ -87,6 +89,7 @@ export const defaultRegistry = defineRegistry({
 	Slider: Slider as any,
 	Autocomplete: Autocomplete as any,
 	Rating: Rating as any,
+	DatePicker: DatePicker as any,
 	Tag: Tag as any,
 	Dialog: Dialog as any,
 	Drawer: Drawer as any,
@@ -95,6 +98,7 @@ export const defaultRegistry = defineRegistry({
 	Menu: Menu as any,
 	Carousel: Carousel as any,
 	Toast: Toast as any,
+	ToastContainer: ToastContainer as any,
 	Tooltip: Tooltip as any,
 	Calendar: Calendar as any,
 });

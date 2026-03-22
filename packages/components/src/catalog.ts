@@ -56,6 +56,7 @@ import { switchMeta } from './input/switch.js';
 import { sliderMeta } from './input/slider.js';
 import { autocompleteMeta } from './input/autocomplete.js';
 import { ratingMeta } from './input/rating.js';
+import { datePickerMeta } from './input/date-picker.js';
 
 // Navigation
 import { breadcrumbsMeta } from './navigation/breadcrumbs.js';
@@ -64,6 +65,7 @@ import { menuMeta } from './navigation/menu.js';
 
 // Feedback
 import { toastMeta } from './overlay/toast.js';
+import { toastContainerMeta } from './overlay/toast-container.js';
 import { tooltipMeta } from './overlay/tooltip.js';
 import { calendarMeta } from './display/calendar.js';
 
@@ -119,6 +121,7 @@ export const defaultCatalog = defineCatalog([
 	sliderMeta,
 	autocompleteMeta,
 	ratingMeta,
+	datePickerMeta,
 
 	// Navigation
 	breadcrumbsMeta,
@@ -127,6 +130,7 @@ export const defaultCatalog = defineCatalog([
 
 	// Feedback
 	toastMeta,
+	toastContainerMeta,
 	tooltipMeta,
 
 	// Display (calendar)

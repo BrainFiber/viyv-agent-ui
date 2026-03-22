@@ -221,10 +221,11 @@ describe('Text', () => {
 		expect(p?.className).toContain('truncate');
 	});
 
-	it('applies truncate number (line-clamp)', () => {
+	it('applies truncate number (line-clamp via inline style)', () => {
 		const { container } = render(<Text content="Multi-line" truncate={2} />);
 		const p = container.querySelector('p');
-		expect(p?.className).toContain('line-clamp-2');
+		expect(p?.style.overflow).toBe('hidden');
+		expect(p?.style.webkitLineClamp).toBe('2');
 	});
 
 	it('applies custom className', () => {

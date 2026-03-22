@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, Children, useEffect, useCallback } from 'react';
-import type { ReactNode } from 'react';
+import type { ReactNode, KeyboardEvent } from 'react';
 import { cn } from '../lib/cn.js';
 
 export interface CarouselProps {
@@ -32,15 +32,30 @@ export function Carousel({
 		if (!autoplay || total <= 1) return;
 		const timer = setInterval(next, interval);
 		return () => clearInterval(timer);
-	}, [autoplay, interval, total, next]);
+	}, [autoplay, interval, total, next, active]);
 
 	if (total === 0) return null;
+
+	const handleKeyDown = useCallback(
+		(e: KeyboardEvent) => {
+			if (e.key === 'ArrowLeft') {
+				e.preventDefault();
+				prev();
+			} else if (e.key === 'ArrowRight') {
+				e.preventDefault();
+				next();
+			}
+		},
+		[prev, next],
+	);
 
 	return (
 		<div
 			role="region"
 			aria-roledescription="carousel"
 			aria-label="Slideshow"
+			tabIndex={0}
+			onKeyDown={handleKeyDown}
 			className={cn('relative overflow-hidden', className)}
 		>
 			<div

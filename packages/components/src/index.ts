@@ -25,6 +25,8 @@ export { Toast } from './overlay/toast.js';
 export type { ToastProps } from './overlay/toast.js';
 export { Tooltip } from './overlay/tooltip.js';
 export type { TooltipProps } from './overlay/tooltip.js';
+export { ToastContainer } from './overlay/toast-container.js';
+export type { ToastContainerProps } from './overlay/toast-container.js';
 
 // Display
 export { Header } from './display/header.js';
@@ -110,6 +112,8 @@ export { Autocomplete } from './input/autocomplete.js';
 export type { AutocompleteProps } from './input/autocomplete.js';
 export { Rating } from './input/rating.js';
 export type { RatingProps } from './input/rating.js';
+export { DatePicker } from './input/date-picker.js';
+export type { DatePickerProps } from './input/date-picker.js';
 
 // Navigation
 export { Pagination } from './navigation/pagination.js';

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
+import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
 export interface RatingProps {
@@ -7,6 +8,7 @@ export interface RatingProps {
 	max?: number;
 	disabled?: boolean;
 	label?: string;
+	error?: string;
 	onChange?: (value: number) => void;
 	className?: string;
 }
@@ -16,13 +18,21 @@ export function Rating({
 	max = 5,
 	disabled,
 	label,
+	error,
 	onChange,
 	className,
 }: RatingProps) {
+	const errorId = useId();
 	return (
 		<div className={cn(className)}>
 			{label && <span className="mb-1 block text-sm font-medium text-fg-secondary">{label}</span>}
-			<div role="radiogroup" aria-label={label ?? 'Rating'} className="flex gap-1">
+			<div
+				role="radiogroup"
+				aria-label={label ?? 'Rating'}
+				aria-invalid={!!error || undefined}
+				aria-describedby={error ? errorId : undefined}
+				className="flex gap-1"
+			>
 				{Array.from({ length: max }, (_, i) => {
 					const starValue = i + 1;
 					const filled = starValue <= value;
@@ -46,6 +56,7 @@ export function Rating({
 					);
 				})}
 			</div>
+			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
 		</div>
 	);
 }
@@ -59,6 +70,7 @@ export const ratingMeta: ComponentMeta = {
 		value: z.number().optional(),
 		max: z.number().optional(),
 		label: z.string().optional(),
+		error: z.string().optional(),
 	}),
 	acceptsChildren: false,
 };

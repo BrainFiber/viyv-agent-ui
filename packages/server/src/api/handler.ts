@@ -64,17 +64,45 @@ async function route(
 
 	// Pages
 	if (method === 'GET' && path === '/pages') {
-		const pages = await pageStore.list();
-		return json(
-			200,
-			pages.map((p) => ({
-				id: p.id,
-				title: p.spec.title,
-				description: p.spec.description,
-				createdAt: p.createdAt.toISOString(),
-				updatedAt: p.updatedAt.toISOString(),
-			})),
-		);
+		const allPages = await pageStore.list();
+		const q = req.query?.q;
+		const tag = req.query?.tag;
+
+		let filtered = allPages.map((p) => ({
+			id: p.id,
+			title: p.spec.title,
+			description: p.spec.description,
+			tags: p.spec.meta?.tags,
+			createdAt: p.createdAt.toISOString(),
+			updatedAt: p.updatedAt.toISOString(),
+		}));
+
+		if (q) {
+			const lower = q.toLowerCase();
+			filtered = filtered.filter(
+				(p) =>
+					p.title.toLowerCase().includes(lower) ||
+					(p.description && p.description.toLowerCase().includes(lower)),
+			);
+		}
+
+		if (tag) {
+			filtered = filtered.filter((p) => p.tags?.includes(tag));
+		}
+
+		const pageParam = req.query?.page;
+		const limitParam = req.query?.limit;
+
+		if (pageParam || limitParam) {
+			const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1);
+			const limit = Math.max(1, parseInt(limitParam ?? '20', 10) || 20);
+			const total = filtered.length;
+			const start = (page - 1) * limit;
+			const data = filtered.slice(start, start + limit);
+			return json(200, { data, total, page, limit });
+		}
+
+		return json(200, filtered);
 	}
 
 	// Preview routes (must be matched before /pages/:id to avoid "preview" being treated as a page ID)

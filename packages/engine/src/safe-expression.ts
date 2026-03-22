@@ -60,7 +60,13 @@ export function evaluateSafeExpression(code: string, ctx: EvalContext): unknown 
 		// Create a function with restricted scope
 		const fn = new Function(...scopeKeys, `"use strict"; return (${code});`);
 		return fn(...scopeValues);
-	} catch {
+	} catch (err) {
+		if (typeof process !== 'undefined' && process.env?.NODE_ENV !== 'production') {
+			console.warn(
+				`[agent-ui] Expression error in "${code}":`,
+				err instanceof Error ? err.message : String(err),
+			);
+		}
 		return undefined;
 	}
 }

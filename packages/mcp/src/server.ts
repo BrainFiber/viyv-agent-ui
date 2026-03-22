@@ -1,3 +1,4 @@
+import { PageSpecSchema, validatePageSpec } from '@viyv/agent-ui-schema';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import type { ApiClient } from './api-client.js';
@@ -97,6 +98,71 @@ export function createMcpServer(client: ApiClient): McpServer {
 						text: `Preview created!\n\nPreview URL: ${result.previewUrl}\nExpires at: ${result.expiresAt}\n\nPlease ask the user to open this URL in their browser to review the page.`,
 					},
 				],
+			};
+		},
+	);
+
+	// validate_page
+	server.tool(
+		'validate_page',
+		'Validate a PageSpec JSON object without saving it. Returns schema and semantic validation results.',
+		{
+			spec: z.record(z.unknown()).describe('The PageSpec JSON object to validate'),
+		},
+		async ({ spec }) => {
+			// 1. Schema validation
+			const parsed = PageSpecSchema.safeParse(spec);
+			if (!parsed.success) {
+				const issues = parsed.error.issues.map(
+					(i) => `  - ${i.path.join('.')}: ${i.message}`,
+				);
+				return {
+					content: [
+						{
+							type: 'text',
+							text: `Validation FAILED (schema errors):\n${issues.join('\n')}`,
+						},
+					],
+				};
+			}
+
+			// 2. Semantic validation
+			const result = validatePageSpec(parsed.data);
+			if (!result.valid) {
+				const errorLines = result.errors.map(
+					(e) => `  - [${e.severity}] ${e.path}: ${e.message}`,
+				);
+				const warningLines = result.warnings.map(
+					(w) => `  - [warning] ${w.path}: ${w.message}`,
+				);
+				const lines = [...errorLines, ...warningLines];
+				return {
+					content: [
+						{
+							type: 'text',
+							text: `Validation FAILED:\n${lines.join('\n')}`,
+						},
+					],
+				};
+			}
+
+			// 3. Success
+			if (result.warnings.length > 0) {
+				const warningLines = result.warnings.map(
+					(w) => `  - ${w.path}: ${w.message}`,
+				);
+				return {
+					content: [
+						{
+							type: 'text',
+							text: `Validation PASSED with warnings:\n${warningLines.join('\n')}`,
+						},
+					],
+				};
+			}
+
+			return {
+				content: [{ type: 'text', text: 'Validation PASSED' }],
 			};
 		},
 	);

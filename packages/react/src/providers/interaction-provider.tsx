@@ -2,6 +2,14 @@ import type { ActionDef, PageSpec } from '@viyv/agent-ui-schema';
 import { interpolateUrl } from '@viyv/agent-ui-engine';
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+
+function generateId(prefix?: string): string {
+	const id =
+		typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+			? crypto.randomUUID()
+			: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+	return prefix ? `${prefix}-${id}` : id;
+}
 import { useHookDataContext } from './hook-data-provider.js';
 
 export interface InteractionContextValue {
@@ -26,6 +34,7 @@ interface ActionHandlerDeps {
 	stateRef: React.RefObject<Record<string, unknown>>;
 	setHookData: (hookId: string, value: unknown) => void;
 	hookDataRef: React.RefObject<Record<string, unknown>>;
+	refetchHook: (hookId: string) => void;
 }
 
 function applyOnComplete(
@@ -52,7 +61,9 @@ function createActionHandler(
 			};
 
 		case 'refreshHook':
-			return () => {};
+			return () => {
+				deps.refetchHook(actionDef.hookId);
+			};
 
 		case 'navigate':
 			return (...args: unknown[]) => {
@@ -96,8 +107,8 @@ function createActionHandler(
 				if (!Array.isArray(currentData)) return;
 				const newItem = { ...(deps.stateRef.current[actionDef.stateKey] as Record<string, unknown> ?? {}) };
 				const idField = actionDef.idField ?? 'id';
-				if (actionDef.idPrefix && !newItem[idField]) {
-					newItem[idField] = `${actionDef.idPrefix}-${String(Date.now()).slice(-6)}`;
+				if (!newItem[idField]) {
+					newItem[idField] = generateId(actionDef.idPrefix);
 				}
 				deps.setHookData(actionDef.hookId, [...currentData, newItem]);
 				applyOnComplete(actionDef, deps.setState);
@@ -142,7 +153,7 @@ function createActionHandler(
 
 export function InteractionProvider({ spec, children }: InteractionProviderProps) {
 	const [pageState, setPageState] = useState<Record<string, unknown>>(spec.state);
-	const { hookData, setHookData } = useHookDataContext();
+	const { hookData, setHookData, refetchHook } = useHookDataContext();
 
 	const setState = useCallback((key: string, value: unknown) => {
 		if (key.includes('.')) {
@@ -169,14 +180,14 @@ export function InteractionProvider({ spec, children }: InteractionProviderProps
 
 	const actions = useMemo(() => {
 		const result: Record<string, (...args: unknown[]) => void> = {};
-		const deps: ActionHandlerDeps = { setState, stateRef, setHookData, hookDataRef };
+		const deps: ActionHandlerDeps = { setState, stateRef, setHookData, hookDataRef, refetchHook };
 
 		for (const [id, actionDef] of Object.entries(spec.actions)) {
 			result[id] = createActionHandler(actionDef, deps);
 		}
 
 		return result;
-	}, [spec.actions, setState, setHookData]);
+	}, [spec.actions, setState, setHookData, refetchHook]);
 
 	const value = useMemo(
 		() => ({ state: pageState, setState, actions }),

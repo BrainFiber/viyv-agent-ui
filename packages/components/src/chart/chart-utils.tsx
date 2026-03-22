@@ -30,13 +30,10 @@ export const CHART_COLORS = [
  * (derived-operators). This helper acts as a safety-net so charts gracefully
  * handle both raw arrays and wrapped objects.
  */
+import { normalizeData } from '../lib/normalize-data.js';
+
 export function normalizeChartData(data: unknown): Record<string, unknown>[] {
-	if (Array.isArray(data)) return data as Record<string, unknown>[];
-	if (data && typeof data === 'object' && 'rows' in data) {
-		const rows = (data as { rows: unknown }).rows;
-		if (Array.isArray(rows)) return rows as Record<string, unknown>[];
-	}
-	return [];
+	return normalizeData(data, 'Chart');
 }
 
 /** Coerce a value to a number (handles stringified SQL numbers). */
