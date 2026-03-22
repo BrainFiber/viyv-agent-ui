@@ -4,8 +4,7 @@ export const animationShowcaseSpec: PageSpec = {
 	id: 'animation-showcase',
 	title: 'アニメーション・ショーケース',
 	description: 'Motion (framer-motion) で実装したアニメーションのデモ。Dialog, Drawer, Toast, Tooltip, Collapse, Tabs の動作を確認できます。',
-	tags: ['demo', 'animation', 'motion', 'dialog', 'drawer', 'toast', 'collapse', 'tabs'],
-	theme: {},
+	meta: { tags: ['demo', 'animation', 'motion', 'dialog', 'drawer', 'toast', 'collapse', 'tabs'] },
 	root: 'root',
 	state: {
 		showDialog: false,

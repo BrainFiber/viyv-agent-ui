@@ -50,7 +50,7 @@ export function Card({ title, description, p, bg, rounded, shadow, border, child
 					{description && <p className="mt-1 text-sm text-fg-muted">{description}</p>}
 				</div>
 			)}
-			{children}
+			{children && <div className="flex flex-col gap-4">{children}</div>}
 		</div>
 	);
 }

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { X } from '../lib/icons.js';
 import { backdropVariants, drawerVariants } from '../lib/motion-presets.js';
 import { useOverlay } from './use-overlay.js';
 
@@ -61,7 +62,7 @@ export function Drawer({ title, position = 'right', width = 400, open = true, on
 									aria-label="Close"
 									className="shrink-0 rounded p-1 text-fg-subtle transition-colors hover:text-fg-muted"
 								>
-									&#x2715;
+									<X aria-hidden="true" className="h-4 w-4" />
 								</button>
 							)}
 						</div>

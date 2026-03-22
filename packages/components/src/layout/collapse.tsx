@@ -4,6 +4,7 @@ import { useState, Children, useId } from 'react';
 import type { ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { ChevronDown } from '../lib/icons.js';
 import { collapseVariants } from '../lib/motion-presets.js';
 
 export interface CollapseProps {
@@ -48,7 +49,7 @@ export function Collapse({ panels, accordion, defaultOpen, children, className }
 							className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-fg transition-colors hover:bg-muted"
 						>
 							{panel.title}
-							<span className={cn('ml-2 transition-transform', isOpen && 'rotate-180')}>&#x25BE;</span>
+							<ChevronDown aria-hidden="true" className={cn('ml-2 h-4 w-4 transition-transform', isOpen && 'rotate-180')} />
 						</button>
 						<AnimatePresence initial={false}>
 							{isOpen && (

@@ -28,6 +28,7 @@ import { productDetailSpec } from '../data/product-detail';
 import { teamDirectorySpec } from '../data/team-directory';
 import { onboardingWizardSpec } from '../data/onboarding-wizard';
 import { animationShowcaseSpec } from '../data/animation-showcase';
+import { iconShowcaseSpec } from '../data/icon-showcase';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -61,6 +62,7 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(teamDirectorySpec);
 			await pageStore.save(onboardingWizardSpec);
 			await pageStore.save(animationShowcaseSpec);
+			await pageStore.save(iconShowcaseSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

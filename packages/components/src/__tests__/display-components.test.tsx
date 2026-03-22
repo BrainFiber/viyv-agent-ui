@@ -333,7 +333,7 @@ describe('Spinner', () => {
 	it('applies size class', () => {
 		render(<Spinner size="lg" />);
 		const svg = document.querySelector('svg');
-		expect(svg?.className.baseVal).toContain('h-12');
+		expect(svg?.getAttribute('class')).toContain('h-12');
 	});
 });
 

@@ -1,4 +1,5 @@
 import { cn } from '../lib/cn.js';
+import { ChevronLeft, ChevronRight } from '../lib/icons.js';
 
 export interface PaginationProps {
 	currentPage: number;
@@ -41,7 +42,10 @@ export function Pagination({
 					onClick={() => onPageChange(currentPage - 1)}
 					className="rounded-lg border border-border-strong px-3 py-1.5 text-sm shadow-sm transition-all hover:bg-muted disabled:opacity-40 disabled:text-fg-disabled disabled:cursor-not-allowed disabled:hover:bg-transparent"
 				>
-					前へ
+					<span className="inline-flex items-center gap-1">
+						<ChevronLeft aria-hidden="true" className="h-4 w-4" />
+						前へ
+					</span>
 				</button>
 				<span>
 					{currentPage + 1} / {totalPages}
@@ -52,7 +56,10 @@ export function Pagination({
 					onClick={() => onPageChange(currentPage + 1)}
 					className="rounded-lg border border-border-strong px-3 py-1.5 text-sm shadow-sm transition-all hover:bg-muted disabled:opacity-40 disabled:text-fg-disabled disabled:cursor-not-allowed disabled:hover:bg-transparent"
 				>
-					次へ
+					<span className="inline-flex items-center gap-1">
+						次へ
+						<ChevronRight aria-hidden="true" className="h-4 w-4" />
+					</span>
 				</button>
 			</div>
 		</div>

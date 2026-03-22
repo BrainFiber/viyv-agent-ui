@@ -3,6 +3,7 @@ import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, Children, useEffect, useCallback } from 'react';
 import type { ReactNode, KeyboardEvent } from 'react';
 import { cn } from '../lib/cn.js';
+import { ChevronLeft, ChevronRight } from '../lib/icons.js';
 
 export interface CarouselProps {
 	autoplay?: boolean;
@@ -73,7 +74,7 @@ export function Carousel({
 						aria-label="Previous slide"
 						className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
 					>
-						&#x2039;
+						<ChevronLeft aria-hidden="true" className="h-5 w-5" />
 					</button>
 					<button
 						type="button"
@@ -81,7 +82,7 @@ export function Carousel({
 						aria-label="Next slide"
 						className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
 					>
-						&#x203A;
+						<ChevronRight aria-hidden="true" className="h-5 w-5" />
 					</button>
 				</>
 			)}

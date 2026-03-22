@@ -3,6 +3,7 @@ import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge } from '../display/badge.js';
 import { cn } from '../lib/cn.js';
+import { ArrowUp, ArrowDown } from '../lib/icons.js';
 import { normalizeData } from '../lib/normalize-data.js';
 import { usePagination } from '../lib/use-pagination.js';
 import { Pagination } from '../navigation/pagination.js';
@@ -223,8 +224,8 @@ export function DataTable({
 							>
 								{col.label}
 								{col.sortable && sortKey === col.key && (
-									<span className="ml-1" aria-hidden="true">
-										{sortOrder === 'asc' ? '\u2191' : '\u2193'}
+									<span className="ml-1 inline-flex" aria-hidden="true">
+										{sortOrder === 'asc' ? <ArrowUp className="h-3.5 w-3.5" /> : <ArrowDown className="h-3.5 w-3.5" />}
 									</span>
 								)}
 							</th>

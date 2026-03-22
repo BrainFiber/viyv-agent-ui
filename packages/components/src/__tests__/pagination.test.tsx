@@ -37,20 +37,20 @@ describe('Pagination', () => {
 
 	it('disables 前へ button on first page', () => {
 		render(<Pagination {...defaultProps} currentPage={0} />);
-		const prevBtn = screen.getByText('前へ') as HTMLButtonElement;
+		const prevBtn = screen.getByText('前へ').closest('button') as HTMLButtonElement;
 		expect(prevBtn.disabled).toBe(true);
 	});
 
 	it('disables 次へ button on last page', () => {
 		render(<Pagination {...defaultProps} currentPage={2} />);
-		const nextBtn = screen.getByText('次へ') as HTMLButtonElement;
+		const nextBtn = screen.getByText('次へ').closest('button') as HTMLButtonElement;
 		expect(nextBtn.disabled).toBe(true);
 	});
 
 	it('enables both buttons on middle page', () => {
 		render(<Pagination {...defaultProps} currentPage={1} />);
-		expect((screen.getByText('前へ') as HTMLButtonElement).disabled).toBe(false);
-		expect((screen.getByText('次へ') as HTMLButtonElement).disabled).toBe(false);
+		expect((screen.getByText('前へ').closest('button') as HTMLButtonElement).disabled).toBe(false);
+		expect((screen.getByText('次へ').closest('button') as HTMLButtonElement).disabled).toBe(false);
 	});
 
 	it('calls onPageChange with previous page when 前へ clicked', () => {

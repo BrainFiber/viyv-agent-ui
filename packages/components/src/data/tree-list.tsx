@@ -3,6 +3,7 @@ import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { KeyboardEvent } from 'react';
 import { normalizeData } from '../lib/normalize-data.js';
+import { ChevronDown, ChevronRight, Dot } from '../lib/icons.js';
 
 export interface TreeListProps {
 	data: unknown;
@@ -145,10 +146,10 @@ function TreeNode({ node, labelKey, childrenKey, idKey, level, expanded, onToggl
 						onClick={() => onToggle(id)}
 						aria-label={isExpanded ? `Collapse ${label}` : `Expand ${label}`}
 					>
-						{isExpanded ? '▼' : '▶'}
+						{isExpanded ? <ChevronDown aria-hidden="true" className="h-4 w-4" /> : <ChevronRight aria-hidden="true" className="h-4 w-4" />}
 					</button>
 				) : (
-					<span className="mr-1 w-5 h-5 flex items-center justify-center text-fg-subtle">•</span>
+					<span className="mr-1 w-5 h-5 flex items-center justify-center text-fg-subtle"><Dot aria-hidden="true" className="h-4 w-4" /></span>
 				)}
 				<span className="text-sm text-fg">{label}</span>
 			</div>

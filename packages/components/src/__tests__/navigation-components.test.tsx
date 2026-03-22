@@ -88,8 +88,8 @@ describe('Stepper', () => {
 	it('completed steps show checkmark', () => {
 		render(<Stepper steps={steps} current={2} />);
 		const badges = document.querySelectorAll('.rounded-full');
-		expect(badges[0].textContent).toBe('✓');
-		expect(badges[1].textContent).toBe('✓');
+		expect(badges[0].querySelector('svg')).toBeTruthy();
+		expect(badges[1].querySelector('svg')).toBeTruthy();
 		expect(badges[2].textContent).toBe('3');
 	});
 });

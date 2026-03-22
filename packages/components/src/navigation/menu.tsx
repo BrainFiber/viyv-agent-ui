@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { ChevronDown } from '../lib/icons.js';
 import { collapseVariants } from '../lib/motion-presets.js';
 
 export interface MenuItem {
@@ -50,7 +51,7 @@ function MenuItemComponent({
 			{item.icon && <span className="shrink-0">{item.icon}</span>}
 			{!collapsed && <span className="truncate">{item.label}</span>}
 			{hasChildren && !collapsed && (
-				<span className={cn('ml-auto transition-transform', open && 'rotate-180')}>&#x25BE;</span>
+				<ChevronDown aria-hidden="true" className={cn('ml-auto h-4 w-4 transition-transform', open && 'rotate-180')} />
 			)}
 		</>
 	);

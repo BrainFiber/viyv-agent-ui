@@ -3,6 +3,7 @@ import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { X } from '../lib/icons.js';
 import { toastVariants } from '../lib/motion-presets.js';
 
 export interface ToastProps {
@@ -74,7 +75,7 @@ export function Toast({
 								aria-label="Close"
 								className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
 							>
-								&#x2715;
+								<X aria-hidden="true" className="h-4 w-4" />
 							</button>
 						)}
 					</div>

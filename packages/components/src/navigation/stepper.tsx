@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
+import { Check } from '../lib/icons.js';
 
 export interface StepperProps {
 	steps: Array<{ label: string; description?: string }>;
@@ -40,7 +41,7 @@ export function Stepper({ steps, current, direction = 'horizontal', className }:
 								!isCompleted && !isCurrent && 'border-2 border-border-strong text-fg-subtle',
 							)}
 						>
-							{isCompleted ? '\u2713' : i + 1}
+							{isCompleted ? <Check aria-hidden="true" className="h-4 w-4" /> : i + 1}
 						</div>
 						<div className="min-w-0">
 							<p className={cn('text-sm font-medium', isCurrent ? 'text-primary' : isCompleted ? 'text-fg' : 'text-fg-muted')}>
