@@ -2,6 +2,9 @@ import { defineCatalog } from '@viyv/agent-ui-schema';
 import { z } from 'zod';
 
 // Layout
+import { boxMeta } from './layout/box.js';
+import { containerMeta } from './layout/container.js';
+import { spacerMeta } from './layout/spacer.js';
 import { stackMeta } from './layout/stack.js';
 import { gridMeta } from './layout/grid.js';
 import { tabsMeta } from './layout/tabs.js';
@@ -71,6 +74,9 @@ import { calendarMeta } from './display/calendar.js';
 
 export const defaultCatalog = defineCatalog([
 	// Layout
+	boxMeta,
+	containerMeta,
+	spacerMeta,
 	stackMeta,
 	gridMeta,
 	tabsMeta,

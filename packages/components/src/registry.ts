@@ -35,9 +35,12 @@ import { DatePicker } from './input/date-picker.js';
 import { Select } from './input/select.js';
 import { Textarea } from './input/textarea.js';
 import { TextInput } from './input/text-input.js';
+import { Box } from './layout/box.js';
 import { Card } from './layout/card.js';
+import { Container } from './layout/container.js';
 import { Collapse } from './layout/collapse.js';
 import { Grid } from './layout/grid.js';
+import { Spacer } from './layout/spacer.js';
 import { Stack } from './layout/stack.js';
 import { Tabs } from './layout/tabs.js';
 import { Dialog } from './overlay/dialog.js';
@@ -51,6 +54,9 @@ import { Tooltip } from './overlay/tooltip.js';
 import { Calendar } from './display/calendar.js';
 
 export const defaultRegistry = defineRegistry({
+	Box: Box as any,
+	Container: Container as any,
+	Spacer: Spacer as any,
 	Stack: Stack as any,
 	Grid: Grid as any,
 	Card: Card as any,

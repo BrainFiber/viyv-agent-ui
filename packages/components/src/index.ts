@@ -5,6 +5,12 @@ export { defaultCatalog } from './catalog.js';
 export { defaultRegistry } from './registry.js';
 
 // Layout
+export { Box } from './layout/box.js';
+export type { BoxProps } from './layout/box.js';
+export { Container } from './layout/container.js';
+export type { ContainerProps } from './layout/container.js';
+export { Spacer } from './layout/spacer.js';
+export type { SpacerProps } from './layout/spacer.js';
 export { Stack } from './layout/stack.js';
 export type { StackProps } from './layout/stack.js';
 export { Grid } from './layout/grid.js';
