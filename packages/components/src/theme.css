@@ -1,4 +1,28 @@
+/* ── Fonts ── */
+@font-face {
+	font-family: "Geist Sans";
+	src: url("./fonts/GeistSans-Variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Geist Mono";
+	src: url("./fonts/GeistMono-Variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap");
+
 @theme {
+	/* ── Typography ── */
+	--font-sans: "Geist Sans", "Noto Sans JP", "Hiragino Sans",
+		"Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Segoe UI", "Meiryo", sans-serif;
+	--font-mono: "Geist Mono", "SF Mono", "Cascadia Code", "Fira Code",
+		ui-monospace, monospace;
 	/* ── Primary/Brand ── */
 	--color-primary: #3b82f6;
 	--color-primary-hover: #2563eb;
@@ -124,6 +148,21 @@
 		--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
 		--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
 		--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+	}
+}
+
+/* ── Base Typography ── */
+@layer base {
+	body {
+		font-family: var(--font-sans);
+		font-feature-settings: "rlig" 1, "calt" 1;
+		font-optical-sizing: auto;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	code, pre, kbd, samp {
+		font-family: var(--font-mono);
 	}
 }
 

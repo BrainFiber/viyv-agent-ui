@@ -14,13 +14,13 @@
 		"@viyv/agent-ui-react": "workspace:*",
 		"@viyv/agent-ui-schema": "workspace:*",
 		"@viyv/agent-ui-server": "workspace:*",
+		"leaflet": "^1.9.4",
+		"motion": "^12.0.0",
 		"next": "^15.1.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"recharts": "^3.8.0",
-		"leaflet": "^1.9.4",
-		"motion": "^12.0.0",
 		"react-leaflet": "^5.0.0",
+		"recharts": "^3.8.0",
 		"viyv-db-client": "link:../../../viyv-db/packages/client"
 	},
 	"devDependencies": {

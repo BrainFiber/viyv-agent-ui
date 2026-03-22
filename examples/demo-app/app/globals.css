@@ -7,10 +7,4 @@
 	* {
 		border-color: var(--color-border);
 	}
-
-	body {
-		font-feature-settings: "rlig" 1, "calt" 1;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-	}
 }
