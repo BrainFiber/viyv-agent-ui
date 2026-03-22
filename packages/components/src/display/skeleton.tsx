@@ -22,7 +22,7 @@ export function Skeleton({ variant = 'text', width, height, lines = 3, className
 			<div
 				aria-busy="true"
 				aria-label="Loading"
-				className={cn('animate-pulse rounded-full bg-gray-200', className)}
+				className={cn('animate-pulse rounded-full bg-muted-strong', className)}
 				style={{ width: px, height: px }}
 			/>
 		);
@@ -33,7 +33,7 @@ export function Skeleton({ variant = 'text', width, height, lines = 3, className
 			<div
 				aria-busy="true"
 				aria-label="Loading"
-				className={cn('animate-pulse rounded bg-gray-200', className)}
+				className={cn('animate-pulse rounded bg-muted-strong', className)}
 				style={{ width: style.width ?? '100%', height: style.height ?? '120px' }}
 			/>
 		);
@@ -46,7 +46,7 @@ export function Skeleton({ variant = 'text', width, height, lines = 3, className
 			{Array.from({ length: lines }, (_, i) => (
 				<div
 					key={i}
-					className="h-4 animate-pulse rounded bg-gray-200"
+					className="h-4 animate-pulse rounded bg-muted-strong"
 					style={{ width: `${lineWidths[i % lineWidths.length]}%` }}
 				/>
 			))}

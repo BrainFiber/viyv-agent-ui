@@ -76,7 +76,7 @@ function formatCell(value: unknown, format?: string): string {
 function renderCellContent(col: DataTableColumn, value: unknown): React.ReactNode {
 	// 1. 空値フォールバック
 	if (value == null || value === '') {
-		if (col.emptyValue) return <span className="text-gray-400">{col.emptyValue}</span>;
+		if (col.emptyValue) return <span className="text-fg-subtle">{col.emptyValue}</span>;
 		return formatCell(value, col.format);
 	}
 	// 2. Badge フォーマット
@@ -193,15 +193,15 @@ export function DataTable({
 	return (
 		<section className={cn('overflow-auto rounded-lg border', className)} aria-label="Data table">
 			<table className="w-full text-sm" style={{ tableLayout: 'auto', wordBreak: 'break-word' }}>
-				<thead className="border-b bg-gray-50">
+				<thead className="border-b bg-surface-alt">
 					<tr>
 						{columns.map((col) => (
 							<th
 								key={col.key}
 								scope="col"
 								className={cn(
-									'px-4 py-3 text-left font-medium text-gray-700',
-									col.sortable && 'cursor-pointer select-none hover:bg-gray-100',
+									'px-4 py-3 text-left font-medium text-fg-secondary',
+									col.sortable && 'cursor-pointer select-none hover:bg-muted',
 								)}
 								style={col.minWidth ? { minWidth: col.minWidth } : undefined}
 								onClick={col.sortable ? () => handleSort(col.key) : undefined}
@@ -229,7 +229,7 @@ export function DataTable({
 						))}
 					</tr>
 					{hasFilters && (
-						<tr className="border-b bg-white">
+						<tr className="border-b bg-surface">
 							{columns.map((col) => (
 								<th key={`filter-${col.key}`} className="px-4 py-2 font-normal">
 									{col.filter?.type === 'text' && (
@@ -238,7 +238,7 @@ export function DataTable({
 											value={filters[col.key] ?? ''}
 											placeholder={col.filter.placeholder ?? '検索...'}
 											onChange={(e) => handleFilterChange(col.key, e.target.value)}
-											className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+											className="w-full rounded border border-border-strong px-2 py-1 text-sm focus:border-primary focus:outline-none"
 											aria-label={`${col.label}で絞り込み`}
 										/>
 									)}
@@ -246,7 +246,7 @@ export function DataTable({
 										<select
 											value={filters[col.key] ?? ''}
 											onChange={(e) => handleFilterChange(col.key, e.target.value)}
-											className="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+											className="w-full rounded border border-border-strong px-2 py-1 text-sm focus:border-primary focus:outline-none"
 											aria-label={`${col.label}で絞り込み`}
 										>
 											<option value="">{col.filter.placeholder ?? 'すべて'}</option>
@@ -274,7 +274,7 @@ export function DataTable({
 							<tr
 								key={rowKey}
 								className={cn(
-									'border-b last:border-b-0 hover:bg-gray-50',
+									'border-b last:border-b-0 hover:bg-surface-alt',
 									isClickable && 'cursor-pointer',
 									evaluateRowHighlight(row, rowHighlight),
 								)}
@@ -310,7 +310,7 @@ export function DataTable({
 					})}
 					{rows.length === 0 && (
 						<tr>
-							<td colSpan={columns.length} className="px-4 py-8 text-center text-gray-400">
+							<td colSpan={columns.length} className="px-4 py-8 text-center text-fg-subtle">
 								{isFiltered ? noMatchMessage : emptyMessage}
 							</td>
 						</tr>

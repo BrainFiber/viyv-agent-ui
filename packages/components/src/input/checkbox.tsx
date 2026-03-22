@@ -31,11 +31,11 @@ export function Checkbox({
 					aria-invalid={!!error}
 					aria-describedby={error ? errorId : undefined}
 					onChange={(e) => onChange?.(e.target.checked)}
-					className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+					className="h-4 w-4 rounded border-border-strong text-primary focus:ring-ring"
 				/>
-				{label && <span className="text-sm text-gray-700">{label}</span>}
+				{label && <span className="text-sm text-fg-secondary">{label}</span>}
 			</label>
-			{error && <span id={errorId} role="alert" className="text-sm text-red-600">{error}</span>}
+			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
 		</div>
 	);
 }

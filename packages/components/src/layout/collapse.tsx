@@ -43,7 +43,7 @@ export function Collapse({ panels, accordion, defaultOpen, children, className }
 							aria-expanded={isOpen}
 							aria-controls={regionId}
 							onClick={() => toggle(panel.id)}
-							className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-gray-900 hover:bg-gray-50"
+							className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-fg hover:bg-surface-alt"
 						>
 							{panel.title}
 							<span className={cn('ml-2 transition-transform', isOpen && 'rotate-180')}>&#x25BE;</span>

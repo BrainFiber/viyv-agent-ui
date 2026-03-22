@@ -35,23 +35,23 @@ export function Stepper({ steps, current, direction = 'horizontal', className }:
 						<div
 							className={cn(
 								'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-medium',
-								isCompleted && 'bg-green-600 text-white',
-								isCurrent && 'border-2 border-blue-600 text-blue-600',
-								!isCompleted && !isCurrent && 'border-2 border-gray-300 text-gray-400',
+								isCompleted && 'bg-success text-success-fg',
+								isCurrent && 'border-2 border-primary text-primary',
+								!isCompleted && !isCurrent && 'border-2 border-border-strong text-fg-subtle',
 							)}
 						>
 							{isCompleted ? '\u2713' : i + 1}
 						</div>
 						<div className="min-w-0">
-							<p className={cn('text-sm font-medium', isCurrent ? 'text-blue-600' : isCompleted ? 'text-gray-900' : 'text-gray-500')}>
+							<p className={cn('text-sm font-medium', isCurrent ? 'text-primary' : isCompleted ? 'text-fg' : 'text-fg-muted')}>
 								{step.label}
 							</p>
 							{step.description && (
-								<p className="text-xs text-gray-400">{step.description}</p>
+								<p className="text-xs text-fg-subtle">{step.description}</p>
 							)}
 						</div>
 						{direction === 'horizontal' && i < steps.length - 1 && (
-							<div className={cn('h-0.5 flex-1', isCompleted ? 'bg-green-600' : 'bg-gray-200')} />
+							<div className={cn('h-0.5 flex-1', isCompleted ? 'bg-success' : 'bg-muted-strong')} />
 						)}
 					</div>
 				);

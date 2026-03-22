@@ -25,7 +25,7 @@ export function Pagination({
 	return (
 		<div
 			className={cn(
-				'flex items-center justify-between border-t px-4 py-3 text-sm text-gray-600',
+				'flex items-center justify-between border-t px-4 py-3 text-sm text-fg-muted',
 				className,
 			)}
 			role="navigation"
@@ -39,7 +39,7 @@ export function Pagination({
 					type="button"
 					disabled={currentPage === 0}
 					onClick={() => onPageChange(currentPage - 1)}
-					className="rounded border px-3 py-1 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent"
+					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:hover:bg-transparent"
 				>
 					前へ
 				</button>
@@ -50,7 +50,7 @@ export function Pagination({
 					type="button"
 					disabled={currentPage >= totalPages - 1}
 					onClick={() => onPageChange(currentPage + 1)}
-					className="rounded border px-3 py-1 hover:bg-gray-50 disabled:opacity-40 disabled:hover:bg-transparent"
+					className="rounded border px-3 py-1 hover:bg-surface-alt disabled:opacity-40 disabled:hover:bg-transparent"
 				>
 					次へ
 				</button>

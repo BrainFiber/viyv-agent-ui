@@ -21,7 +21,7 @@ export function Header({ title, subtitle, level = 1, className }: HeaderProps) {
 	return (
 		<div className={cn('space-y-1', className)}>
 			<Tag className={headingStyles[level]}>{title}</Tag>
-			{subtitle && <p className="text-gray-500">{subtitle}</p>}
+			{subtitle && <p className="text-fg-muted">{subtitle}</p>}
 		</div>
 	);
 }

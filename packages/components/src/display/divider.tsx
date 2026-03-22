@@ -7,7 +7,7 @@ export interface DividerProps {
 }
 
 export function Divider({ className }: DividerProps) {
-	return <hr className={cn('border-gray-200', className)} />;
+	return <hr className={cn('border-border', className)} />;
 }
 
 export const dividerMeta: ComponentMeta = {

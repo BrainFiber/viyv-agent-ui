@@ -43,8 +43,8 @@ function formatValue(value: unknown, format?: string): string {
 
 export function Stat({ label, value, format, trend, className }: StatProps) {
 	return (
-		<div className={cn('rounded-lg border bg-white p-4', className)}>
-			<p className="text-sm text-gray-500">{label}</p>
+		<div className={cn('rounded-lg border bg-surface p-4', className)}>
+			<p className="text-sm text-fg-muted">{label}</p>
 			<div className="mt-1 flex items-baseline gap-2">
 				<p className="text-2xl font-semibold">{formatValue(value, format)}</p>
 				{trend && (
@@ -53,9 +53,9 @@ export function Stat({ label, value, format, trend, className }: StatProps) {
 							'text-sm font-medium',
 							(() => {
 								const c = trend.color ?? 'auto';
-								if (c === 'green') return 'text-green-600';
-								if (c === 'red') return 'text-red-600';
-								return trend.direction === 'up' ? 'text-green-600' : 'text-red-600';
+								if (c === 'green') return 'text-success';
+								if (c === 'red') return 'text-danger';
+								return trend.direction === 'up' ? 'text-success' : 'text-danger';
 							})(),
 						)}
 						aria-label={`${trend.direction === 'up' ? '上昇' : '下降'} ${trend.value}`}

@@ -43,7 +43,7 @@ export function ProgressBar({ value, label, color = 'blue', size = 'md', showVal
 	return (
 		<div className={cn('flex items-center gap-2', className)}>
 			<div
-				className={cn('w-full rounded-full bg-gray-200 overflow-hidden', sizeMap[size] ?? sizeMap.md)}
+				className={cn('w-full rounded-full bg-muted-strong overflow-hidden', sizeMap[size] ?? sizeMap.md)}
 				role="progressbar"
 				aria-valuenow={clamped}
 				aria-valuemin={0}
@@ -55,7 +55,7 @@ export function ProgressBar({ value, label, color = 'blue', size = 'md', showVal
 					style={{ width: `${clamped}%` }}
 				/>
 			</div>
-			{showValue && <span className="text-sm font-medium text-gray-700 shrink-0">{clamped}%</span>}
+			{showValue && <span className="text-sm font-medium text-fg-secondary shrink-0">{clamped}%</span>}
 		</div>
 	);
 }

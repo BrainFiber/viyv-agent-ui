@@ -5,6 +5,7 @@ import { HookDataProvider } from './providers/hook-data-provider.js';
 import { InteractionProvider } from './providers/interaction-provider.js';
 import { PageProvider } from './providers/page-provider.js';
 import type { ComponentRegistry } from './registry.js';
+import { ThemeWrapper } from './theme-wrapper.js';
 
 export interface PageRendererProps {
 	/** Page ID to load from server */
@@ -116,7 +117,9 @@ export function PageRenderer({
 				searchParams={searchParams}
 			>
 				<InteractionProvider spec={spec}>
-					<ElementRenderer elementId={spec.root} />
+					<ThemeWrapper theme={spec.theme}>
+						<ElementRenderer elementId={spec.root} />
+					</ThemeWrapper>
 				</InteractionProvider>
 			</HookDataProvider>
 		</PageProvider>

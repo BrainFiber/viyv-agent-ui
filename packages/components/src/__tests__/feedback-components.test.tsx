@@ -19,7 +19,7 @@ describe('Toast', () => {
 	it('applies type styles', () => {
 		const { container } = render(<Toast message="Error" type="error" />);
 		const el = container.querySelector('[role="status"]');
-		expect(el?.className).toContain('bg-red-50');
+		expect(el?.className).toContain('bg-danger-soft');
 	});
 
 	it('closes when close button clicked', () => {

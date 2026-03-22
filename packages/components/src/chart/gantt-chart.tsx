@@ -53,13 +53,13 @@ export function GanttChart({
 				<div className="flex">
 					{/* Label column */}
 					<div className="w-[160px] shrink-0">
-						<div className="h-8 border-b border-gray-200" />
+						<div className="h-8 border-b border-border" />
 						{rows.map((row, i) => (
 							<div
 								key={`label-${i}`}
-								className="h-10 border-b border-gray-100 flex items-center px-2"
+								className="h-10 border-b border-border flex items-center px-2"
 							>
-								<span className="text-sm text-gray-700 truncate" title={String(row[taskKey] ?? '')}>
+								<span className="text-sm text-fg-secondary truncate" title={String(row[taskKey] ?? '')}>
 									{String(row[taskKey] ?? '')}
 								</span>
 							</div>
@@ -69,11 +69,11 @@ export function GanttChart({
 					{/* Bar area */}
 					<div className="flex-1 relative min-w-0">
 						{/* Header ticks */}
-						<div className="relative h-8 border-b border-gray-200">
+						<div className="relative h-8 border-b border-border">
 							{ticks.map((tick, i) => (
 								<span
 									key={`${tick.label}-${i}`}
-									className="absolute text-xs text-gray-500 -translate-x-1/2"
+									className="absolute text-xs text-fg-muted -translate-x-1/2"
 									style={{ left: `${tick.percent}%` }}
 								>
 									{tick.label}
@@ -84,7 +84,7 @@ export function GanttChart({
 						{/* Today marker — positioned relative to bar area */}
 						{showToday && (
 							<div
-								className="absolute top-0 bottom-0 border-l-2 border-dashed border-red-400 z-10"
+								className="absolute top-0 bottom-0 border-l-2 border-dashed border-danger z-10"
 								style={{ left: `${todayPercent}%` }}
 								aria-label="Today"
 							/>
@@ -111,7 +111,7 @@ export function GanttChart({
 								: `${taskName}: ${startStr} ~ ${endStr}`;
 
 							return (
-								<div key={`bar-${i}`} className="relative h-10 border-b border-gray-100">
+								<div key={`bar-${i}`} className="relative h-10 border-b border-border">
 									<div
 										className="absolute top-1.5 h-6 rounded"
 										style={{

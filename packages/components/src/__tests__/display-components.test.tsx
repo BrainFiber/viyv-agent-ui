@@ -83,14 +83,14 @@ describe('Alert', () => {
 	it('applies type-specific styles', () => {
 		const { container } = render(<Alert message="Error occurred" type="error" />);
 		const div = container.querySelector('[role="alert"]');
-		expect(div?.className).toContain('border-red-200');
-		expect(div?.className).toContain('bg-red-50');
+		expect(div?.className).toContain('border-danger-soft-border');
+		expect(div?.className).toContain('bg-danger-soft');
 	});
 
 	it('defaults to info type', () => {
 		const { container } = render(<Alert message="Info" />);
 		const div = container.querySelector('[role="alert"]');
-		expect(div?.className).toContain('border-blue-200');
+		expect(div?.className).toContain('border-primary-soft-border');
 	});
 });
 
@@ -187,7 +187,7 @@ describe('Text', () => {
 		const p = container.querySelector('p');
 		expect(p?.className).toContain('text-xl');
 		expect(p?.className).toContain('font-bold');
-		expect(p?.className).toContain('text-gray-900');
+		expect(p?.className).toContain('text-fg');
 	});
 
 	it('applies caption variant classes', () => {
@@ -195,7 +195,7 @@ describe('Text', () => {
 		const p = container.querySelector('p');
 		expect(p?.className).toContain('text-sm');
 		expect(p?.className).toContain('font-normal');
-		expect(p?.className).toContain('text-gray-500');
+		expect(p?.className).toContain('text-fg-muted');
 	});
 
 	it('applies price variant classes', () => {
@@ -212,7 +212,7 @@ describe('Text', () => {
 		const p = container.querySelector('p');
 		expect(p?.className).toContain('text-sm');
 		expect(p?.className).toContain('font-normal');
-		expect(p?.className).toContain('text-gray-500');
+		expect(p?.className).toContain('text-fg-muted');
 	});
 
 	it('applies truncate true', () => {
@@ -236,13 +236,13 @@ describe('Text', () => {
 	it('applies color prop', () => {
 		const { container } = render(<Text content="Danger" color="danger" />);
 		const p = container.querySelector('p');
-		expect(p?.className).toContain('text-red-600');
+		expect(p?.className).toContain('text-danger');
 	});
 
-	it('defaults to text-gray-700 without variant', () => {
+	it('defaults to text-fg-secondary without variant', () => {
 		const { container } = render(<Text content="Default" />);
 		const p = container.querySelector('p');
-		expect(p?.className).toContain('text-gray-700');
+		expect(p?.className).toContain('text-fg-secondary');
 	});
 });
 

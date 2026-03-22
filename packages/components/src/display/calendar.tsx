@@ -62,19 +62,19 @@ export function Calendar({ events = [], defaultMonth, onDateClick, className }: 
 	for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
 	return (
-		<div className={cn('rounded-lg border bg-white p-4', className)}>
+		<div className={cn('rounded-lg border bg-surface p-4', className)}>
 			<div className="mb-4 flex items-center justify-between">
-				<button type="button" onClick={prevMonth} aria-label="Previous month" className="rounded p-1 hover:bg-gray-100">
+				<button type="button" onClick={prevMonth} aria-label="Previous month" className="rounded p-1 hover:bg-muted">
 					&#x2039;
 				</button>
 				<span className="text-sm font-semibold">{year}年{month + 1}月</span>
-				<button type="button" onClick={nextMonth} aria-label="Next month" className="rounded p-1 hover:bg-gray-100">
+				<button type="button" onClick={nextMonth} aria-label="Next month" className="rounded p-1 hover:bg-muted">
 					&#x203A;
 				</button>
 			</div>
 			<div role="grid" aria-label="Calendar" className="grid grid-cols-7 gap-1">
 				{WEEKDAYS.map((day) => (
-					<div key={day} className="py-1 text-center text-xs font-medium text-gray-500">
+					<div key={day} className="py-1 text-center text-xs font-medium text-fg-muted">
 						{day}
 					</div>
 				))}
@@ -91,8 +91,8 @@ export function Calendar({ events = [], defaultMonth, onDateClick, className }: 
 							aria-label={`${month + 1}月${day}日${dayEvents ? ` (${dayEvents.map(e => e.label).join(', ')})` : ''}`}
 							onClick={() => onDateClick?.(dateStr)}
 							className={cn(
-								'relative flex h-10 w-full flex-col items-center justify-center rounded text-sm transition-colors hover:bg-gray-100',
-								isToday && 'font-bold text-blue-600 ring-1 ring-blue-600',
+								'relative flex h-10 w-full flex-col items-center justify-center rounded text-sm transition-colors hover:bg-muted',
+								isToday && 'font-bold text-primary ring-1 ring-primary',
 							)}
 						>
 							{day}

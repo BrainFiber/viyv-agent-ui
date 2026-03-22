@@ -40,6 +40,10 @@ export { usePageState, useAction } from './hooks/use-page-interaction.js';
 export { ItemProvider, useItemContext } from './providers/item-provider.js';
 export type { ItemContextValue } from './providers/item-provider.js';
 
+// Theme
+export { ThemeWrapper } from './theme-wrapper.js';
+export type { ThemeWrapperProps } from './theme-wrapper.js';
+
 // Type handlers
 export { getTypeHandler } from './renderers/index.js';
 export type { TypeHandlerComponent, TypeHandlerProps } from './renderers/index.js';

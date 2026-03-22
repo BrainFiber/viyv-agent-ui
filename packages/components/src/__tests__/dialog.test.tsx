@@ -45,7 +45,7 @@ describe('Dialog', () => {
 		const { container } = render(<Dialog title="Test" />);
 		const backdrop = container.querySelector('[aria-hidden="true"]');
 		expect(backdrop).toBeTruthy();
-		expect(backdrop?.className).toContain('bg-black/50');
+		expect(backdrop?.className).toContain('bg-overlay');
 	});
 
 	it('applies custom className', () => {

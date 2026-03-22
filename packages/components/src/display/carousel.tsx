@@ -56,7 +56,7 @@ export function Carousel({
 						type="button"
 						onClick={prev}
 						aria-label="Previous slide"
-						className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow hover:bg-white"
+						className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/80 p-2 shadow hover:bg-surface"
 					>
 						&#x2039;
 					</button>
@@ -64,7 +64,7 @@ export function Carousel({
 						type="button"
 						onClick={next}
 						aria-label="Next slide"
-						className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 shadow hover:bg-white"
+						className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/80 p-2 shadow hover:bg-surface"
 					>
 						&#x203A;
 					</button>
@@ -80,7 +80,7 @@ export function Carousel({
 							aria-label={`Go to slide ${i + 1}`}
 							className={cn(
 								'h-2 w-2 rounded-full transition-colors',
-								i === active ? 'bg-blue-600' : 'bg-gray-300',
+								i === active ? 'bg-primary' : 'bg-fg-disabled',
 							)}
 						/>
 					))}

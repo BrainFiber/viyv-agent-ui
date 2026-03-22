@@ -21,7 +21,7 @@ export function Descriptions({
 }: DescriptionsProps) {
 	return (
 		<div className={cn(className)}>
-			{title && <h3 className="mb-3 text-base font-semibold text-gray-900">{title}</h3>}
+			{title && <h3 className="mb-3 text-base font-semibold text-fg">{title}</h3>}
 			<dl
 				aria-label={title}
 				className={cn(
@@ -42,12 +42,12 @@ export function Descriptions({
 						)}
 					>
 						<dt className={cn(
-							'text-sm font-medium text-gray-500',
+							'text-sm font-medium text-fg-muted',
 							layout === 'horizontal' && 'w-1/3 shrink-0',
 						)}>
 							{item.label}
 						</dt>
-						<dd className="text-sm text-gray-900">{item.value}</dd>
+						<dd className="text-sm text-fg">{item.value}</dd>
 					</div>
 					);
 				})}

@@ -13,10 +13,10 @@ export interface ToastProps {
 }
 
 const typeStyles: Record<string, string> = {
-	info: 'border-blue-200 bg-blue-50 text-blue-800',
-	success: 'border-green-200 bg-green-50 text-green-800',
-	warning: 'border-yellow-200 bg-yellow-50 text-yellow-800',
-	error: 'border-red-200 bg-red-50 text-red-800',
+	info: 'border-primary-soft-border bg-primary-soft text-primary-soft-fg',
+	success: 'border-success-soft-border bg-success-soft text-success-soft-fg',
+	warning: 'border-warning-soft-border bg-warning-soft text-warning-soft-fg',
+	error: 'border-danger-soft-border bg-danger-soft text-danger-soft-fg',
 };
 
 const positionStyles: Record<string, string> = {

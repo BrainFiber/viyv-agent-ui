@@ -46,7 +46,7 @@ export function Autocomplete({
 
 	return (
 		<div className={cn('relative', className)}>
-			{label && <span className="mb-1 block text-sm font-medium text-gray-700">{label}</span>}
+			{label && <span className="mb-1 block text-sm font-medium text-fg-secondary">{label}</span>}
 			<input
 				ref={inputRef}
 				role="combobox"
@@ -68,16 +68,16 @@ export function Autocomplete({
 				}}
 				onBlur={() => setTimeout(() => setOpen(false), 150)}
 				className={cn(
-					'w-full rounded-md border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500',
-					disabled && 'cursor-not-allowed bg-gray-100 opacity-50',
-					error && 'border-red-500',
+					'w-full rounded-md border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
+					disabled && 'cursor-not-allowed bg-muted opacity-50',
+					error && 'border-danger',
 				)}
 			/>
 			{open && filtered.length > 0 && (
 				<ul
 					id={listboxId}
 					role="listbox"
-					className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white py-1 shadow-lg"
+					className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-surface py-1 shadow-lg"
 				>
 					{filtered.map((opt) => (
 						<li
@@ -87,8 +87,8 @@ export function Autocomplete({
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => handleSelect(opt)}
 							className={cn(
-								'cursor-pointer px-3 py-2 text-sm hover:bg-blue-50',
-								opt.value === value && 'bg-blue-50 font-medium text-blue-700',
+								'cursor-pointer px-3 py-2 text-sm hover:bg-primary-soft',
+								opt.value === value && 'bg-primary-soft font-medium text-primary-soft-fg',
 							)}
 						>
 							{opt.label}
@@ -96,7 +96,7 @@ export function Autocomplete({
 					))}
 				</ul>
 			)}
-			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-red-600">{error}</span>}
+			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
 		</div>
 	);
 }

@@ -13,7 +13,7 @@ export function Link({ href, label, external, className }: LinkProps) {
 	return (
 		<a
 			href={href}
-			className={cn('text-blue-600 underline underline-offset-2 hover:text-blue-800', className)}
+			className={cn('text-primary underline underline-offset-2 hover:text-primary-hover', className)}
 			{...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
 		>
 			{label}

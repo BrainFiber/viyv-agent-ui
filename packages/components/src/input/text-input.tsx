@@ -27,7 +27,7 @@ export function TextInput({
 	const errorId = useId();
 	return (
 		<label className={cn('block space-y-1', className)}>
-			{label && <span className="text-sm font-medium text-gray-700">{label}</span>}
+			{label && <span className="text-sm font-medium text-fg-secondary">{label}</span>}
 			<input
 				type={type ?? 'text'}
 				value={value ?? ''}
@@ -40,12 +40,12 @@ export function TextInput({
 					onChange?.(type === 'number' ? (v === '' ? '' : Number(v)) as any : v);
 				}}
 				className={cn(
-					'block w-full rounded-md border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500',
-					disabled && 'cursor-not-allowed bg-gray-100 opacity-50',
-					error && 'border-red-500',
+					'block w-full rounded-md border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
+					disabled && 'cursor-not-allowed bg-muted opacity-50',
+					error && 'border-danger',
 				)}
 			/>
-			{error && <span id={errorId} role="alert" className="text-sm text-red-600">{error}</span>}
+			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
 		</label>
 	);
 }

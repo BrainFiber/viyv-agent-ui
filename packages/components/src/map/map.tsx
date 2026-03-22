@@ -18,7 +18,7 @@ function MapPlaceholder({ height, className, children }: { height: number; class
 	return (
 		<div
 			className={cn(
-				'flex items-center justify-center rounded-lg border bg-gray-50 text-sm text-gray-400',
+				'flex items-center justify-center rounded-lg border bg-surface-alt text-sm text-fg-subtle',
 				className,
 			)}
 			style={{ height }}

@@ -15,7 +15,7 @@ export function Dialog({ title, children, className }: DialogProps) {
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
-			<div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+			<div className="absolute inset-0 bg-overlay" aria-hidden="true" />
 			<div
 				ref={overlayRef}
 				role="dialog"
@@ -23,9 +23,9 @@ export function Dialog({ title, children, className }: DialogProps) {
 				aria-labelledby={titleId}
 				tabIndex={-1}
 				style={{ maxWidth: '32rem' }}
-				className={cn('relative z-10 w-full rounded-lg bg-white p-6 shadow-xl focus:outline-none', className)}
+				className={cn('relative z-10 w-full rounded-lg bg-surface p-6 shadow-xl focus:outline-none', className)}
 			>
-				<h2 id={titleId} className="text-lg font-semibold text-gray-900">{title}</h2>
+				<h2 id={titleId} className="text-lg font-semibold text-fg">{title}</h2>
 				<div className="mt-4">{children}</div>
 			</div>
 		</div>

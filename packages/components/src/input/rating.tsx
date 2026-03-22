@@ -21,7 +21,7 @@ export function Rating({
 }: RatingProps) {
 	return (
 		<div className={cn(className)}>
-			{label && <span className="mb-1 block text-sm font-medium text-gray-700">{label}</span>}
+			{label && <span className="mb-1 block text-sm font-medium text-fg-secondary">{label}</span>}
 			<div role="radiogroup" aria-label={label ?? 'Rating'} className="flex gap-1">
 				{Array.from({ length: max }, (_, i) => {
 					const starValue = i + 1;
@@ -36,9 +36,9 @@ export function Rating({
 							disabled={disabled}
 							onClick={() => onChange?.(starValue)}
 							className={cn(
-								'text-2xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded',
-								filled ? 'text-yellow-400' : 'text-gray-300',
-								disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:text-yellow-400',
+								'text-2xl transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 rounded',
+								filled ? 'text-warning-accent' : 'text-fg-disabled',
+								disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:text-warning-accent',
 							)}
 						>
 							&#x2605;

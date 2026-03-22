@@ -18,7 +18,7 @@ export function Drawer({ title, position = 'right', width = 400, onClose, childr
 
 	return (
 		<div className="fixed inset-0 z-50 flex">
-			<div className="absolute inset-0 bg-black/50" aria-hidden="true" />
+			<div className="absolute inset-0 bg-overlay" aria-hidden="true" />
 			<div
 				ref={overlayRef}
 				role="dialog"
@@ -27,19 +27,19 @@ export function Drawer({ title, position = 'right', width = 400, onClose, childr
 				tabIndex={-1}
 				style={{ width: `${width}px` }}
 				className={cn(
-					'relative z-10 flex h-full flex-col bg-white shadow-xl focus:outline-none',
+					'relative z-10 flex h-full flex-col bg-surface shadow-xl focus:outline-none',
 					position === 'right' ? 'ml-auto' : 'mr-auto',
 					className,
 				)}
 			>
 				<div className="flex items-center justify-between border-b px-6 py-4">
-					<h2 id={titleId} className="text-lg font-semibold text-gray-900">{title}</h2>
+					<h2 id={titleId} className="text-lg font-semibold text-fg">{title}</h2>
 					{onClose && (
 						<button
 							type="button"
 							onClick={onClose}
 							aria-label="Close"
-							className="shrink-0 rounded p-1 text-gray-400 hover:text-gray-600"
+							className="shrink-0 rounded p-1 text-fg-subtle hover:text-fg-muted"
 						>
 							&#x2715;
 						</button>

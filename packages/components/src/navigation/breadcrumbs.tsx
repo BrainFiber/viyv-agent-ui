@@ -12,18 +12,18 @@ export function Breadcrumbs({ items, separator = '/', className }: BreadcrumbsPr
 	if (items.length === 0) return null;
 	return (
 		<nav aria-label="Breadcrumb" className={cn(className)}>
-			<ol className="flex items-center gap-1 text-sm text-gray-600">
+			<ol className="flex items-center gap-1 text-sm text-fg-muted">
 				{items.map((item, i) => {
 					const isLast = i === items.length - 1;
 					return (
 						<li key={i} className="flex items-center gap-1">
-							{i > 0 && <span aria-hidden="true" className="text-gray-400">{separator}</span>}
+							{i > 0 && <span aria-hidden="true" className="text-fg-subtle">{separator}</span>}
 							{isLast || !item.href ? (
-								<span aria-current={isLast ? 'page' : undefined} className={cn(isLast && 'font-medium text-gray-900')}>
+								<span aria-current={isLast ? 'page' : undefined} className={cn(isLast && 'font-medium text-fg')}>
 									{item.label}
 								</span>
 							) : (
-								<a href={item.href} className="hover:text-gray-900 hover:underline">{item.label}</a>
+								<a href={item.href} className="hover:text-fg hover:underline">{item.label}</a>
 							)}
 						</li>
 					);

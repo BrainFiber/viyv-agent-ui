@@ -13,9 +13,9 @@ export interface ButtonProps {
 }
 
 const variantStyles = {
-	primary: 'bg-blue-600 text-white hover:bg-blue-700',
-	secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 border',
-	danger: 'bg-red-600 text-white hover:bg-red-700',
+	primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
+	secondary: 'bg-muted text-fg-secondary hover:bg-muted-strong border',
+	danger: 'bg-danger text-danger-fg hover:bg-danger-hover',
 };
 
 export function Button({ label, variant = 'primary', disabled, onClick, className }: ButtonProps) {

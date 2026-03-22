@@ -26,8 +26,8 @@ export function Switch({ label, checked, disabled, error, onChange, className }:
 					disabled={disabled}
 					onClick={() => onChange?.(!checked)}
 					className={cn(
-						'relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-						checked ? 'bg-blue-600' : 'bg-gray-200',
+						'relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+						checked ? 'bg-primary' : 'bg-muted-strong',
 					)}
 				>
 					<span
@@ -38,9 +38,9 @@ export function Switch({ label, checked, disabled, error, onChange, className }:
 						)}
 					/>
 				</button>
-				{label && <span className="text-sm text-gray-700">{label}</span>}
+				{label && <span className="text-sm text-fg-secondary">{label}</span>}
 			</label>
-			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-red-600">{error}</span>}
+			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
 		</div>
 	);
 }

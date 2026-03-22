@@ -1,0 +1,55 @@
+@theme {
+	/* ── Primary/Brand ── */
+	--color-primary: #3b82f6;
+	--color-primary-hover: #2563eb;
+	--color-primary-fg: #ffffff;
+	--color-primary-soft: #eff6ff;
+	--color-primary-soft-fg: #1e40af;
+	--color-primary-soft-border: #bfdbfe;
+
+	/* ── Danger ── */
+	--color-danger: #dc2626;
+	--color-danger-hover: #b91c1c;
+	--color-danger-fg: #ffffff;
+	--color-danger-soft: #fef2f2;
+	--color-danger-soft-fg: #991b1b;
+	--color-danger-soft-border: #fecaca;
+
+	/* ── Success ── */
+	--color-success: #16a34a;
+	--color-success-fg: #ffffff;
+	--color-success-soft: #f0fdf4;
+	--color-success-soft-fg: #166534;
+	--color-success-soft-border: #bbf7d0;
+
+	/* ── Warning ── */
+	--color-warning: #ca8a04;
+	--color-warning-fg: #ffffff;
+	--color-warning-accent: #facc15;
+	--color-warning-soft: #fefce8;
+	--color-warning-soft-fg: #854d0e;
+	--color-warning-soft-border: #fef08a;
+
+	/* ── Neutral: Surfaces ── */
+	--color-surface: #ffffff;
+	--color-surface-alt: #f9fafb;
+	--color-muted: #f3f4f6;
+	--color-muted-strong: #e5e7eb;
+
+	/* ── Neutral: Text ── */
+	--color-fg: #111827;
+	--color-fg-secondary: #374151;
+	--color-fg-muted: #6b7280;
+	--color-fg-subtle: #9ca3af;
+	--color-fg-disabled: #d1d5db;
+
+	/* ── Neutral: Borders ── */
+	--color-border: #e5e7eb;
+	--color-border-strong: #d1d5db;
+
+	/* ── Utility ── */
+	--color-ring: #3b82f6;
+	--color-overlay: rgb(0 0 0 / 0.5);
+	--color-tooltip-bg: #111827;
+	--color-tooltip-fg: #ffffff;
+}

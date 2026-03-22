@@ -32,8 +32,8 @@ export function Slider({
 		<div className={cn('space-y-1', className)}>
 			{(label || showValue) && (
 				<div className="flex items-center justify-between">
-					{label && <label htmlFor={id} className="text-sm font-medium text-gray-700">{label}</label>}
-					{showValue && <span className="text-sm text-gray-500">{current}</span>}
+					{label && <label htmlFor={id} className="text-sm font-medium text-fg-secondary">{label}</label>}
+					{showValue && <span className="text-sm text-fg-muted">{current}</span>}
 				</div>
 			)}
 			<input
@@ -46,7 +46,7 @@ export function Slider({
 				disabled={disabled}
 				onChange={(e) => onChange?.(Number(e.target.value))}
 				className={cn(
-					'w-full accent-blue-600',
+					'w-full accent-primary',
 					disabled && 'cursor-not-allowed opacity-50',
 				)}
 			/>

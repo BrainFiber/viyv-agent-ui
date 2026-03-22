@@ -13,11 +13,11 @@ export interface TextProps {
 }
 
 const variantDefaults: Record<string, { size: string; weight: string; color: string }> = {
-	heading: { size: 'text-xl', weight: 'font-bold', color: 'text-gray-900' },
-	subheading: { size: 'text-lg', weight: 'font-semibold', color: 'text-gray-800' },
-	body: { size: 'text-base', weight: 'font-normal', color: 'text-gray-700' },
-	caption: { size: 'text-sm', weight: 'font-normal', color: 'text-gray-500' },
-	price: { size: 'text-lg', weight: 'font-bold', color: 'text-gray-900' },
+	heading: { size: 'text-xl', weight: 'font-bold', color: 'text-fg' },
+	subheading: { size: 'text-lg', weight: 'font-semibold', color: 'text-fg' },
+	body: { size: 'text-base', weight: 'font-normal', color: 'text-fg-secondary' },
+	caption: { size: 'text-sm', weight: 'font-normal', color: 'text-fg-muted' },
+	price: { size: 'text-lg', weight: 'font-bold', color: 'text-fg' },
 };
 
 const sizeMap: Record<string, string> = {
@@ -37,12 +37,12 @@ const weightMap: Record<string, string> = {
 };
 
 const colorMap: Record<string, string> = {
-	default: 'text-gray-700',
-	muted: 'text-gray-500',
-	primary: 'text-blue-600',
-	success: 'text-green-600',
-	warning: 'text-yellow-600',
-	danger: 'text-red-600',
+	default: 'text-fg-secondary',
+	muted: 'text-fg-muted',
+	primary: 'text-primary',
+	success: 'text-success',
+	warning: 'text-warning',
+	danger: 'text-danger',
 };
 
 function getTruncateClass(truncate?: boolean | number): string | undefined {
@@ -56,7 +56,7 @@ export function Text({ content, variant, size, weight, color, truncate, classNam
 
 	const sizeClass = size ? sizeMap[size] : defaults?.size;
 	const weightClass = weight ? weightMap[weight] : defaults?.weight;
-	const colorClass = color ? colorMap[color] : (defaults?.color ?? 'text-gray-700');
+	const colorClass = color ? colorMap[color] : (defaults?.color ?? 'text-fg-secondary');
 	const truncateClass = getTruncateClass(truncate);
 
 	return (

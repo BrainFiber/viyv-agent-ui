@@ -38,7 +38,7 @@ export function List({
 }: ListProps) {
 	const items = Array.isArray(data) ? data : [];
 	if (items.length === 0) {
-		return <p className={cn('py-8 text-center text-sm text-gray-500', className)}>{emptyMessage}</p>;
+		return <p className={cn('py-8 text-center text-sm text-fg-muted', className)}>{emptyMessage}</p>;
 	}
 
 	const Tag = ordered ? 'ol' : 'ul';
@@ -54,13 +54,13 @@ export function List({
 				const content = (
 					<div className="flex items-center gap-3 px-2 py-3">
 						{avatar !== undefined && (
-							<span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-medium text-gray-600">
+							<span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted-strong text-xs font-medium text-fg-muted">
 								{getInitial(avatar || label)}
 							</span>
 						)}
 						<div className="min-w-0 flex-1">
-							<p className="text-sm font-medium text-gray-900 truncate">{label}</p>
-							{secondary && <p className="text-xs text-gray-500 truncate">{secondary}</p>}
+							<p className="text-sm font-medium text-fg truncate">{label}</p>
+							{secondary && <p className="text-xs text-fg-muted truncate">{secondary}</p>}
 						</div>
 					</div>
 				);
@@ -68,7 +68,7 @@ export function List({
 				return (
 					<li key={label || i} role="listitem" aria-label={label}>
 						{href ? (
-							<a href={href} className="block hover:bg-gray-50">{content}</a>
+							<a href={href} className="block hover:bg-surface-alt">{content}</a>
 						) : (
 							content
 						)}

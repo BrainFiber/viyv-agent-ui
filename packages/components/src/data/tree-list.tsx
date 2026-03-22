@@ -59,22 +59,22 @@ function TreeNode({ node, labelKey, childrenKey, idKey, level, expanded, onToggl
 	return (
 		<li role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
 			<div
-				className="flex items-center py-1 cursor-default hover:bg-gray-50 rounded"
+				className="flex items-center py-1 cursor-default hover:bg-surface-alt rounded"
 				style={{ paddingLeft: `${level * 20}px` }}
 			>
 				{hasChildren ? (
 					<button
 						type="button"
-						className="mr-1 w-5 h-5 flex items-center justify-center text-gray-500 hover:text-gray-700"
+						className="mr-1 w-5 h-5 flex items-center justify-center text-fg-muted hover:text-fg-secondary"
 						onClick={() => onToggle(id)}
 						aria-label={isExpanded ? `Collapse ${label}` : `Expand ${label}`}
 					>
 						{isExpanded ? '▼' : '▶'}
 					</button>
 				) : (
-					<span className="mr-1 w-5 h-5 flex items-center justify-center text-gray-400">•</span>
+					<span className="mr-1 w-5 h-5 flex items-center justify-center text-fg-subtle">•</span>
 				)}
-				<span className="text-sm text-gray-800">{label}</span>
+				<span className="text-sm text-fg">{label}</span>
 			</div>
 			{hasChildren && isExpanded && (
 				<ul role="group">

@@ -31,7 +31,7 @@ export function RadioGroup({
 	const errorId = useId();
 	return (
 		<fieldset className={cn('space-y-2', className)} aria-invalid={!!error} aria-describedby={error ? errorId : undefined}>
-			{label && <legend className="text-sm font-medium text-gray-700">{label}</legend>}
+			{label && <legend className="text-sm font-medium text-fg-secondary">{label}</legend>}
 			{options.map((opt) => (
 				<label
 					key={opt.value}
@@ -47,12 +47,12 @@ export function RadioGroup({
 						checked={value === opt.value}
 						disabled={disabled}
 						onChange={() => onChange?.(opt.value)}
-						className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+						className="h-4 w-4 border-border-strong text-primary focus:ring-ring"
 					/>
-					<span className="text-sm text-gray-700">{opt.label}</span>
+					<span className="text-sm text-fg-secondary">{opt.label}</span>
 				</label>
 			))}
-			{error && <span id={errorId} role="alert" className="text-sm text-red-600">{error}</span>}
+			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
 		</fieldset>
 	);
 }

@@ -49,7 +49,7 @@ export function toNumber(val: unknown): number {
 export function ChartContainer({ title, className, children }: { title?: string; className?: string; children: React.ReactNode }) {
 	return (
 		<div className={cn('min-h-[300px]', className)} aria-label={title ?? 'Chart'}>
-			{title && <h4 className="mb-2 text-sm font-medium text-gray-700">{title}</h4>}
+			{title && <h4 className="mb-2 text-sm font-medium text-fg-secondary">{title}</h4>}
 			{children}
 		</div>
 	);
@@ -59,8 +59,8 @@ export function ChartContainer({ title, className, children }: { title?: string;
 export function ChartEmptyState({ title, className }: { title?: string; className?: string }) {
 	return (
 		<div className={cn('flex min-h-[300px] flex-col items-center justify-center rounded-lg border', className)}>
-			{title && <h4 className="mb-2 text-sm font-medium text-gray-700">{title}</h4>}
-			<p className="text-sm text-gray-400">No data</p>
+			{title && <h4 className="mb-2 text-sm font-medium text-fg-secondary">{title}</h4>}
+			<p className="text-sm text-fg-subtle">No data</p>
 		</div>
 	);
 }
