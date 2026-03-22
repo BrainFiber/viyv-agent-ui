@@ -182,7 +182,7 @@ export function InteractionProvider({ spec, children }: InteractionProviderProps
 		const result: Record<string, (...args: unknown[]) => void> = {};
 		const deps: ActionHandlerDeps = { setState, stateRef, setHookData, hookDataRef, refetchHook };
 
-		for (const [id, actionDef] of Object.entries(spec.actions)) {
+		for (const [id, actionDef] of Object.entries(spec.actions ?? {})) {
 			result[id] = createActionHandler(actionDef, deps);
 		}
 

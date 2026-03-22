@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, Children, useId } from 'react';
 import type { ReactNode } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { collapseVariants } from '../lib/motion-presets.js';
 
 export interface CollapseProps {
 	panels: Array<{ id: string; title: string }>;
@@ -48,16 +50,24 @@ export function Collapse({ panels, accordion, defaultOpen, children, className }
 							{panel.title}
 							<span className={cn('ml-2 transition-transform', isOpen && 'rotate-180')}>&#x25BE;</span>
 						</button>
-						{isOpen && (
-							<div
-								id={regionId}
-								role="region"
-								aria-labelledby={headerId}
-								className="px-4 pb-4 pt-2"
-							>
-								{childArray[i] ?? null}
-							</div>
-						)}
+						<AnimatePresence initial={false}>
+							{isOpen && (
+								<motion.div
+									id={regionId}
+									role="region"
+									aria-labelledby={headerId}
+									variants={collapseVariants}
+									initial="hidden"
+									animate="visible"
+									exit="exit"
+									style={{ overflow: 'hidden' }}
+								>
+									<div className="px-4 pb-4 pt-2">
+										{childArray[i] ?? null}
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
 					</div>
 				);
 			})}

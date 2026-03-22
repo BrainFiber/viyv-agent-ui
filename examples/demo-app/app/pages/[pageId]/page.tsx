@@ -2,7 +2,7 @@
 
 import { use } from 'react';
 import { PageRenderer } from '@viyv/agent-ui-react';
-import { defaultRegistry } from '@viyv/agent-ui-components';
+import { defaultRegistry, defaultOverlayTypes } from '@viyv/agent-ui-components';
 
 function LoadingSkeleton() {
 	return (
@@ -43,6 +43,7 @@ export default function PageView({
 			pageId={pageId}
 			queryEndpoint="/api/agent-ui"
 			registry={defaultRegistry}
+			overlayTypes={defaultOverlayTypes}
 			loading={<LoadingSkeleton />}
 			error={ErrorDisplay}
 			searchParams={sp}

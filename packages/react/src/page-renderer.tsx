@@ -24,6 +24,8 @@ export interface PageRendererProps {
 	error?: React.ComponentType<{ error: Error }>;
 	/** URL search params (forwarded to hooks as _params) */
 	searchParams?: Record<string, string | string[] | undefined>;
+	/** Component type names that receive `open` prop from visibility instead of unmounting */
+	overlayTypes?: Set<string>;
 }
 
 export function PageRenderer({
@@ -35,6 +37,7 @@ export function PageRenderer({
 	loading,
 	error: ErrorComponent,
 	searchParams,
+	overlayTypes,
 }: PageRendererProps) {
 	const [spec, setSpec] = useState<PageSpec | null>(directSpec ?? null);
 	const [loadError, setLoadError] = useState<Error | null>(null);
@@ -108,6 +111,7 @@ export function PageRenderer({
 			queryEndpoint={queryEndpoint}
 			pageId={pageId}
 			previewId={previewId}
+			overlayTypes={overlayTypes}
 		>
 			<HookDataProvider
 				spec={spec}

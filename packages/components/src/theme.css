@@ -127,40 +127,4 @@
 	}
 }
 
-/* ── Animations ── */
-@keyframes dialog-in {
-	from { opacity: 0; transform: scale(0.95) translateY(8px); }
-	to { opacity: 1; transform: scale(1) translateY(0); }
-}
-@keyframes backdrop-in {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
-@keyframes drawer-in-right {
-	from { transform: translateX(100%); }
-	to { transform: translateX(0); }
-}
-@keyframes drawer-in-left {
-	from { transform: translateX(-100%); }
-	to { transform: translateX(0); }
-}
-@keyframes toast-in {
-	from { opacity: 0; transform: translateY(-8px) scale(0.95); }
-	to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes tooltip-in {
-	from { opacity: 0; transform: scale(0.95); }
-	to { opacity: 1; transform: scale(1); }
-}
-@keyframes dropdown-in {
-	from { opacity: 0; transform: translateY(-4px); }
-	to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-dialog-in { animation: dialog-in 200ms ease-out; }
-.animate-backdrop-in { animation: backdrop-in 150ms ease-out; }
-.animate-drawer-in-right { animation: drawer-in-right 250ms ease-out; }
-.animate-drawer-in-left { animation: drawer-in-left 250ms ease-out; }
-.animate-toast-in { animation: toast-in 200ms ease-out; }
-.animate-tooltip-in { animation: tooltip-in 100ms ease-out; }
-.animate-dropdown-in { animation: dropdown-in 150ms ease-out; }
+/* Animations are now handled by Motion (framer-motion) via JS */

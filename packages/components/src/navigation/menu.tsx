@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { collapseVariants } from '../lib/motion-presets.js';
 
 export interface MenuItem {
 	label: string;
@@ -89,19 +91,29 @@ function MenuItemComponent({
 					{content}
 				</button>
 			)}
-			{hasChildren && open && !collapsed && (
-				<ul role="menu" className="ml-4 mt-1 space-y-1">
-					{item.items!.map((child) => (
-						<MenuItemComponent
-							key={child.label}
-							item={child}
-							focusedIndex={-1}
-							itemIndex={-1}
-							onRequestFocus={() => {}}
-						/>
-					))}
-				</ul>
-			)}
+			<AnimatePresence>
+				{hasChildren && open && !collapsed && (
+					<motion.ul
+						role="menu"
+						className="ml-4 mt-1 space-y-1"
+						variants={collapseVariants}
+						initial="hidden"
+						animate="visible"
+						exit="exit"
+						style={{ overflow: 'hidden' }}
+					>
+						{item.items!.map((child) => (
+							<MenuItemComponent
+								key={child.label}
+								item={child}
+								focusedIndex={-1}
+								itemIndex={-1}
+								onRequestFocus={() => {}}
+							/>
+						))}
+					</motion.ul>
+				)}
+			</AnimatePresence>
 		</li>
 	);
 }

@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useId, useRef, useLayoutEffect, Children } from 'react';
 import type { ReactNode } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { tooltipVariants } from '../lib/motion-presets.js';
 
 export interface TooltipProps {
 	content: string;
@@ -73,19 +75,25 @@ export function Tooltip({ content, position = 'top', children, className }: Tool
 			<span aria-describedby={visible ? tooltipId : undefined}>
 				{firstChild}
 			</span>
-			{visible && (
-				<span
-					ref={tooltipRef}
-					id={tooltipId}
-					role="tooltip"
-					className={cn(
-						'absolute z-50 whitespace-nowrap rounded-md bg-tooltip-bg px-2.5 py-1 text-xs text-tooltip-fg shadow-lg animate-tooltip-in',
-						positionStyles[effectivePosition] ?? positionStyles.top,
-					)}
-				>
-					{content}
-				</span>
-			)}
+			<AnimatePresence>
+				{visible && (
+					<motion.span
+						ref={tooltipRef}
+						id={tooltipId}
+						role="tooltip"
+						variants={tooltipVariants}
+						initial="hidden"
+						animate="visible"
+						exit="exit"
+						className={cn(
+							'absolute z-50 whitespace-nowrap rounded-md bg-tooltip-bg px-2.5 py-1 text-xs text-tooltip-fg shadow-lg',
+							positionStyles[effectivePosition] ?? positionStyles.top,
+						)}
+					>
+						{content}
+					</motion.span>
+				)}
+			</AnimatePresence>
 		</span>
 	);
 }

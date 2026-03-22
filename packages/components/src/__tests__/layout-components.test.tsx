@@ -128,8 +128,9 @@ describe('Tabs', () => {
 		expect(panel.getAttribute('aria-labelledby')).toBe(firstTab.id);
 
 		fireEvent.click(screen.getByText('Second'));
+		const newPanel = screen.getByRole('tabpanel');
 		const secondTab = screen.getByText('Second');
-		expect(panel.getAttribute('aria-labelledby')).toBe(secondTab.id);
+		expect(newPanel.getAttribute('aria-labelledby')).toBe(secondTab.id);
 	});
 
 	it('tab buttons have id attributes', () => {

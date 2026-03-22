@@ -3,10 +3,11 @@ import { useEffect, useRef } from 'react';
 const FOCUSABLE_SELECTOR =
 	'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export function useFocusTrap(containerRef: React.RefObject<HTMLDivElement | null>) {
+export function useFocusTrap(containerRef: React.RefObject<HTMLDivElement | null>, active: boolean = true) {
 	const previousFocusRef = useRef<Element | null>(null);
 
 	useEffect(() => {
+		if (!active) return;
 		previousFocusRef.current = document.activeElement;
 
 		const container = containerRef.current;
@@ -51,5 +52,5 @@ export function useFocusTrap(containerRef: React.RefObject<HTMLDivElement | null
 				previousFocusRef.current.focus();
 			}
 		};
-	}, [containerRef]);
+	}, [containerRef, active]);
 }

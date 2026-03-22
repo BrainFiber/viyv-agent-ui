@@ -2,7 +2,9 @@ import { z } from 'zod';
 import { useState, Children, useId } from 'react';
 import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { fadeVariants } from '../lib/motion-presets.js';
 
 export interface TabsProps {
 	tabs: Array<{ id: string; label: string }>;
@@ -36,9 +38,20 @@ export function Tabs({ tabs, children, className }: TabsProps) {
 					</button>
 				))}
 			</div>
-			<div className="pt-4" role="tabpanel" aria-labelledby={`${instanceId}-tab-${tabs[activeIndex].id}`}>
-				{childArray[activeIndex] ?? null}
-			</div>
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={activeIndex}
+					className="pt-4"
+					role="tabpanel"
+					aria-labelledby={`${instanceId}-tab-${tabs[activeIndex].id}`}
+					variants={fadeVariants}
+					initial="hidden"
+					animate="visible"
+					exit="exit"
+				>
+					{childArray[activeIndex] ?? null}
+				</motion.div>
+			</AnimatePresence>
 		</div>
 	);
 }

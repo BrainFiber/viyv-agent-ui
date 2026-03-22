@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { toastVariants } from '../lib/motion-presets.js';
 
 export interface ToastProps {
 	message: string;
@@ -42,37 +44,43 @@ export function Toast({
 		return () => clearTimeout(timer);
 	}, [duration]);
 
-	if (!visible) return null;
-
 	const isStandalone = !!position;
 
 	return (
-		<div
-			role="status"
-			aria-live="polite"
-			aria-atomic="true"
-			className={cn(
-				'min-w-0 max-w-[calc(100vw-2rem)] rounded-xl border p-4 shadow-lg animate-toast-in sm:min-w-[280px] sm:max-w-sm',
-				isStandalone && 'fixed z-50',
-				isStandalone && (positionStyles[position] ?? positionStyles['top-right']),
-				typeStyles[type] ?? typeStyles.info,
-				className,
+		<AnimatePresence>
+			{visible && (
+				<motion.div
+					role="status"
+					aria-live="polite"
+					aria-atomic="true"
+					variants={toastVariants}
+					initial="hidden"
+					animate="visible"
+					exit="exit"
+					className={cn(
+						'min-w-0 max-w-[calc(100vw-2rem)] rounded-xl border p-4 shadow-lg sm:min-w-[280px] sm:max-w-sm',
+						isStandalone && 'fixed z-50',
+						isStandalone && (positionStyles[position] ?? positionStyles['top-right']),
+						typeStyles[type] ?? typeStyles.info,
+						className,
+					)}
+				>
+					<div className="flex items-start justify-between gap-2">
+						<p className="text-sm">{message}</p>
+						{closable && (
+							<button
+								type="button"
+								onClick={() => setVisible(false)}
+								aria-label="Close"
+								className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
+							>
+								&#x2715;
+							</button>
+						)}
+					</div>
+				</motion.div>
 			)}
-		>
-			<div className="flex items-start justify-between gap-2">
-				<p className="text-sm">{message}</p>
-				{closable && (
-					<button
-						type="button"
-						onClick={() => setVisible(false)}
-						aria-label="Close"
-						className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
-					>
-						&#x2715;
-					</button>
-				)}
-			</div>
-		</div>
+		</AnimatePresence>
 	);
 }
 

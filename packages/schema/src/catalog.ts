@@ -7,6 +7,8 @@ export interface ComponentMeta {
 	category: 'layout' | 'display' | 'data' | 'chart' | 'input' | 'control' | 'navigation' | 'feedback';
 	propsSchema: z.ZodType;
 	acceptsChildren: boolean;
+	/** When true, ElementRenderer passes `open` prop from visibility instead of unmounting */
+	overlay?: boolean;
 }
 
 export interface ComponentCatalog {

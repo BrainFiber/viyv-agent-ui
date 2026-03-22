@@ -9,6 +9,8 @@ export interface PageContextValue {
 	queryEndpoint: string;
 	pageId?: string;
 	previewId?: string;
+	/** Component type names that use `open` prop instead of conditional rendering */
+	overlayTypes?: Set<string>;
 }
 
 const PageContext = createContext<PageContextValue | null>(null);
@@ -19,11 +21,12 @@ export function PageProvider({
 	queryEndpoint,
 	pageId,
 	previewId,
+	overlayTypes,
 	children,
 }: PageContextValue & { children: ReactNode }) {
 	const value = useMemo(
-		() => ({ spec, registry, queryEndpoint, pageId, previewId }),
-		[spec, registry, queryEndpoint, pageId, previewId],
+		() => ({ spec, registry, queryEndpoint, pageId, previewId, overlayTypes }),
+		[spec, registry, queryEndpoint, pageId, previewId, overlayTypes],
 	);
 
 	return <PageContext.Provider value={value}>{children}</PageContext.Provider>;

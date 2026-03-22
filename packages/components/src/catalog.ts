@@ -1,4 +1,4 @@
-import { defineCatalog } from '@viyv/agent-ui-schema';
+import { defineCatalog, type ComponentMeta } from '@viyv/agent-ui-schema';
 import { z } from 'zod';
 
 // Layout
@@ -72,7 +72,7 @@ import { toastContainerMeta } from './overlay/toast-container.js';
 import { tooltipMeta } from './overlay/tooltip.js';
 import { calendarMeta } from './display/calendar.js';
 
-export const defaultCatalog = defineCatalog([
+const allMeta: ComponentMeta[] = [
 	// Layout
 	boxMeta,
 	containerMeta,
@@ -199,4 +199,11 @@ export const defaultCatalog = defineCatalog([
 		}),
 		acceptsChildren: true,
 	},
-]);
+];
+
+export const defaultCatalog = defineCatalog(allMeta);
+
+/** Set of component type names that use `open` prop for visibility (overlay components) */
+export const defaultOverlayTypes = new Set(
+	allMeta.filter((m) => m.overlay).map((m) => m.type),
+);

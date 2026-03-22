@@ -1,5 +1,5 @@
 // Catalog
-export { defaultCatalog } from './catalog.js';
+export { defaultCatalog, defaultOverlayTypes } from './catalog.js';
 
 // Registry
 export { defaultRegistry } from './registry.js';
@@ -135,3 +135,6 @@ export type { MenuProps, MenuItem } from './navigation/menu.js';
 export { cn } from './lib/cn.js';
 export { usePagination } from './lib/use-pagination.js';
 export type { UsePaginationOptions, UsePaginationResult } from './lib/use-pagination.js';
+
+// Motion presets
+export { backdropVariants, dialogVariants, drawerVariants, toastVariants, tooltipVariants, collapseVariants, dropdownVariants, fadeVariants } from './lib/motion-presets.js';

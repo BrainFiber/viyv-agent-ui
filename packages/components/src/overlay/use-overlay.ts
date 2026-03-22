@@ -1,26 +1,38 @@
-import { useEffect, useId, useRef } from 'react';
+import { useCallback, useEffect, useId, useRef } from 'react';
 import { useFocusTrap } from './use-focus-trap.js';
 
 let overlayCount = 0;
 
-export function useOverlay() {
+export function useOverlay(active: boolean = true) {
 	const overlayRef = useRef<HTMLDivElement>(null);
 	const titleId = useId();
+	const lockedRef = useRef(false);
 
 	useEffect(() => {
+		if (!active) return;
 		overlayCount++;
+		lockedRef.current = true;
 		if (overlayCount === 1) {
 			document.body.style.overflow = 'hidden';
 		}
-		return () => {
-			overlayCount--;
-			if (overlayCount === 0) {
-				document.body.style.overflow = '';
-			}
-		};
+		// cleanup は unlockScroll に委譲 — active=false 時に即解除しない
+	}, [active]);
+
+	const unlockScroll = useCallback(() => {
+		if (!lockedRef.current) return;
+		lockedRef.current = false;
+		overlayCount--;
+		if (overlayCount === 0) {
+			document.body.style.overflow = '';
+		}
 	}, []);
 
-	useFocusTrap(overlayRef);
+	// コンポーネントアンマウント時のフェイルセーフ
+	useEffect(() => {
+		return () => { unlockScroll(); };
+	}, [unlockScroll]);
 
-	return { overlayRef, titleId };
+	useFocusTrap(overlayRef, active);
+
+	return { overlayRef, titleId, unlockScroll };
 }

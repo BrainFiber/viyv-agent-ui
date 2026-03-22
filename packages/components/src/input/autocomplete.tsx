@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useRef, useId, useEffect } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
+import { dropdownVariants } from '../lib/motion-presets.js';
 
 export interface AutocompleteProps {
 	options: Array<{ value: string; label: string }>;
@@ -88,29 +90,35 @@ export function Autocomplete({
 					error && 'border-danger',
 				)}
 			/>
-			{open && filtered.length > 0 && (
-				<ul
-					id={listboxId}
-					role="listbox"
-					className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-surface py-1 shadow-lg animate-dropdown-in"
-				>
-					{filtered.map((opt) => (
-						<li
-							key={opt.value}
-							role="option"
-							aria-selected={opt.value === value}
-							onMouseDown={(e) => e.preventDefault()}
-							onClick={() => handleSelect(opt)}
-							className={cn(
-								'cursor-pointer px-3 py-2 text-sm hover:bg-muted',
-								opt.value === value && 'bg-primary-soft font-medium text-primary-soft-fg',
-							)}
-						>
-							{opt.label}
-						</li>
-					))}
-				</ul>
-			)}
+			<AnimatePresence>
+				{open && filtered.length > 0 && (
+					<motion.ul
+						id={listboxId}
+						role="listbox"
+						variants={dropdownVariants}
+						initial="hidden"
+						animate="visible"
+						exit="exit"
+						className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-surface py-1 shadow-lg"
+					>
+						{filtered.map((opt) => (
+							<li
+								key={opt.value}
+								role="option"
+								aria-selected={opt.value === value}
+								onMouseDown={(e) => e.preventDefault()}
+								onClick={() => handleSelect(opt)}
+								className={cn(
+									'cursor-pointer px-3 py-2 text-sm hover:bg-muted',
+									opt.value === value && 'bg-primary-soft font-medium text-primary-soft-fg',
+								)}
+							>
+								{opt.label}
+							</li>
+						))}
+					</motion.ul>
+				)}
+			</AnimatePresence>
 			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
 		</div>
 	);
