@@ -1,5 +1,7 @@
+import { z } from 'zod';
 import { useState, Children, useId } from 'react';
 import type { ReactNode } from 'react';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface TabsProps {
@@ -40,3 +42,14 @@ export function Tabs({ tabs, children, className }: TabsProps) {
 		</div>
 	);
 }
+
+export const tabsMeta: ComponentMeta = {
+	type: 'Tabs',
+	label: 'Tabs',
+	description: 'Tabbed content switcher',
+	category: 'layout',
+	propsSchema: z.object({
+		tabs: z.array(z.object({ id: z.string(), label: z.string() })),
+	}),
+	acceptsChildren: true,
+};

@@ -1,4 +1,6 @@
+import { z } from 'zod';
 import type { ReactNode } from 'react';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface StackProps {
@@ -52,3 +54,18 @@ export function Stack({
 		</div>
 	);
 }
+
+export const stackMeta: ComponentMeta = {
+	type: 'Stack',
+	label: 'Stack',
+	description: 'Vertical or horizontal stack layout',
+	category: 'layout',
+	propsSchema: z.object({
+		direction: z.enum(['vertical', 'horizontal']).default('vertical'),
+		gap: z.number().default(16),
+		align: z.enum(['start', 'center', 'end', 'stretch', 'baseline']).optional(),
+		justify: z.enum(['start', 'center', 'end', 'between', 'around']).optional(),
+		wrap: z.boolean().optional(),
+	}),
+	acceptsChildren: true,
+};

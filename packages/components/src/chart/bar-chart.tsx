@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import {
 	BarChart as RBarChart,
 	Bar,
@@ -37,3 +39,18 @@ export function BarChart({ data, xKey, yKey, title, color, className }: BarChart
 		</ChartContainer>
 	);
 }
+
+export const barChartMeta: ComponentMeta = {
+	type: 'BarChart',
+	label: 'Bar Chart',
+	description: 'Vertical bar chart for category comparison',
+	category: 'chart',
+	propsSchema: z.object({
+		data: z.unknown(),
+		xKey: z.string(),
+		yKey: z.string(),
+		title: z.string().optional(),
+		color: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

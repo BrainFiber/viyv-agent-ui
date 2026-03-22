@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { Cell, Legend, Pie, PieChart as RPieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { CHART_COLORS, ChartContainer, ChartEmptyState, normalizeChartData, toNumber, type ChartBaseProps } from './chart-utils.js';
 
@@ -31,3 +33,17 @@ export function PieChart({ data, nameKey, valueKey, title, className }: PieChart
 		</ChartContainer>
 	);
 }
+
+export const pieChartMeta: ComponentMeta = {
+	type: 'PieChart',
+	label: 'Pie Chart',
+	description: 'Pie chart for proportional distribution (auto-colored slices)',
+	category: 'chart',
+	propsSchema: z.object({
+		data: z.unknown(),
+		nameKey: z.string(),
+		valueKey: z.string(),
+		title: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

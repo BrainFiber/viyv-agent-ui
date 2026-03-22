@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -44,3 +46,17 @@ export function Textarea({
 		</label>
 	);
 }
+
+export const textareaMeta: ComponentMeta = {
+	type: 'Textarea',
+	label: 'Textarea',
+	description: 'Multi-line text input',
+	category: 'input',
+	propsSchema: z.object({
+		label: z.string().optional(),
+		placeholder: z.string().optional(),
+		rows: z.number().optional(),
+		error: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

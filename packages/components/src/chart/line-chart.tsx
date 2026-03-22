@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import {
 	CartesianGrid,
 	Line,
@@ -37,3 +39,18 @@ export function LineChart({ data, xKey, yKey, title, color, className }: LineCha
 		</ChartContainer>
 	);
 }
+
+export const lineChartMeta: ComponentMeta = {
+	type: 'LineChart',
+	label: 'Line Chart',
+	description: 'Line chart for trends and time series',
+	category: 'chart',
+	propsSchema: z.object({
+		data: z.unknown(),
+		xKey: z.string(),
+		yKey: z.string(),
+		title: z.string().optional(),
+		color: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

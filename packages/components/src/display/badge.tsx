@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface BadgeProps {
@@ -27,3 +29,15 @@ export function Badge({ text, color = 'gray', className }: BadgeProps) {
 		</span>
 	);
 }
+
+export const badgeMeta: ComponentMeta = {
+	type: 'Badge',
+	label: 'Badge',
+	description: 'Status or category badge',
+	category: 'display',
+	propsSchema: z.object({
+		text: z.string(),
+		color: z.enum(['gray', 'blue', 'green', 'yellow', 'red']).default('gray'),
+	}),
+	acceptsChildren: false,
+};

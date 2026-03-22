@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface ProgressBarProps {
@@ -57,3 +59,18 @@ export function ProgressBar({ value, label, color = 'blue', size = 'md', showVal
 		</div>
 	);
 }
+
+export const progressBarMeta: ComponentMeta = {
+	type: 'ProgressBar',
+	label: 'Progress Bar',
+	description: 'Progress indicator with value, color, and optional percentage display',
+	category: 'display',
+	propsSchema: z.object({
+		value: z.number(),
+		label: z.string().optional(),
+		color: z.enum(['blue', 'green', 'yellow', 'red', 'gray']).optional(),
+		size: z.enum(['sm', 'md', 'lg']).optional(),
+		showValue: z.boolean().optional(),
+	}),
+	acceptsChildren: false,
+};

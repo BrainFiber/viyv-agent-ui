@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface HeaderProps {
@@ -23,3 +25,16 @@ export function Header({ title, subtitle, level = 1, className }: HeaderProps) {
 		</div>
 	);
 }
+
+export const headerMeta: ComponentMeta = {
+	type: 'Header',
+	label: 'Header',
+	description: 'Page or section header',
+	category: 'display',
+	propsSchema: z.object({
+		title: z.string(),
+		subtitle: z.string().optional(),
+		level: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
+	}),
+	acceptsChildren: false,
+};

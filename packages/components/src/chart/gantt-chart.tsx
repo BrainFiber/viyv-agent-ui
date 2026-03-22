@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 import { ChartContainer, ChartEmptyState, CHART_COLORS, normalizeChartData } from './chart-utils.js';
 import { parseDateRange, dateToPercent, generateDateTicks } from './gantt-utils.js';
@@ -140,3 +142,20 @@ export function GanttChart({
 		</ChartContainer>
 	);
 }
+
+export const ganttChartMeta: ComponentMeta = {
+	type: 'GanttChart',
+	label: 'Gantt Chart',
+	description: 'Task timeline visualization with date-based bars, progress indicators, and today marker',
+	category: 'chart',
+	propsSchema: z.object({
+		data: z.unknown(),
+		taskKey: z.string(),
+		startKey: z.string(),
+		endKey: z.string(),
+		progressKey: z.string().optional(),
+		groupKey: z.string().optional(),
+		title: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

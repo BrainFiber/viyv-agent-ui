@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -54,3 +56,16 @@ export function RadioGroup({
 		</fieldset>
 	);
 }
+
+export const radioGroupMeta: ComponentMeta = {
+	type: 'RadioGroup',
+	label: 'Radio Group',
+	description: 'Radio button group for single selection',
+	category: 'input',
+	propsSchema: z.object({
+		options: z.array(z.object({ value: z.string(), label: z.string() })),
+		label: z.string().optional(),
+		error: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

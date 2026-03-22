@@ -1,5 +1,7 @@
+import { z } from 'zod';
 import { useId } from 'react';
 import type { ReactNode } from 'react';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface GridProps {
@@ -31,3 +33,15 @@ export function Grid({ columns = 2, gap = 16, children, className }: GridProps) 
 		</>
 	);
 }
+
+export const gridMeta: ComponentMeta = {
+	type: 'Grid',
+	label: 'Grid',
+	description: 'Grid layout with configurable columns',
+	category: 'layout',
+	propsSchema: z.object({
+		columns: z.number().default(2),
+		gap: z.number().default(16),
+	}),
+	acceptsChildren: true,
+};

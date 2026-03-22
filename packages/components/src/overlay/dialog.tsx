@@ -1,6 +1,8 @@
-import { useEffect, useId, useRef } from 'react';
+import { z } from 'zod';
 import type { ReactNode } from 'react';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
+import { useOverlay } from './use-overlay.js';
 
 export interface DialogProps {
 	title: string;
@@ -9,22 +11,13 @@ export interface DialogProps {
 }
 
 export function Dialog({ title, children, className }: DialogProps) {
-	const titleId = useId();
-	const dialogRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		document.body.style.overflow = 'hidden';
-		dialogRef.current?.focus();
-		return () => {
-			document.body.style.overflow = '';
-		};
-	}, []);
+	const { overlayRef, titleId } = useOverlay();
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center">
 			<div className="absolute inset-0 bg-black/50" aria-hidden="true" />
 			<div
-				ref={dialogRef}
+				ref={overlayRef}
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby={titleId}
@@ -38,3 +31,14 @@ export function Dialog({ title, children, className }: DialogProps) {
 		</div>
 	);
 }
+
+export const dialogMeta: ComponentMeta = {
+	type: 'Dialog',
+	label: 'Dialog',
+	description: 'Modal dialog overlay with title',
+	category: 'layout',
+	propsSchema: z.object({
+		title: z.string(),
+	}),
+	acceptsChildren: true,
+};

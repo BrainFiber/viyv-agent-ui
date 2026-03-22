@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface StatProps {
@@ -65,3 +67,21 @@ export function Stat({ label, value, format, trend, className }: StatProps) {
 		</div>
 	);
 }
+
+export const statMeta: ComponentMeta = {
+	type: 'Stat',
+	label: 'Stat',
+	description: 'Statistic display with label, value, and optional trend',
+	category: 'display',
+	propsSchema: z.object({
+		label: z.string(),
+		value: z.unknown(),
+		format: z.enum(['number', 'currency', 'percent']).optional(),
+		trend: z.object({
+			direction: z.enum(['up', 'down']),
+			value: z.string(),
+			color: z.enum(['green', 'red', 'auto']).optional(),
+		}).optional(),
+	}),
+	acceptsChildren: false,
+};

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import {
 	Area,
 	AreaChart as RAreaChart,
@@ -38,3 +40,18 @@ export function AreaChart({ data, xKey, yKey, title, color, className }: AreaCha
 		</ChartContainer>
 	);
 }
+
+export const areaChartMeta: ComponentMeta = {
+	type: 'AreaChart',
+	label: 'Area Chart',
+	description: 'Filled area chart for cumulative trends',
+	category: 'chart',
+	propsSchema: z.object({
+		data: z.unknown(),
+		xKey: z.string(),
+		yKey: z.string(),
+		title: z.string().optional(),
+		color: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface DividerProps {
@@ -7,3 +9,12 @@ export interface DividerProps {
 export function Divider({ className }: DividerProps) {
 	return <hr className={cn('border-gray-200', className)} />;
 }
+
+export const dividerMeta: ComponentMeta = {
+	type: 'Divider',
+	label: 'Divider',
+	description: 'Visual section separator',
+	category: 'display',
+	propsSchema: z.object({}),
+	acceptsChildren: false,
+};

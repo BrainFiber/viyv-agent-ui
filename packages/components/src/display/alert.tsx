@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -54,3 +56,17 @@ export function Alert({ message, type = 'info', title, closable, onClose, classN
 		</div>
 	);
 }
+
+export const alertMeta: ComponentMeta = {
+	type: 'Alert',
+	label: 'Alert',
+	description: 'Feedback message (info, success, warning, error)',
+	category: 'display',
+	propsSchema: z.object({
+		message: z.string(),
+		type: z.enum(['info', 'success', 'warning', 'error']).default('info'),
+		title: z.string().optional(),
+		closable: z.boolean().optional(),
+	}),
+	acceptsChildren: false,
+};

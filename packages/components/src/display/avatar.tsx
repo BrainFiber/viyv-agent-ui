@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -69,3 +71,16 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
 		</span>
 	);
 }
+
+export const avatarMeta: ComponentMeta = {
+	type: 'Avatar',
+	label: 'Avatar',
+	description: 'Circular avatar with image or fallback initials',
+	category: 'display',
+	propsSchema: z.object({
+		src: z.string().optional(),
+		name: z.string(),
+		size: z.enum(['sm', 'md', 'lg']).default('md'),
+	}),
+	acceptsChildren: false,
+};

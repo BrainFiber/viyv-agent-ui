@@ -33,13 +33,32 @@ describe('defaultRegistry', () => {
 			'Checkbox',
 			'RadioGroup',
 			'Avatar',
+			'Switch',
+			'Slider',
+			'Tag',
+			'Empty',
+			'Skeleton',
+			'Spinner',
+			'Collapse',
+			'Drawer',
+			'Breadcrumbs',
+			'Stepper',
+			'Toast',
+			'List',
+			'Carousel',
+			'Descriptions',
+			'Menu',
+			'Autocomplete',
+			'Rating',
+			'Tooltip',
+			'Calendar',
 		];
 		for (const type of types) {
 			expect(defaultRegistry.has(type), `Missing component: ${type}`).toBe(true);
 		}
 	});
 
-	it('has exactly 29 components', () => {
-		expect(defaultRegistry.size).toBe(29);
+	it('has exactly 48 components', () => {
+		expect(defaultRegistry.size).toBe(48);
 	});
 });

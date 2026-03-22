@@ -23,6 +23,10 @@ import { ganttScheduleSpec } from '../data/gantt-schedule';
 import { kanbanBoardSpec } from '../data/kanban-board';
 import { backlogSpec } from '../data/backlog';
 import { ticketDetailPmSpec } from '../data/ticket-detail-pm';
+import { settingsPageSpec } from '../data/settings-page';
+import { productDetailSpec } from '../data/product-detail';
+import { teamDirectorySpec } from '../data/team-directory';
+import { onboardingWizardSpec } from '../data/onboarding-wizard';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -51,6 +55,10 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(kanbanBoardSpec);
 			await pageStore.save(backlogSpec);
 			await pageStore.save(ticketDetailPmSpec);
+			await pageStore.save(settingsPageSpec);
+			await pageStore.save(productDetailSpec);
+			await pageStore.save(teamDirectorySpec);
+			await pageStore.save(onboardingWizardSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

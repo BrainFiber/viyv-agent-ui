@@ -1,5 +1,7 @@
 /** Interactive map with markers (OpenStreetMap / Leaflet). View layer only. */
 
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 import { normalizeMarkers, type NormalizeOptions } from './map-utils.js';
 import { useLeaflet } from './use-leaflet.js';
@@ -77,3 +79,21 @@ export function Map({
 		</div>
 	);
 }
+
+export const mapMeta: ComponentMeta = {
+	type: 'Map',
+	label: 'Map',
+	description: 'Interactive map with markers (OpenStreetMap / Leaflet)',
+	category: 'display',
+	propsSchema: z.object({
+		center: z.tuple([z.number(), z.number()]),
+		zoom: z.number().int().min(1).max(20).default(13),
+		markers: z.unknown(),
+		latKey: z.string().optional(),
+		lngKey: z.string().optional(),
+		labelKey: z.string().optional(),
+		popupKey: z.string().optional(),
+		height: z.number().default(400),
+	}),
+	acceptsChildren: false,
+};

@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState } from 'react';
 
 export interface TreeListProps {
@@ -140,3 +142,18 @@ export function TreeList({
 		</ul>
 	);
 }
+
+export const treeListMeta: ComponentMeta = {
+	type: 'TreeList',
+	label: 'Tree List',
+	description: 'Hierarchical tree view with expand/collapse for nested data',
+	category: 'data',
+	propsSchema: z.object({
+		data: z.unknown(),
+		labelKey: z.string().optional(),
+		childrenKey: z.string().optional(),
+		idKey: z.string().optional(),
+		defaultExpanded: z.boolean().optional(),
+	}),
+	acceptsChildren: false,
+};

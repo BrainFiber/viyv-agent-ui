@@ -1,340 +1,138 @@
 import { defineCatalog } from '@viyv/agent-ui-schema';
 import { z } from 'zod';
 
+// Layout
+import { stackMeta } from './layout/stack.js';
+import { gridMeta } from './layout/grid.js';
+import { tabsMeta } from './layout/tabs.js';
+import { cardMeta } from './layout/card.js';
+import { collapseMeta } from './layout/collapse.js';
+
+// Overlay
+import { dialogMeta } from './overlay/dialog.js';
+import { drawerMeta } from './overlay/drawer.js';
+
+// Display
+import { headerMeta } from './display/header.js';
+import { textMeta } from './display/text.js';
+import { statMeta } from './display/stat.js';
+import { badgeMeta } from './display/badge.js';
+import { linkMeta } from './display/link.js';
+import { imageMeta } from './display/image.js';
+import { alertMeta } from './display/alert.js';
+import { avatarMeta } from './display/avatar.js';
+import { dividerMeta } from './display/divider.js';
+import { progressBarMeta } from './display/progress-bar.js';
+import { tagMeta } from './display/tag.js';
+import { emptyMeta } from './display/empty.js';
+import { skeletonMeta } from './display/skeleton.js';
+import { spinnerMeta } from './display/spinner.js';
+import { carouselMeta } from './display/carousel.js';
+import { descriptionsMeta } from './display/descriptions.js';
+
+// Map
+import { mapMeta } from './map/map.js';
+
+// Data
+import { dataTableMeta } from './data/data-table.js';
+import { listMeta } from './data/list.js';
+import { treeListMeta } from './data/tree-list.js';
+
+// Chart
+import { barChartMeta } from './chart/bar-chart.js';
+import { lineChartMeta } from './chart/line-chart.js';
+import { areaChartMeta } from './chart/area-chart.js';
+import { pieChartMeta } from './chart/pie-chart.js';
+import { ganttChartMeta } from './chart/gantt-chart.js';
+
+// Input
+import { buttonMeta } from './input/button.js';
+import { textInputMeta } from './input/text-input.js';
+import { selectMeta } from './input/select.js';
+import { textareaMeta } from './input/textarea.js';
+import { checkboxMeta } from './input/checkbox.js';
+import { radioGroupMeta } from './input/radio-group.js';
+import { switchMeta } from './input/switch.js';
+import { sliderMeta } from './input/slider.js';
+import { autocompleteMeta } from './input/autocomplete.js';
+import { ratingMeta } from './input/rating.js';
+
+// Navigation
+import { breadcrumbsMeta } from './navigation/breadcrumbs.js';
+import { stepperMeta } from './navigation/stepper.js';
+import { menuMeta } from './navigation/menu.js';
+
+// Feedback
+import { toastMeta } from './overlay/toast.js';
+import { tooltipMeta } from './overlay/tooltip.js';
+import { calendarMeta } from './display/calendar.js';
+
 export const defaultCatalog = defineCatalog([
-	{
-		type: 'Stack',
-		label: 'Stack',
-		description: 'Vertical or horizontal stack layout',
-		category: 'layout',
-		propsSchema: z.object({
-			direction: z.enum(['vertical', 'horizontal']).default('vertical'),
-			gap: z.number().default(16),
-			align: z.enum(['start', 'center', 'end', 'stretch', 'baseline']).optional(),
-			justify: z.enum(['start', 'center', 'end', 'between', 'around']).optional(),
-			wrap: z.boolean().optional(),
-		}),
-		acceptsChildren: true,
-	},
-	{
-		type: 'Grid',
-		label: 'Grid',
-		description: 'Grid layout with configurable columns',
-		category: 'layout',
-		propsSchema: z.object({
-			columns: z.number().default(2),
-			gap: z.number().default(16),
-		}),
-		acceptsChildren: true,
-	},
-	{
-		type: 'Tabs',
-		label: 'Tabs',
-		description: 'Tabbed content switcher',
-		category: 'layout',
-		propsSchema: z.object({
-			tabs: z.array(z.object({ id: z.string(), label: z.string() })),
-		}),
-		acceptsChildren: true,
-	},
-	{
-		type: 'Card',
-		label: 'Card',
-		description: 'Container card with optional title',
-		category: 'layout',
-		propsSchema: z.object({
-			title: z.string().optional(),
-			description: z.string().optional(),
-		}),
-		acceptsChildren: true,
-	},
-	{
-		type: 'Dialog',
-		label: 'Dialog',
-		description: 'Modal dialog overlay with title',
-		category: 'layout',
-		propsSchema: z.object({
-			title: z.string(),
-		}),
-		acceptsChildren: true,
-	},
-	{
-		type: 'Header',
-		label: 'Header',
-		description: 'Page or section header',
-		category: 'display',
-		propsSchema: z.object({
-			title: z.string(),
-			subtitle: z.string().optional(),
-			level: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Text',
-		label: 'Text',
-		description: 'Styled text content with variant, size, weight, and truncation support',
-		category: 'display',
-		propsSchema: z.object({
-			content: z.string(),
-			variant: z.enum(['heading', 'subheading', 'body', 'caption', 'price']).optional(),
-			size: z.enum(['xs', 'sm', 'md', 'lg', 'xl', '2xl']).optional(),
-			weight: z.enum(['normal', 'medium', 'semibold', 'bold']).optional(),
-			color: z.enum(['default', 'muted', 'primary', 'success', 'warning', 'danger']).optional(),
-			truncate: z.union([z.boolean(), z.number()]).optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Stat',
-		label: 'Stat',
-		description: 'Statistic display with label, value, and optional trend',
-		category: 'display',
-		propsSchema: z.object({
-			label: z.string(),
-			value: z.unknown(),
-			format: z.enum(['number', 'currency', 'percent']).optional(),
-			trend: z
-				.object({
-					direction: z.enum(['up', 'down']),
-					value: z.string(),
-					color: z.enum(['green', 'red', 'auto']).optional(),
-				})
-				.optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'DataTable',
-		label: 'Data Table',
-		description: 'Sortable, filterable data table with row linking and click handling',
-		category: 'data',
-		propsSchema: z.object({
-			data: z.unknown(),
-			columns: z.array(
-				z.object({
-					key: z.string(),
-					label: z.string(),
-					sortable: z.boolean().optional(),
-					format: z.enum(['currency', 'number', 'percent', 'date', 'badge']).optional(),
-					filter: z
-						.object({
-							type: z.enum(['text', 'select']),
-							placeholder: z.string().optional(),
-							options: z
-								.array(z.object({ value: z.string(), label: z.string() }))
-								.optional(),
-						})
-						.optional(),
-					minWidth: z.number().optional(),
-					badgeMap: z.record(z.enum(['gray', 'blue', 'green', 'yellow', 'red'])).optional(),
-					truncate: z.boolean().optional(),
-					emptyValue: z.string().optional(),
-					valueClassName: z.record(z.string()).optional(),
-				}),
-			),
-			rowHref: z.string().optional(),
-			onRowClick: z.unknown().optional(),
-			keyField: z.string().optional(),
-			emptyMessage: z.string().optional(),
-			noMatchMessage: z.string().optional(),
-			rowHighlight: z.array(z.object({
-				key: z.string(),
-				op: z.enum(['eq', 'neq', 'lt', 'gt', 'lte', 'gte']),
-				value: z.unknown().optional(),
-				field: z.string().optional(),
-				className: z.string(),
-			})).optional(),
-			pageSize: z.number().int().positive().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Badge',
-		label: 'Badge',
-		description: 'Status or category badge',
-		category: 'display',
-		propsSchema: z.object({
-			text: z.string(),
-			color: z.enum(['gray', 'blue', 'green', 'yellow', 'red']).default('gray'),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Link',
-		label: 'Link',
-		description: 'Text hyperlink',
-		category: 'display',
-		propsSchema: z.object({
-			href: z.string(),
-			label: z.string(),
-			external: z.boolean().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Image',
-		label: 'Image',
-		description: 'Responsive image display',
-		category: 'display',
-		propsSchema: z.object({
-			src: z.string(),
-			alt: z.string().optional(),
-			width: z.number().optional(),
-			height: z.number().optional(),
-			objectFit: z.enum(['cover', 'contain', 'fill', 'none']).optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Alert',
-		label: 'Alert',
-		description: 'Feedback message (info, success, warning, error)',
-		category: 'display',
-		propsSchema: z.object({
-			message: z.string(),
-			type: z.enum(['info', 'success', 'warning', 'error']).default('info'),
-			title: z.string().optional(),
-			closable: z.boolean().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Divider',
-		label: 'Divider',
-		description: 'Visual section separator',
-		category: 'display',
-		propsSchema: z.object({}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'BarChart',
-		label: 'Bar Chart',
-		description: 'Vertical bar chart for category comparison',
-		category: 'chart',
-		propsSchema: z.object({
-			data: z.unknown(),
-			xKey: z.string(),
-			yKey: z.string(),
-			title: z.string().optional(),
-			color: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'LineChart',
-		label: 'Line Chart',
-		description: 'Line chart for trends and time series',
-		category: 'chart',
-		propsSchema: z.object({
-			data: z.unknown(),
-			xKey: z.string(),
-			yKey: z.string(),
-			title: z.string().optional(),
-			color: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'AreaChart',
-		label: 'Area Chart',
-		description: 'Filled area chart for cumulative trends',
-		category: 'chart',
-		propsSchema: z.object({
-			data: z.unknown(),
-			xKey: z.string(),
-			yKey: z.string(),
-			title: z.string().optional(),
-			color: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'PieChart',
-		label: 'Pie Chart',
-		description: 'Pie chart for proportional distribution (auto-colored slices)',
-		category: 'chart',
-		propsSchema: z.object({
-			data: z.unknown(),
-			nameKey: z.string(),
-			valueKey: z.string(),
-			title: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'GanttChart',
-		label: 'Gantt Chart',
-		description: 'Task timeline visualization with date-based bars, progress indicators, and today marker',
-		category: 'chart',
-		propsSchema: z.object({
-			data: z.unknown(),
-			taskKey: z.string(),
-			startKey: z.string(),
-			endKey: z.string(),
-			progressKey: z.string().optional(),
-			groupKey: z.string().optional(),
-			title: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Map',
-		label: 'Map',
-		description: 'Interactive map with markers (OpenStreetMap / Leaflet)',
-		category: 'display',
-		propsSchema: z.object({
-			center: z.tuple([z.number(), z.number()]),
-			zoom: z.number().int().min(1).max(20).default(13),
-			markers: z.unknown(),
-			latKey: z.string().optional(),
-			lngKey: z.string().optional(),
-			labelKey: z.string().optional(),
-			popupKey: z.string().optional(),
-			height: z.number().default(400),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Avatar',
-		label: 'Avatar',
-		description: 'Circular avatar with image or fallback initials',
-		category: 'display',
-		propsSchema: z.object({
-			src: z.string().optional(),
-			name: z.string(),
-			size: z.enum(['sm', 'md', 'lg']).default('md'),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'ProgressBar',
-		label: 'Progress Bar',
-		description: 'Progress indicator with value, color, and optional percentage display',
-		category: 'display',
-		propsSchema: z.object({
-			value: z.number(),
-			label: z.string().optional(),
-			color: z.enum(['blue', 'green', 'yellow', 'red', 'gray']).optional(),
-			size: z.enum(['sm', 'md', 'lg']).optional(),
-			showValue: z.boolean().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'TreeList',
-		label: 'Tree List',
-		description: 'Hierarchical tree view with expand/collapse for nested data',
-		category: 'data',
-		propsSchema: z.object({
-			data: z.unknown(),
-			labelKey: z.string().optional(),
-			childrenKey: z.string().optional(),
-			idKey: z.string().optional(),
-			defaultExpanded: z.boolean().optional(),
-		}),
-		acceptsChildren: false,
-	},
+	// Layout
+	stackMeta,
+	gridMeta,
+	tabsMeta,
+	cardMeta,
+	collapseMeta,
+	dialogMeta,
+	drawerMeta,
+
+	// Display
+	headerMeta,
+	textMeta,
+	statMeta,
+	badgeMeta,
+	linkMeta,
+	imageMeta,
+	alertMeta,
+	avatarMeta,
+	dividerMeta,
+	progressBarMeta,
+	tagMeta,
+	emptyMeta,
+	skeletonMeta,
+	spinnerMeta,
+	carouselMeta,
+	descriptionsMeta,
+	mapMeta,
+
+	// Data
+	dataTableMeta,
+	listMeta,
+	treeListMeta,
+
+	// Chart
+	barChartMeta,
+	lineChartMeta,
+	areaChartMeta,
+	pieChartMeta,
+	ganttChartMeta,
+
+	// Input
+	buttonMeta,
+	textInputMeta,
+	selectMeta,
+	textareaMeta,
+	checkboxMeta,
+	radioGroupMeta,
+	switchMeta,
+	sliderMeta,
+	autocompleteMeta,
+	ratingMeta,
+
+	// Navigation
+	breadcrumbsMeta,
+	stepperMeta,
+	menuMeta,
+
+	// Feedback
+	toastMeta,
+	tooltipMeta,
+
+	// Display (calendar)
+	calendarMeta,
+
+	// Type-handler components (no component file — meta defined inline)
 	{
 		type: 'KanbanBoard',
 		label: 'Kanban Board',
@@ -390,78 +188,5 @@ export const defaultCatalog = defineCatalog([
 			pageSize: z.number().int().positive().optional(),
 		}),
 		acceptsChildren: true,
-	},
-	{
-		type: 'Button',
-		label: 'Button',
-		description: 'Clickable button',
-		category: 'input',
-		propsSchema: z.object({
-			label: z.string(),
-			variant: z.enum(['primary', 'secondary', 'danger']).default('primary'),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'TextInput',
-		label: 'Text Input',
-		description: 'Text input field',
-		category: 'input',
-		propsSchema: z.object({
-			label: z.string().optional(),
-			placeholder: z.string().optional(),
-			error: z.string().optional(),
-			type: z.enum(['text', 'number', 'date', 'email', 'tel', 'url']).optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Select',
-		label: 'Select',
-		description: 'Dropdown select',
-		category: 'input',
-		propsSchema: z.object({
-			options: z.array(z.object({ value: z.string(), label: z.string() })),
-			placeholder: z.string().optional(),
-			label: z.string().optional(),
-			error: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Textarea',
-		label: 'Textarea',
-		description: 'Multi-line text input',
-		category: 'input',
-		propsSchema: z.object({
-			label: z.string().optional(),
-			placeholder: z.string().optional(),
-			rows: z.number().optional(),
-			error: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'Checkbox',
-		label: 'Checkbox',
-		description: 'Checkbox toggle',
-		category: 'input',
-		propsSchema: z.object({
-			label: z.string().optional(),
-			error: z.string().optional(),
-		}),
-		acceptsChildren: false,
-	},
-	{
-		type: 'RadioGroup',
-		label: 'Radio Group',
-		description: 'Radio button group for single selection',
-		category: 'input',
-		propsSchema: z.object({
-			options: z.array(z.object({ value: z.string(), label: z.string() })),
-			label: z.string().optional(),
-			error: z.string().optional(),
-		}),
-		acceptsChildren: false,
 	},
 ]);

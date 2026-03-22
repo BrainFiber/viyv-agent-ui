@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import type { ReactNode } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -33,3 +35,15 @@ export function Button({ label, variant = 'primary', disabled, onClick, classNam
 		</button>
 	);
 }
+
+export const buttonMeta: ComponentMeta = {
+	type: 'Button',
+	label: 'Button',
+	description: 'Clickable button',
+	category: 'input',
+	propsSchema: z.object({
+		label: z.string(),
+		variant: z.enum(['primary', 'secondary', 'danger']).default('primary'),
+	}),
+	acceptsChildren: false,
+};

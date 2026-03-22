@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -47,3 +49,17 @@ export function TextInput({
 		</label>
 	);
 }
+
+export const textInputMeta: ComponentMeta = {
+	type: 'TextInput',
+	label: 'Text Input',
+	description: 'Text input field',
+	category: 'input',
+	propsSchema: z.object({
+		label: z.string().optional(),
+		placeholder: z.string().optional(),
+		error: z.string().optional(),
+		type: z.enum(['text', 'number', 'date', 'email', 'tel', 'url']).optional(),
+	}),
+	acceptsChildren: false,
+};

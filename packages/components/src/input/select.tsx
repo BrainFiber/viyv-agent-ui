@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -58,3 +60,17 @@ export function Select({
 		</label>
 	);
 }
+
+export const selectMeta: ComponentMeta = {
+	type: 'Select',
+	label: 'Select',
+	description: 'Dropdown select',
+	category: 'input',
+	propsSchema: z.object({
+		options: z.array(z.object({ value: z.string(), label: z.string() })),
+		placeholder: z.string().optional(),
+		label: z.string().optional(),
+		error: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

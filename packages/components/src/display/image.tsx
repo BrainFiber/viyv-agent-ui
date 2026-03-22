@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface ImageProps {
@@ -27,3 +29,18 @@ export function Image({ src, alt = '', width, height, objectFit, className }: Im
 		/>
 	);
 }
+
+export const imageMeta: ComponentMeta = {
+	type: 'Image',
+	label: 'Image',
+	description: 'Responsive image display',
+	category: 'display',
+	propsSchema: z.object({
+		src: z.string(),
+		alt: z.string().optional(),
+		width: z.number().optional(),
+		height: z.number().optional(),
+		objectFit: z.enum(['cover', 'contain', 'fill', 'none']).optional(),
+	}),
+	acceptsChildren: false,
+};

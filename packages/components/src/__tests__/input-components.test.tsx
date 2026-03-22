@@ -1,8 +1,12 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { Autocomplete } from '../input/autocomplete.js';
 import { Checkbox } from '../input/checkbox.js';
 import { RadioGroup } from '../input/radio-group.js';
+import { Rating } from '../input/rating.js';
 import { Select } from '../input/select.js';
+import { Slider } from '../input/slider.js';
+import { Switch } from '../input/switch.js';
 import { TextInput } from '../input/text-input.js';
 import { Textarea } from '../input/textarea.js';
 
@@ -267,5 +271,157 @@ describe('RadioGroup', () => {
 	it('does not show error when empty string', () => {
 		render(<RadioGroup options={options} error="" />);
 		expect(screen.queryByRole('alert')).toBeNull();
+	});
+});
+
+describe('Switch', () => {
+	it('renders with role="switch"', () => {
+		render(<Switch />);
+		expect(screen.getByRole('switch')).toBeTruthy();
+	});
+
+	it('renders label', () => {
+		render(<Switch label="通知" />);
+		expect(screen.getByText('通知')).toBeTruthy();
+	});
+
+	it('reflects checked state via aria-checked', () => {
+		render(<Switch checked={true} />);
+		expect(screen.getByRole('switch').getAttribute('aria-checked')).toBe('true');
+	});
+
+	it('calls onChange on click', () => {
+		const onChange = vi.fn();
+		render(<Switch checked={false} onChange={onChange} />);
+		fireEvent.click(screen.getByRole('switch'));
+		expect(onChange).toHaveBeenCalledWith(true);
+	});
+
+	it('disables the button', () => {
+		render(<Switch disabled />);
+		expect((screen.getByRole('switch') as HTMLButtonElement).disabled).toBe(true);
+	});
+
+	it('renders error message', () => {
+		render(<Switch error="エラー" />);
+		expect(screen.getByRole('alert').textContent).toBe('エラー');
+	});
+});
+
+describe('Slider', () => {
+	it('renders range input', () => {
+		render(<Slider />);
+		expect(document.querySelector('input[type="range"]')).toBeTruthy();
+	});
+
+	it('sets min/max/step', () => {
+		render(<Slider min={10} max={50} step={5} />);
+		const input = document.querySelector('input[type="range"]') as HTMLInputElement;
+		expect(input.min).toBe('10');
+		expect(input.max).toBe('50');
+		expect(input.step).toBe('5');
+	});
+
+	it('renders label', () => {
+		render(<Slider label="音量" />);
+		expect(screen.getByText('音量')).toBeTruthy();
+	});
+
+	it('shows value when showValue is true', () => {
+		render(<Slider value={42} showValue />);
+		expect(screen.getByText('42')).toBeTruthy();
+	});
+
+	it('calls onChange', () => {
+		const onChange = vi.fn();
+		render(<Slider onChange={onChange} />);
+		const input = document.querySelector('input[type="range"]')!;
+		fireEvent.change(input, { target: { value: '75' } });
+		expect(onChange).toHaveBeenCalledWith(75);
+	});
+});
+
+describe('Autocomplete', () => {
+	const options = [
+		{ value: 'tokyo', label: 'Tokyo' },
+		{ value: 'osaka', label: 'Osaka' },
+		{ value: 'kyoto', label: 'Kyoto' },
+	];
+
+	it('renders with role="combobox"', () => {
+		render(<Autocomplete options={options} />);
+		expect(screen.getByRole('combobox')).toBeTruthy();
+	});
+
+	it('renders label', () => {
+		render(<Autocomplete options={options} label="City" />);
+		expect(screen.getByText('City')).toBeTruthy();
+	});
+
+	it('shows listbox on focus', () => {
+		render(<Autocomplete options={options} />);
+		fireEvent.focus(screen.getByRole('combobox'));
+		expect(screen.getByRole('listbox')).toBeTruthy();
+		expect(screen.getAllByRole('option').length).toBe(3);
+	});
+
+	it('filters options on input', () => {
+		render(<Autocomplete options={options} />);
+		const input = screen.getByRole('combobox');
+		fireEvent.focus(input);
+		fireEvent.change(input, { target: { value: 'osa' } });
+		expect(screen.getAllByRole('option').length).toBe(1);
+		expect(screen.getByText('Osaka')).toBeTruthy();
+	});
+
+	it('calls onChange on option click', () => {
+		const onChange = vi.fn();
+		render(<Autocomplete options={options} onChange={onChange} />);
+		fireEvent.focus(screen.getByRole('combobox'));
+		fireEvent.click(screen.getByText('Osaka'));
+		expect(onChange).toHaveBeenCalledWith('osaka');
+	});
+
+	it('renders error message', () => {
+		render(<Autocomplete options={options} error="必須です" />);
+		expect(screen.getByRole('alert').textContent).toBe('必須です');
+	});
+});
+
+describe('Rating', () => {
+	it('renders stars with role="radiogroup"', () => {
+		render(<Rating />);
+		expect(screen.getByRole('radiogroup')).toBeTruthy();
+	});
+
+	it('renders max stars', () => {
+		render(<Rating max={3} />);
+		expect(screen.getAllByRole('radio').length).toBe(3);
+	});
+
+	it('has aria-label on radiogroup', () => {
+		render(<Rating label="Satisfaction" />);
+		expect(screen.getByRole('radiogroup').getAttribute('aria-label')).toBe('Satisfaction');
+	});
+
+	it('marks correct star as checked', () => {
+		render(<Rating value={3} max={5} />);
+		const stars = screen.getAllByRole('radio');
+		expect(stars[2].getAttribute('aria-checked')).toBe('true');
+		expect(stars[0].getAttribute('aria-checked')).toBe('false');
+	});
+
+	it('calls onChange on star click', () => {
+		const onChange = vi.fn();
+		render(<Rating onChange={onChange} />);
+		fireEvent.click(screen.getByLabelText('4 stars'));
+		expect(onChange).toHaveBeenCalledWith(4);
+	});
+
+	it('disables all stars', () => {
+		render(<Rating disabled />);
+		for (const star of screen.getAllByRole('radio')) {
+			expect((star as HTMLButtonElement).disabled).toBe(true);
+		}
 	});
 });

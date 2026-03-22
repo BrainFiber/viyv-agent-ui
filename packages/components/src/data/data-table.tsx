@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge } from '../display/badge.js';
 import { cn } from '../lib/cn.js';
@@ -327,3 +329,45 @@ export function DataTable({
 		</section>
 	);
 }
+
+export const dataTableMeta: ComponentMeta = {
+	type: 'DataTable',
+	label: 'Data Table',
+	description: 'Sortable, filterable data table with row linking and click handling',
+	category: 'data',
+	propsSchema: z.object({
+		data: z.unknown(),
+		columns: z.array(
+			z.object({
+				key: z.string(),
+				label: z.string(),
+				sortable: z.boolean().optional(),
+				format: z.enum(['currency', 'number', 'percent', 'date', 'badge']).optional(),
+				filter: z.object({
+					type: z.enum(['text', 'select']),
+					placeholder: z.string().optional(),
+					options: z.array(z.object({ value: z.string(), label: z.string() })).optional(),
+				}).optional(),
+				minWidth: z.number().optional(),
+				badgeMap: z.record(z.enum(['gray', 'blue', 'green', 'yellow', 'red'])).optional(),
+				truncate: z.boolean().optional(),
+				emptyValue: z.string().optional(),
+				valueClassName: z.record(z.string()).optional(),
+			}),
+		),
+		rowHref: z.string().optional(),
+		onRowClick: z.unknown().optional(),
+		keyField: z.string().optional(),
+		emptyMessage: z.string().optional(),
+		noMatchMessage: z.string().optional(),
+		rowHighlight: z.array(z.object({
+			key: z.string(),
+			op: z.enum(['eq', 'neq', 'lt', 'gt', 'lte', 'gte']),
+			value: z.unknown().optional(),
+			field: z.string().optional(),
+			className: z.string(),
+		})).optional(),
+		pageSize: z.number().int().positive().optional(),
+	}),
+	acceptsChildren: false,
+};

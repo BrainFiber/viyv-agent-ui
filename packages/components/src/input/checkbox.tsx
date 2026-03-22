@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
 
@@ -37,3 +39,15 @@ export function Checkbox({
 		</div>
 	);
 }
+
+export const checkboxMeta: ComponentMeta = {
+	type: 'Checkbox',
+	label: 'Checkbox',
+	description: 'Checkbox toggle',
+	category: 'input',
+	propsSchema: z.object({
+		label: z.string().optional(),
+		error: z.string().optional(),
+	}),
+	acceptsChildren: false,
+};

@@ -1,10 +1,16 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Alert } from '../display/alert.js';
 import { Badge } from '../display/badge.js';
+import { Carousel } from '../display/carousel.js';
+import { Descriptions } from '../display/descriptions.js';
 import { Divider } from '../display/divider.js';
+import { Empty } from '../display/empty.js';
 import { Image } from '../display/image.js';
 import { Link } from '../display/link.js';
+import { Skeleton } from '../display/skeleton.js';
+import { Spinner } from '../display/spinner.js';
+import { Tag } from '../display/tag.js';
 import { Text } from '../display/text.js';
 
 afterEach(cleanup);
@@ -237,5 +243,171 @@ describe('Text', () => {
 		const { container } = render(<Text content="Default" />);
 		const p = container.querySelector('p');
 		expect(p?.className).toContain('text-gray-700');
+	});
+});
+
+describe('Tag', () => {
+	it('renders label text', () => {
+		render(<Tag label="React" />);
+		expect(screen.getByText('React')).toBeTruthy();
+	});
+
+	it('applies color class', () => {
+		const { container } = render(<Tag label="Error" color="red" />);
+		const span = container.querySelector('span');
+		expect(span?.className).toContain('bg-red-100');
+	});
+
+	it('shows remove button when removable', () => {
+		const onRemove = vi.fn();
+		render(<Tag label="JS" removable onRemove={onRemove} />);
+		const btn = screen.getByRole('button', { name: 'Remove JS' });
+		expect(btn).toBeTruthy();
+		fireEvent.click(btn);
+		expect(onRemove).toHaveBeenCalled();
+	});
+
+	it('does not show remove button by default', () => {
+		render(<Tag label="CSS" />);
+		expect(screen.queryByRole('button')).toBeNull();
+	});
+});
+
+describe('Empty', () => {
+	it('renders default title', () => {
+		render(<Empty />);
+		expect(screen.getByText('データがありません')).toBeTruthy();
+	});
+
+	it('renders custom title and description', () => {
+		render(<Empty title="結果なし" description="検索条件を変更してください" />);
+		expect(screen.getByText('結果なし')).toBeTruthy();
+		expect(screen.getByText('検索条件を変更してください')).toBeTruthy();
+	});
+
+	it('has aria-label', () => {
+		const { container } = render(<Empty title="空です" />);
+		expect(container.firstElementChild?.getAttribute('aria-label')).toBe('空です');
+	});
+});
+
+describe('Skeleton', () => {
+	it('renders text variant with lines', () => {
+		const { container } = render(<Skeleton variant="text" lines={4} />);
+		expect(container.querySelectorAll('.animate-pulse').length).toBe(4);
+	});
+
+	it('renders circle variant', () => {
+		const { container } = render(<Skeleton variant="circle" width={48} />);
+		const el = container.firstElementChild as HTMLElement;
+		expect(el.className).toContain('rounded-full');
+		expect(el.getAttribute('aria-busy')).toBe('true');
+	});
+
+	it('renders rect variant', () => {
+		const { container } = render(<Skeleton variant="rect" />);
+		const el = container.firstElementChild as HTMLElement;
+		expect(el.className).toContain('rounded');
+		expect(el.getAttribute('aria-busy')).toBe('true');
+	});
+});
+
+describe('Spinner', () => {
+	it('renders with role="status"', () => {
+		render(<Spinner />);
+		expect(screen.getByRole('status')).toBeTruthy();
+	});
+
+	it('has default aria-label "Loading"', () => {
+		render(<Spinner />);
+		expect(screen.getByRole('status').getAttribute('aria-label')).toBe('Loading');
+	});
+
+	it('renders custom label text', () => {
+		render(<Spinner label="読み込み中" />);
+		expect(screen.getByText('読み込み中')).toBeTruthy();
+		expect(screen.getByRole('status').getAttribute('aria-label')).toBe('読み込み中');
+	});
+
+	it('applies size class', () => {
+		render(<Spinner size="lg" />);
+		const svg = document.querySelector('svg');
+		expect(svg?.className.baseVal).toContain('h-12');
+	});
+});
+
+describe('Carousel', () => {
+	it('renders first slide by default', () => {
+		render(
+			<Carousel>
+				<div>Slide 1</div>
+				<div>Slide 2</div>
+			</Carousel>,
+		);
+		expect(screen.getByText('Slide 1')).toBeTruthy();
+		expect(screen.queryByText('Slide 2')).toBeNull();
+	});
+
+	it('navigates to next slide on arrow click', () => {
+		render(
+			<Carousel>
+				<div>Slide 1</div>
+				<div>Slide 2</div>
+			</Carousel>,
+		);
+		fireEvent.click(screen.getByLabelText('Next slide'));
+		expect(screen.queryByText('Slide 1')).toBeNull();
+		expect(screen.getByText('Slide 2')).toBeTruthy();
+	});
+
+	it('has aria-roledescription="carousel"', () => {
+		render(
+			<Carousel>
+				<div>Slide 1</div>
+			</Carousel>,
+		);
+		expect(screen.getByRole('region').getAttribute('aria-roledescription')).toBe('carousel');
+	});
+
+	it('renders dot buttons for each slide', () => {
+		render(
+			<Carousel showDots>
+				<div>A</div>
+				<div>B</div>
+				<div>C</div>
+			</Carousel>,
+		);
+		expect(screen.getAllByLabelText(/Go to slide/).length).toBe(3);
+	});
+});
+
+describe('Descriptions', () => {
+	const items = [
+		{ label: 'Name', value: 'Alice' },
+		{ label: 'Email', value: 'alice@example.com' },
+	];
+
+	it('renders all items', () => {
+		render(<Descriptions items={items} />);
+		expect(screen.getByText('Name')).toBeTruthy();
+		expect(screen.getByText('Alice')).toBeTruthy();
+		expect(screen.getByText('Email')).toBeTruthy();
+	});
+
+	it('renders title', () => {
+		render(<Descriptions items={items} title="User Info" />);
+		expect(screen.getByText('User Info')).toBeTruthy();
+	});
+
+	it('uses dl element', () => {
+		const { container } = render(<Descriptions items={items} />);
+		expect(container.querySelector('dl')).toBeTruthy();
+		expect(container.querySelectorAll('dt').length).toBe(2);
+		expect(container.querySelectorAll('dd').length).toBe(2);
+	});
+
+	it('applies bordered style', () => {
+		const { container } = render(<Descriptions items={items} bordered />);
+		expect(container.querySelector('dl')?.className).toContain('border');
 	});
 });

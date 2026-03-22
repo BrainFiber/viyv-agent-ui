@@ -1,3 +1,5 @@
+import { z } from 'zod';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface TextProps {
@@ -63,3 +65,19 @@ export function Text({ content, variant, size, weight, color, truncate, classNam
 		</p>
 	);
 }
+
+export const textMeta: ComponentMeta = {
+	type: 'Text',
+	label: 'Text',
+	description: 'Styled text content with variant, size, weight, and truncation support',
+	category: 'display',
+	propsSchema: z.object({
+		content: z.string(),
+		variant: z.enum(['heading', 'subheading', 'body', 'caption', 'price']).optional(),
+		size: z.enum(['xs', 'sm', 'md', 'lg', 'xl', '2xl']).optional(),
+		weight: z.enum(['normal', 'medium', 'semibold', 'bold']).optional(),
+		color: z.enum(['default', 'muted', 'primary', 'success', 'warning', 'danger']).optional(),
+		truncate: z.union([z.boolean(), z.number()]).optional(),
+	}),
+	acceptsChildren: false,
+};

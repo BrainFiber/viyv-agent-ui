@@ -1,4 +1,6 @@
+import { z } from 'zod';
 import type { ReactNode } from 'react';
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
 
 export interface CardProps {
@@ -21,3 +23,15 @@ export function Card({ title, description, children, className }: CardProps) {
 		</div>
 	);
 }
+
+export const cardMeta: ComponentMeta = {
+	type: 'Card',
+	label: 'Card',
+	description: 'Container card with optional title',
+	category: 'layout',
+	propsSchema: z.object({
+		title: z.string().optional(),
+		description: z.string().optional(),
+	}),
+	acceptsChildren: true,
+};
