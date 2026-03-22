@@ -31,7 +31,7 @@ export function Checkbox({
 					aria-invalid={!!error}
 					aria-describedby={error ? errorId : undefined}
 					onChange={(e) => onChange?.(e.target.checked)}
-					className="h-4 w-4 rounded border-border-strong text-primary focus:ring-ring"
+					className="h-4 w-4 rounded border-border-strong text-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-1"
 				/>
 				{label && <span className="text-sm text-fg-secondary">{label}</span>}
 			</label>

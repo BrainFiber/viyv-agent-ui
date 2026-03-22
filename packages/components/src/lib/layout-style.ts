@@ -21,6 +21,7 @@ const BG_MAP: Record<string, string> = {
 	'success-soft': 'bg-success-soft',
 	'warning-soft': 'bg-warning-soft',
 	'transparent': 'bg-transparent',
+	'accent': 'bg-accent',
 };
 
 const ROUNDED_MAP: Record<string, string> = {

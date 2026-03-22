@@ -132,7 +132,7 @@ function TreeNode({ node, labelKey, childrenKey, idKey, level, expanded, onToggl
 		<li role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
 			<div
 				ref={rowRef}
-				className="flex items-center py-1 cursor-default hover:bg-surface-alt rounded"
+				className="flex items-center py-1 cursor-default transition-colors hover:bg-muted/50 rounded"
 				style={{ paddingLeft: `${level * 20}px` }}
 				tabIndex={isFocused ? 0 : -1}
 				onFocus={() => onFocusNode(id)}

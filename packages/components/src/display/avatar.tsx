@@ -50,7 +50,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
 				src={src}
 				alt={name}
 				onError={() => setImgError(true)}
-				className={cn('rounded-full object-cover shrink-0', sizeClass, className)}
+				className={cn('rounded-full object-cover shrink-0 ring-2 ring-surface', sizeClass, className)}
 			/>
 		);
 	}
@@ -61,7 +61,7 @@ export function Avatar({ src, name, size = 'md', className }: AvatarProps) {
 		<span
 			aria-label={name}
 			className={cn(
-				'inline-flex items-center justify-center rounded-full text-white font-medium shrink-0',
+				'inline-flex items-center justify-center rounded-full text-white font-medium shrink-0 ring-2 ring-surface',
 				sizeClass,
 				bgColor,
 				className,

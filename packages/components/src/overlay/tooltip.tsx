@@ -79,7 +79,7 @@ export function Tooltip({ content, position = 'top', children, className }: Tool
 					id={tooltipId}
 					role="tooltip"
 					className={cn(
-						'absolute z-50 whitespace-nowrap rounded bg-tooltip-bg px-2 py-1 text-xs text-tooltip-fg shadow-lg',
+						'absolute z-50 whitespace-nowrap rounded-md bg-tooltip-bg px-2.5 py-1 text-xs text-tooltip-fg shadow-lg animate-tooltip-in',
 						positionStyles[effectivePosition] ?? positionStyles.top,
 					)}
 				>

@@ -54,7 +54,7 @@ function MenuItemComponent({
 	);
 
 	const baseClass = cn(
-		'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+		'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
 		item.active
 			? 'bg-primary-soft font-medium text-primary-soft-fg'
 			: 'text-fg-secondary hover:bg-muted',

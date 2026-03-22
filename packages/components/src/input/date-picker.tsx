@@ -82,7 +82,7 @@ export function DatePicker({
 				onClick={() => setOpen(!open)}
 				onKeyDown={handleKeyDown}
 				className={cn(
-					'flex w-full items-center rounded-md border px-3 py-2 text-left text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
+					'flex w-full items-center rounded-lg border border-border-strong bg-surface px-3 py-2 text-left text-sm shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30',
 					disabled && 'cursor-not-allowed bg-muted opacity-50',
 					error && 'border-danger',
 					!value && 'text-fg-muted',
@@ -95,7 +95,7 @@ export function DatePicker({
 				<div
 					role="dialog"
 					aria-label="日付選択"
-					className="absolute z-50 mt-1 rounded-lg border bg-surface shadow-lg"
+					className="absolute z-50 mt-1 rounded-lg border bg-surface shadow-xl animate-dropdown-in"
 				>
 					<Calendar
 						defaultMonth={defaultMonth}

@@ -11,12 +11,12 @@ export interface TagProps {
 }
 
 const colorMap: Record<string, string> = {
-	gray: 'bg-gray-100 text-gray-700',
-	blue: 'bg-blue-100 text-blue-700',
-	green: 'bg-green-100 text-green-700',
-	yellow: 'bg-yellow-100 text-yellow-700',
-	red: 'bg-red-100 text-red-700',
-	purple: 'bg-purple-100 text-purple-700',
+	gray: 'bg-muted text-fg-secondary border border-border',
+	blue: 'bg-primary-soft text-primary-soft-fg border border-primary-soft-border',
+	green: 'bg-success-soft text-success-soft-fg border border-success-soft-border',
+	yellow: 'bg-warning-soft text-warning-soft-fg border border-warning-soft-border',
+	red: 'bg-danger-soft text-danger-soft-fg border border-danger-soft-border',
+	purple: 'bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800',
 };
 
 export function Tag({ label, color = 'gray', removable, onRemove, className }: TagProps) {

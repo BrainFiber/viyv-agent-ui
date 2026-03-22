@@ -51,7 +51,7 @@ export function Stepper({ steps, current, direction = 'horizontal', className }:
 							)}
 						</div>
 						{direction === 'horizontal' && i < steps.length - 1 && (
-							<div className={cn('h-0.5 flex-1', isCompleted ? 'bg-success' : 'bg-muted-strong')} />
+							<div className={cn('h-0.5 flex-1 transition-colors', isCompleted ? 'bg-success' : 'bg-muted-strong')} />
 						)}
 					</div>
 				);

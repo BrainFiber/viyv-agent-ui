@@ -27,7 +27,7 @@ export function Card({ title, description, p, bg, rounded, shadow, border, child
 		const layout = buildCommonLayoutStyle({
 			p,
 			bg: bg ?? 'surface',
-			rounded: rounded ?? 'lg',
+			rounded: rounded ?? 'xl',
 			shadow: shadow ?? 'sm',
 			border: border !== false,
 		});
@@ -38,7 +38,7 @@ export function Card({ title, description, p, bg, rounded, shadow, border, child
 	return (
 		<div
 			className={cn(
-				!hasCustomLayout && 'rounded-lg border bg-surface p-6 shadow-sm',
+				!hasCustomLayout && 'rounded-xl border bg-surface p-6 shadow-sm transition-shadow',
 				layoutClassName,
 				className,
 			)}
@@ -46,7 +46,7 @@ export function Card({ title, description, p, bg, rounded, shadow, border, child
 		>
 			{title && (
 				<div className="mb-4">
-					<h3 className="text-lg font-semibold">{title}</h3>
+					<h3 className="text-lg font-semibold tracking-tight">{title}</h3>
 					{description && <p className="mt-1 text-sm text-fg-muted">{description}</p>}
 				</div>
 			)}

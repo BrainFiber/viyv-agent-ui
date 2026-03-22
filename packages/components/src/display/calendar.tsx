@@ -62,7 +62,7 @@ export function Calendar({ events = [], defaultMonth, onDateClick, className }: 
 	for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
 	return (
-		<div className={cn('rounded-lg border bg-surface p-4', className)}>
+		<div className={cn('rounded-xl border bg-surface p-4 shadow-sm', className)}>
 			<div className="mb-4 flex items-center justify-between">
 				<button type="button" onClick={prevMonth} aria-label="Previous month" className="rounded p-1 hover:bg-muted">
 					&#x2039;
@@ -92,14 +92,14 @@ export function Calendar({ events = [], defaultMonth, onDateClick, className }: 
 							onClick={() => onDateClick?.(dateStr)}
 							className={cn(
 								'relative flex h-10 w-full flex-col items-center justify-center rounded text-sm transition-colors hover:bg-muted',
-								isToday && 'font-bold text-primary ring-1 ring-primary',
+								isToday && 'font-bold text-primary bg-primary/10 ring-1 ring-primary',
 							)}
 						>
 							{day}
 							{dayEvents && dayEvents.length > 0 && (
 								<span
 									className="absolute bottom-1 h-1 w-1 rounded-full"
-									style={{ backgroundColor: dayEvents[0].color ?? '#3b82f6' }}
+									style={{ backgroundColor: dayEvents[0].color ?? 'var(--color-primary)' }}
 								/>
 							)}
 						</button>

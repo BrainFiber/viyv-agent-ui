@@ -69,7 +69,7 @@ export function List({
 				return (
 					<li key={label || i} role="listitem" aria-label={label}>
 						{href ? (
-							<a href={href} className="block hover:bg-surface-alt">{content}</a>
+							<a href={href} className="block transition-colors hover:bg-muted/50">{content}</a>
 						) : (
 							content
 						)}

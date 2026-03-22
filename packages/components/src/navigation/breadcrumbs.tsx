@@ -23,7 +23,7 @@ export function Breadcrumbs({ items, separator = '/', className }: BreadcrumbsPr
 									{item.label}
 								</span>
 							) : (
-								<a href={item.href} className="hover:text-fg hover:underline">{item.label}</a>
+								<a href={item.href} className="transition-colors hover:text-fg hover:underline">{item.label}</a>
 							)}
 						</li>
 					);

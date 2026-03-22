@@ -9,10 +9,10 @@ export function Nav() {
 
 	return (
 		<nav className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur">
-			<div className="mx-auto flex h-14 max-w-5xl items-center gap-4 px-6">
+			<div className="mx-auto flex h-16 max-w-5xl items-center gap-4 px-6">
 				<Link href="/" className="flex items-center gap-2 font-semibold text-fg">
 					<span className="text-lg">agent-ui</span>
-					<span className="rounded bg-primary-soft px-1.5 py-0.5 text-xs text-primary-soft-fg">demo</span>
+					<span className="rounded-md bg-primary-soft px-1.5 py-0.5 text-xs font-medium text-primary-soft-fg">demo</span>
 				</Link>
 				{!isHome && (
 					<Link

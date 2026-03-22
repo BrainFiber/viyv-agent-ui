@@ -40,7 +40,7 @@ export function Select({
 				aria-describedby={error ? errorId : undefined}
 				onChange={(e) => onChange?.(e.target.value)}
 				className={cn(
-					'w-full rounded-md border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
+					'w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30',
 					disabled && 'cursor-not-allowed bg-muted opacity-50',
 					error && 'border-danger',
 				)}

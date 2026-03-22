@@ -26,7 +26,7 @@ export function Descriptions({
 				aria-label={title}
 				className={cn(
 					'grid gap-4',
-					bordered && 'rounded-lg border p-4',
+					bordered && 'rounded-xl border p-4',
 				)}
 				style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
 			>

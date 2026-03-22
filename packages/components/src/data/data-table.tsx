@@ -193,9 +193,9 @@ export function DataTable({
 	const isFiltered = Object.keys(filters).length > 0;
 
 	return (
-		<section className={cn('overflow-auto rounded-lg border', className)} aria-label="Data table">
+		<section className={cn('overflow-auto rounded-xl border shadow-sm', className)} aria-label="Data table">
 			<table className="w-full text-sm" style={{ tableLayout: 'auto', wordBreak: 'break-word' }}>
-				<thead className="border-b bg-surface-alt">
+				<thead className="border-b bg-muted/50">
 					<tr>
 						{columns.map((col) => (
 							<th
@@ -240,7 +240,7 @@ export function DataTable({
 											value={filters[col.key] ?? ''}
 											placeholder={col.filter.placeholder ?? '検索...'}
 											onChange={(e) => handleFilterChange(col.key, e.target.value)}
-											className="w-full rounded border border-border-strong px-2 py-1 text-sm focus:border-primary focus:outline-none"
+											className="w-full rounded-md border border-border-strong bg-surface px-2 py-1 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring/30"
 											aria-label={`${col.label}で絞り込み`}
 										/>
 									)}
@@ -248,7 +248,7 @@ export function DataTable({
 										<select
 											value={filters[col.key] ?? ''}
 											onChange={(e) => handleFilterChange(col.key, e.target.value)}
-											className="w-full rounded border border-border-strong px-2 py-1 text-sm focus:border-primary focus:outline-none"
+											className="w-full rounded-md border border-border-strong bg-surface px-2 py-1 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring/30"
 											aria-label={`${col.label}で絞り込み`}
 										>
 											<option value="">{col.filter.placeholder ?? 'すべて'}</option>
@@ -276,7 +276,7 @@ export function DataTable({
 							<tr
 								key={rowKey}
 								className={cn(
-									'border-b last:border-b-0 hover:bg-surface-alt',
+									'border-b last:border-b-0 hover:bg-muted/50',
 									isClickable && 'cursor-pointer',
 									evaluateRowHighlight(row, rowHighlight),
 								)}

@@ -43,10 +43,10 @@ function formatValue(value: unknown, format?: string): string {
 
 export function Stat({ label, value, format, trend, className }: StatProps) {
 	return (
-		<div className={cn('rounded-lg border bg-surface p-4', className)}>
+		<div className={cn('rounded-xl border bg-surface p-5 shadow-sm', className)}>
 			<p className="text-sm text-fg-muted">{label}</p>
 			<div className="mt-1 flex items-baseline gap-2">
-				<p className="text-2xl font-semibold">{formatValue(value, format)}</p>
+				<p className="text-2xl font-bold tracking-tight">{formatValue(value, format)}</p>
 				{trend && (
 					<span
 						className={cn(

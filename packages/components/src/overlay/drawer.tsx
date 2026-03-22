@@ -18,7 +18,7 @@ export function Drawer({ title, position = 'right', width = 400, onClose, childr
 
 	return (
 		<div className="fixed inset-0 z-50 flex">
-			<div className="absolute inset-0 bg-overlay" aria-hidden="true" />
+			<div className="absolute inset-0 bg-overlay backdrop-blur-sm animate-backdrop-in" aria-hidden="true" />
 			<div
 				ref={overlayRef}
 				role="dialog"
@@ -28,18 +28,18 @@ export function Drawer({ title, position = 'right', width = 400, onClose, childr
 				style={{ width: `${width}px` }}
 				className={cn(
 					'relative z-10 flex h-full max-w-full flex-col bg-surface shadow-xl focus:outline-none',
-					position === 'right' ? 'ml-auto' : 'mr-auto',
+					position === 'right' ? 'ml-auto border-l animate-drawer-in-right' : 'mr-auto border-r animate-drawer-in-left',
 					className,
 				)}
 			>
 				<div className="flex items-center justify-between border-b px-6 py-4">
-					<h2 id={titleId} className="text-lg font-semibold text-fg">{title}</h2>
+					<h2 id={titleId} className="text-lg font-semibold tracking-tight text-fg">{title}</h2>
 					{onClose && (
 						<button
 							type="button"
 							onClick={onClose}
 							aria-label="Close"
-							className="shrink-0 rounded p-1 text-fg-subtle hover:text-fg-muted"
+							className="shrink-0 rounded p-1 text-fg-subtle transition-colors hover:text-fg-muted"
 						>
 							&#x2715;
 						</button>

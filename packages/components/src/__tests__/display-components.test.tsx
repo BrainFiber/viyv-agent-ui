@@ -24,14 +24,14 @@ describe('Badge', () => {
 	it('applies color classes', () => {
 		const { container } = render(<Badge text="Error" color="red" />);
 		const span = container.querySelector('span');
-		expect(span?.className).toContain('bg-red-100');
-		expect(span?.className).toContain('text-red-700');
+		expect(span?.className).toContain('bg-danger-soft');
+		expect(span?.className).toContain('text-danger-soft-fg');
 	});
 
 	it('defaults to gray', () => {
 		const { container } = render(<Badge text="Default" />);
 		const span = container.querySelector('span');
-		expect(span?.className).toContain('bg-gray-100');
+		expect(span?.className).toContain('bg-muted');
 	});
 
 	it('applies custom className', () => {
@@ -256,7 +256,7 @@ describe('Tag', () => {
 	it('applies color class', () => {
 		const { container } = render(<Tag label="Error" color="red" />);
 		const span = container.querySelector('span');
-		expect(span?.className).toContain('bg-red-100');
+		expect(span?.className).toContain('bg-danger-soft');
 	});
 
 	it('shows remove button when removable', () => {

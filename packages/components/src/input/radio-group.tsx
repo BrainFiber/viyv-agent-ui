@@ -47,7 +47,7 @@ export function RadioGroup({
 						checked={value === opt.value}
 						disabled={disabled}
 						onChange={() => onChange?.(opt.value)}
-						className="h-4 w-4 border-border-strong text-primary focus:ring-ring"
+						className="h-4 w-4 border-border-strong text-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-1"
 					/>
 					<span className="text-sm text-fg-secondary">{opt.label}</span>
 				</label>

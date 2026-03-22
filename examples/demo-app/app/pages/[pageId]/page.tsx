@@ -7,23 +7,23 @@ import { defaultRegistry } from '@viyv/agent-ui-components';
 function LoadingSkeleton() {
 	return (
 		<div className="animate-pulse space-y-4">
-			<div className="h-8 w-1/3 rounded bg-gray-200" />
-			<div className="h-4 w-2/3 rounded bg-gray-200" />
+			<div className="h-8 w-1/3 rounded bg-muted-strong" />
+			<div className="h-4 w-2/3 rounded bg-muted-strong" />
 			<div className="grid grid-cols-3 gap-4">
-				<div className="h-24 rounded bg-gray-200" />
-				<div className="h-24 rounded bg-gray-200" />
-				<div className="h-24 rounded bg-gray-200" />
+				<div className="h-24 rounded bg-muted-strong" />
+				<div className="h-24 rounded bg-muted-strong" />
+				<div className="h-24 rounded bg-muted-strong" />
 			</div>
-			<div className="h-64 rounded bg-gray-200" />
+			<div className="h-64 rounded bg-muted-strong" />
 		</div>
 	);
 }
 
 function ErrorDisplay({ error }: { error: Error }) {
 	return (
-		<div className="rounded-lg border border-red-200 bg-red-50 p-6">
-			<h2 className="text-lg font-semibold text-red-800">ページの読み込みに失敗しました</h2>
-			<p className="mt-2 text-sm text-red-600">{error.message}</p>
+		<div className="rounded-lg border border-danger-soft-border bg-danger-soft p-6">
+			<h2 className="text-lg font-semibold text-danger-soft-fg">ページの読み込みに失敗しました</h2>
+			<p className="mt-2 text-sm text-danger">{error.message}</p>
 		</div>
 	);
 }

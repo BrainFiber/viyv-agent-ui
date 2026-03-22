@@ -253,7 +253,7 @@ describe('DataTable', () => {
 			const badge = container.querySelector('span.inline-flex');
 			expect(badge).toBeTruthy();
 			expect(badge!.textContent).toBe('active');
-			expect(badge!.className).toContain('bg-green-100');
+			expect(badge!.className).toContain('bg-success-soft');
 		});
 
 		it('falls back to gray when value not in badgeMap', () => {
@@ -263,7 +263,7 @@ describe('DataTable', () => {
 			const { container } = render(<DataTable data={[{ status: 'unknown' }]} columns={cols} />);
 			const badge = container.querySelector('span.inline-flex');
 			expect(badge).toBeTruthy();
-			expect(badge!.className).toContain('bg-gray-100');
+			expect(badge!.className).toContain('bg-muted');
 		});
 	});
 

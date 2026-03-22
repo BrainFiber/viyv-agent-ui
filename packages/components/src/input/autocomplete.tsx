@@ -83,7 +83,7 @@ export function Autocomplete({
 					blurTimerRef.current = setTimeout(() => setOpen(false), 150);
 				}}
 				className={cn(
-					'w-full rounded-md border px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring',
+					'w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-fg-subtle focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30',
 					disabled && 'cursor-not-allowed bg-muted opacity-50',
 					error && 'border-danger',
 				)}
@@ -92,7 +92,7 @@ export function Autocomplete({
 				<ul
 					id={listboxId}
 					role="listbox"
-					className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-surface py-1 shadow-lg"
+					className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-surface py-1 shadow-lg animate-dropdown-in"
 				>
 					{filtered.map((opt) => (
 						<li
@@ -102,7 +102,7 @@ export function Autocomplete({
 							onMouseDown={(e) => e.preventDefault()}
 							onClick={() => handleSelect(opt)}
 							className={cn(
-								'cursor-pointer px-3 py-2 text-sm hover:bg-primary-soft',
+								'cursor-pointer px-3 py-2 text-sm hover:bg-muted',
 								opt.value === value && 'bg-primary-soft font-medium text-primary-soft-fg',
 							)}
 						>

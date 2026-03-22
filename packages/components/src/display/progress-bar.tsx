@@ -12,11 +12,11 @@ export interface ProgressBarProps {
 }
 
 const colorMap: Record<string, string> = {
-	blue: 'bg-blue-500',
-	green: 'bg-green-500',
-	yellow: 'bg-yellow-500',
-	red: 'bg-red-500',
-	gray: 'bg-gray-500',
+	blue: 'bg-primary',
+	green: 'bg-success',
+	yellow: 'bg-warning',
+	red: 'bg-danger',
+	gray: 'bg-fg-subtle',
 };
 
 const sizeMap: Record<string, string> = {
@@ -43,7 +43,7 @@ export function ProgressBar({ value, label, color = 'blue', size = 'md', showVal
 	return (
 		<div className={cn('flex items-center gap-2', className)}>
 			<div
-				className={cn('w-full rounded-full bg-muted-strong overflow-hidden', sizeMap[size] ?? sizeMap.md)}
+				className={cn('w-full rounded-full bg-muted overflow-hidden', sizeMap[size] ?? sizeMap.md)}
 				role="progressbar"
 				aria-valuenow={clamped}
 				aria-valuemin={0}
@@ -51,7 +51,7 @@ export function ProgressBar({ value, label, color = 'blue', size = 'md', showVal
 				aria-label={label ?? `${clamped}%`}
 			>
 				<div
-					className={cn('h-full rounded-full transition-all', colorMap[color] ?? colorMap.blue)}
+					className={cn('h-full rounded-full transition-all duration-500', colorMap[color] ?? colorMap.blue)}
 					style={{ width: `${clamped}%` }}
 				/>
 			</div>

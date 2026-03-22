@@ -52,7 +52,7 @@ export function Toast({
 			aria-live="polite"
 			aria-atomic="true"
 			className={cn(
-				'min-w-0 max-w-[calc(100vw-2rem)] rounded-lg border p-4 shadow-lg sm:min-w-[280px] sm:max-w-sm',
+				'min-w-0 max-w-[calc(100vw-2rem)] rounded-xl border p-4 shadow-lg animate-toast-in sm:min-w-[280px] sm:max-w-sm',
 				isStandalone && 'fixed z-50',
 				isStandalone && (positionStyles[position] ?? positionStyles['top-right']),
 				typeStyles[type] ?? typeStyles.info,
@@ -66,7 +66,7 @@ export function Toast({
 						type="button"
 						onClick={() => setVisible(false)}
 						aria-label="Close"
-						className="shrink-0 opacity-60 hover:opacity-100"
+						className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
 					>
 						&#x2715;
 					</button>

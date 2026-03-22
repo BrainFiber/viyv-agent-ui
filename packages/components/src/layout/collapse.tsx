@@ -30,7 +30,7 @@ export function Collapse({ panels, accordion, defaultOpen, children, className }
 	};
 
 	return (
-		<div className={cn('divide-y rounded-lg border', className)}>
+		<div className={cn('divide-y rounded-xl border', className)}>
 			{panels.map((panel, i) => {
 				const isOpen = openPanels.has(panel.id);
 				const headerId = `${instanceId}-header-${panel.id}`;
@@ -43,7 +43,7 @@ export function Collapse({ panels, accordion, defaultOpen, children, className }
 							aria-expanded={isOpen}
 							aria-controls={regionId}
 							onClick={() => toggle(panel.id)}
-							className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-fg hover:bg-surface-alt"
+							className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-fg transition-colors hover:bg-muted"
 						>
 							{panel.title}
 							<span className={cn('ml-2 transition-transform', isOpen && 'rotate-180')}>&#x25BE;</span>

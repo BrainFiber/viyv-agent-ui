@@ -12,11 +12,18 @@ describe('ProgressBar', () => {
 	});
 
 	it('applies color classes', () => {
+		const expectedMap: Record<string, string> = {
+			blue: 'bg-primary',
+			green: 'bg-success',
+			yellow: 'bg-warning',
+			red: 'bg-danger',
+			gray: 'bg-fg-subtle',
+		};
 		for (const color of ['blue', 'green', 'yellow', 'red', 'gray'] as const) {
 			cleanup();
 			const { container } = render(<ProgressBar value={50} color={color} />);
 			const fill = container.querySelector('[role="progressbar"] > div');
-			expect(fill?.className).toContain(`bg-${color}-500`);
+			expect(fill?.className).toContain(expectedMap[color]);
 		}
 	});
 

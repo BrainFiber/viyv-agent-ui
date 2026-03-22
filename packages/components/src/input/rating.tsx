@@ -46,9 +46,9 @@ export function Rating({
 							disabled={disabled}
 							onClick={() => onChange?.(starValue)}
 							className={cn(
-								'text-2xl transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 rounded',
+								'text-2xl transition-all focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 rounded',
 								filled ? 'text-warning-accent' : 'text-fg-disabled',
-								disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:text-warning-accent',
+								disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:text-warning-accent hover:scale-110',
 							)}
 						>
 							&#x2605;
