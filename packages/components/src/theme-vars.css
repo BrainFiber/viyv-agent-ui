@@ -1,0 +1,214 @@
+/*
+ * theme-vars.css — 通常 CSS 変数版デザイントークン
+ *
+ * @theme ディレクティブ（Tailwind v4 専用）が処理されない環境向けのフォールバック。
+ * 外部プロジェクトから @import "@viyv/agent-ui-components/theme-vars.css" で利用。
+ *
+ * 同一 monorepo 内（demo-app 等）は theme.css を相対パスで使用。
+ */
+
+/* ── Fonts ── */
+@font-face {
+	font-family: "Geist Sans";
+	src: url("./fonts/GeistSans-Variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Geist Mono";
+	src: url("./fonts/GeistMono-Variable.woff2") format("woff2");
+	font-weight: 100 900;
+	font-display: swap;
+	font-style: normal;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap");
+
+/* ── Design Tokens (Light Mode) ── */
+:root {
+	/* Typography */
+	--font-sans: "Geist Sans", "Noto Sans JP", "Hiragino Sans",
+		"Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Segoe UI", "Meiryo", sans-serif;
+	--font-mono: "Geist Mono", "SF Mono", "Cascadia Code", "Fira Code",
+		ui-monospace, monospace;
+
+	/* Primary/Brand */
+	--color-primary: #3b82f6;
+	--color-primary-hover: #2563eb;
+	--color-primary-fg: #ffffff;
+	--color-primary-soft: #eff6ff;
+	--color-primary-soft-fg: #1e40af;
+	--color-primary-soft-border: #bfdbfe;
+
+	/* Danger */
+	--color-danger: #dc2626;
+	--color-danger-hover: #b91c1c;
+	--color-danger-fg: #ffffff;
+	--color-danger-soft: #fef2f2;
+	--color-danger-soft-fg: #991b1b;
+	--color-danger-soft-border: #fecaca;
+
+	/* Success */
+	--color-success: #16a34a;
+	--color-success-fg: #ffffff;
+	--color-success-soft: #f0fdf4;
+	--color-success-soft-fg: #166534;
+	--color-success-soft-border: #bbf7d0;
+
+	/* Warning */
+	--color-warning: #ca8a04;
+	--color-warning-fg: #ffffff;
+	--color-warning-accent: #facc15;
+	--color-warning-soft: #fefce8;
+	--color-warning-soft-fg: #854d0e;
+	--color-warning-soft-border: #fef08a;
+
+	/* Neutral: Surfaces */
+	--color-surface: #ffffff;
+	--color-surface-alt: #f9fafb;
+	--color-muted: #f3f4f6;
+	--color-muted-strong: #e5e7eb;
+	--color-accent: #f4f4f5;
+
+	/* Neutral: Text */
+	--color-fg: #111827;
+	--color-fg-secondary: #374151;
+	--color-fg-muted: #6b7280;
+	--color-fg-subtle: #9ca3af;
+	--color-fg-disabled: #d1d5db;
+
+	/* Neutral: Borders */
+	--color-border: #e5e7eb;
+	--color-border-strong: #d1d5db;
+	--color-border-input: #d1d5db;
+
+	/* Utility */
+	--color-ring: #3b82f6;
+	--color-overlay: rgb(0 0 0 / 0.5);
+	--color-tooltip-bg: #111827;
+	--color-tooltip-fg: #ffffff;
+
+	/* Border Radius */
+	--radius-sm: 0.25rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.625rem;
+	--radius-xl: 1rem;
+	--radius-full: 9999px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+	--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+	--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+	--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+}
+
+/* ── Dark Mode ── */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-primary: #60a5fa;
+		--color-primary-hover: #3b82f6;
+		--color-primary-fg: #ffffff;
+		--color-primary-soft: #1e293b;
+		--color-primary-soft-fg: #93c5fd;
+		--color-primary-soft-border: #1e40af;
+
+		--color-danger: #f87171;
+		--color-danger-hover: #ef4444;
+		--color-danger-fg: #ffffff;
+		--color-danger-soft: #1c1917;
+		--color-danger-soft-fg: #fca5a5;
+		--color-danger-soft-border: #7f1d1d;
+
+		--color-success: #4ade80;
+		--color-success-fg: #ffffff;
+		--color-success-soft: #0c1a12;
+		--color-success-soft-fg: #86efac;
+		--color-success-soft-border: #14532d;
+
+		--color-warning: #fbbf24;
+		--color-warning-fg: #000000;
+		--color-warning-accent: #fbbf24;
+		--color-warning-soft: #1a1608;
+		--color-warning-soft-fg: #fcd34d;
+		--color-warning-soft-border: #713f12;
+
+		--color-surface: #0a0a0a;
+		--color-surface-alt: #111111;
+		--color-muted: #1a1a1a;
+		--color-muted-strong: #262626;
+		--color-accent: #1a1a1a;
+
+		--color-fg: #fafafa;
+		--color-fg-secondary: #d4d4d8;
+		--color-fg-muted: #a1a1aa;
+		--color-fg-subtle: #71717a;
+		--color-fg-disabled: #3f3f46;
+
+		--color-border: #27272a;
+		--color-border-strong: #3f3f46;
+		--color-border-input: #3f3f46;
+
+		--color-ring: #60a5fa;
+		--color-overlay: rgb(0 0 0 / 0.7);
+		--color-tooltip-bg: #fafafa;
+		--color-tooltip-fg: #0a0a0a;
+
+		--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+		--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
+		--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
+		--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.2);
+	}
+}
+
+/* ── Base Typography ── */
+@layer base {
+	body {
+		font-family: var(--font-sans);
+		font-feature-settings: "rlig" 1, "calt" 1;
+		font-optical-sizing: auto;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	code, pre, kbd, samp {
+		font-family: var(--font-mono);
+	}
+}
+
+/* ── Animations (Radix data-[state] + CSS keyframes) ── */
+@keyframes accordion-down {
+	from { height: 0; opacity: 0; }
+	to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+	from { height: var(--radix-accordion-content-height); opacity: 1; }
+	to { height: 0; opacity: 0; }
+}
+@keyframes dialog-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dialog-content-in {
+	from { opacity: 0; scale: 0.95; translate: 0 8px; }
+	to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes dialog-content-out {
+	from { opacity: 1; scale: 1; translate: 0 0; }
+	to { opacity: 0; scale: 0.95; translate: 0 8px; }
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slide-in-from-right { from { translate: 100% 0; } to { translate: 0 0; } }
+@keyframes slide-out-to-right { from { translate: 0 0; } to { translate: 100% 0; } }
+@keyframes slide-in-from-left { from { translate: -100% 0; } to { translate: 0 0; } }
+@keyframes slide-out-to-left { from { translate: 0 0; } to { translate: -100% 0; } }
+@keyframes toast-slide-in {
+	from { translate: 0 -8px; opacity: 0; scale: 0.95; }
+	to { translate: 0 0; opacity: 1; scale: 1; }
+}
+@keyframes toast-slide-out {
+	from { opacity: 1; scale: 1; }
+	to { opacity: 0; scale: 0.95; }
+}
+@keyframes tooltip-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tooltip-out { from { opacity: 1; } to { opacity: 0; } }

@@ -11,6 +11,7 @@
 			"types": "./dist/index.d.ts"
 		},
 		"./theme.css": "./src/theme.css",
+		"./theme-vars.css": "./src/theme-vars.css",
 		"./fonts/*": "./src/fonts/*"
 	},
 	"scripts": {
