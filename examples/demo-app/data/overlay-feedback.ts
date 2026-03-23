@@ -63,7 +63,7 @@ export const overlayFeedbackSpec: PageSpec = {
 		},
 		dialog: {
 			type: 'Dialog',
-			props: { title: '確認', open: '$state.dialogOpen' },
+			props: { title: '確認' },
 			children: ['dialogContent'],
 			visible: { expr: '$state.dialogOpen' },
 		},
@@ -90,7 +90,6 @@ export const overlayFeedbackSpec: PageSpec = {
 				variant: 'destructive',
 				confirmLabel: '削除する',
 				cancelLabel: 'キャンセル',
-				open: '$state.alertDialogOpen',
 				onConfirm: '$action.closeAlertDialog',
 				onCancel: '$action.closeAlertDialog',
 			},
@@ -112,7 +111,6 @@ export const overlayFeedbackSpec: PageSpec = {
 			props: {
 				title: '詳細情報',
 				position: 'right',
-				open: '$state.drawerOpen',
 				onClose: '$action.closeDrawer',
 			},
 			children: ['drawerContent'],

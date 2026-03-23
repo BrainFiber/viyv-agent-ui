@@ -225,7 +225,6 @@ export const kanbanProjectSpec: PageSpec = {
 			type: 'Dialog',
 			props: {
 				title: 'タスク詳細',
-				open: '$state.showTaskDetail',
 			},
 			children: ['taskDetailContent'],
 			visible: { expr: '$state.showTaskDetail' },

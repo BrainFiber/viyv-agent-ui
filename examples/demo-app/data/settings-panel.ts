@@ -219,7 +219,7 @@ export const settingsPanelSpec: PageSpec = {
 		// Help Drawer
 		helpDrawer: {
 			type: 'Drawer',
-			props: { title: 'ヘルプ', position: 'right', width: 400, open: '$state.showHelp' },
+			props: { title: 'ヘルプ', position: 'right', width: 400 },
 			visible: { expr: '$state.showHelp' },
 			children: ['helpContent'],
 		},

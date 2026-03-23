@@ -25,7 +25,7 @@ export interface CommandPaletteProps {
 }
 
 export function CommandPalette({
-	open = true,
+	open = false,
 	placeholder = 'Type a command or search...',
 	groups = [],
 	onSelect,

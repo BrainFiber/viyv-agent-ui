@@ -122,7 +122,7 @@ export const dataManagementSpec: PageSpec = {
 		// Add User Dialog
 		addDialog: {
 			type: 'Dialog',
-			props: { title: 'ユーザー追加', open: '$state.showAddDialog' },
+			props: { title: 'ユーザー追加' },
 			visible: { expr: '$state.showAddDialog' },
 			children: ['addDialogForm'],
 		},
@@ -174,7 +174,6 @@ export const dataManagementSpec: PageSpec = {
 				confirmLabel: '削除',
 				cancelLabel: 'キャンセル',
 				variant: 'destructive',
-				open: '$state.showDeleteDialog',
 				onConfirm: '$action.confirmDelete',
 				onCancel: '$action.closeDeleteDialog',
 			},

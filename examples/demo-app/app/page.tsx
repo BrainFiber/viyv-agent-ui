@@ -32,7 +32,7 @@ export default async function HomePage() {
 									{page.spec.description}
 								</p>
 							)}
-							<div className="mt-3 flex items-center gap-2">
+							<div className="mt-3 flex flex-wrap items-center gap-2 overflow-hidden">
 								<span className="rounded-md bg-muted px-2 py-0.5 text-xs text-fg-muted">
 									{page.id}
 								</span>

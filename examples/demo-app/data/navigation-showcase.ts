@@ -193,9 +193,10 @@ export const navigationShowcaseSpec: PageSpec = {
 			type: 'Pagination',
 			props: {
 				totalPages: 10,
-				currentPage: 3,
+				currentPage: '$state.currentPage',
 				totalItems: 100,
 				pageSize: 10,
+				onPageChange: '$action.changePage',
 			},
 		},
 
@@ -293,8 +294,8 @@ export const navigationShowcaseSpec: PageSpec = {
 		},
 		commandPalette: {
 			type: 'CommandPalette',
+			visible: { expr: '$state.commandOpen' },
 			props: {
-				open: '$state.commandOpen',
 				placeholder: 'ページやアクションを検索...',
 				groups: [
 					{
@@ -319,9 +320,11 @@ export const navigationShowcaseSpec: PageSpec = {
 	},
 	state: {
 		commandOpen: false,
+		currentPage: 3,
 	},
 	actions: {
 		openCommand: { type: 'setState', key: 'commandOpen', value: true },
+		changePage: { type: 'setState', key: 'currentPage' },
 	},
 	meta: {
 		createdBy: 'seed',
