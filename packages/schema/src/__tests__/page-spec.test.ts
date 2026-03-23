@@ -225,6 +225,62 @@ describe('PageSpecSchema', () => {
 		expect(result.success).toBe(true);
 	});
 
+	it('accepts parentId as string', () => {
+		const spec = {
+			id: 'child-page',
+			parentId: 'parent-page',
+			title: 'Child Page',
+			root: 'root',
+			elements: { root: { type: 'Stack', props: {} } },
+		};
+		const result = PageSpecSchema.safeParse(spec);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.parentId).toBe('parent-page');
+		}
+	});
+
+	it('accepts parentId as null (detach from parent)', () => {
+		const spec = {
+			id: 'child-page',
+			parentId: null,
+			title: 'Child Page',
+			root: 'root',
+			elements: { root: { type: 'Stack', props: {} } },
+		};
+		const result = PageSpecSchema.safeParse(spec);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.parentId).toBeNull();
+		}
+	});
+
+	it('rejects empty string parentId', () => {
+		const spec = {
+			id: 'child-page',
+			parentId: '',
+			title: 'Child Page',
+			root: 'root',
+			elements: { root: { type: 'Stack', props: {} } },
+		};
+		const result = PageSpecSchema.safeParse(spec);
+		expect(result.success).toBe(false);
+	});
+
+	it('allows omitting parentId', () => {
+		const spec = {
+			id: 'standalone',
+			title: 'Standalone Page',
+			root: 'root',
+			elements: { root: { type: 'Stack', props: {} } },
+		};
+		const result = PageSpecSchema.safeParse(spec);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.parentId).toBeUndefined();
+		}
+	});
+
 	it('rejects invalid hook definitions', () => {
 		const spec = {
 			id: 'test',

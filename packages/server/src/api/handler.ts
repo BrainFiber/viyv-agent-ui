@@ -95,6 +95,7 @@ async function route(
 		let filtered = allPages.map((p) => ({
 			id: p.id,
 			title: p.spec.title,
+			parentId: p.spec.parentId ?? null,
 			description: p.spec.description,
 			tags: p.spec.meta?.tags,
 			createdAt: p.createdAt.toISOString(),

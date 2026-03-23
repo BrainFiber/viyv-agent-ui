@@ -142,6 +142,7 @@ export function buildSchemaGuide(catalog?: ComponentCatalog): SchemaGuide {
 
 	const pageSpec = {
 		id: 'string (required) — unique page identifier',
+		parentId: 'string | null (optional) — parent page ID for tree hierarchy. Set to null to detach from parent.',
 		title: 'string (required) — page title',
 		description: 'string (optional)',
 		hooks: 'Record<hookId, HookDef> — data sources',

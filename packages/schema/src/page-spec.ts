@@ -24,6 +24,7 @@ export const PageMetaSchema = z.object({
 
 export const PageSpecSchema = z.object({
 	id: z.string().min(1),
+	parentId: z.string().min(1).nullable().optional(),
 	title: z.string().min(1),
 	description: z.string().optional(),
 	hooks: z.record(HookDefSchema).default({}),
