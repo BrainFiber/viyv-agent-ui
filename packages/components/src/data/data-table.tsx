@@ -269,7 +269,7 @@ export function DataTable({
 					{pagedData.map((row, index) => {
 						const rowKey = keyField
 							? String(row[keyField] ?? index)
-							: columns.map((c) => String(row[c.key] ?? '')).join('|') || String(index);
+							: `${index}:${columns.map((c) => String(row[c.key] ?? '')).join('|')}`;
 
 						const href = rowHref ? interpolateTemplate(rowHref, row) : undefined;
 
