@@ -60,6 +60,7 @@ import { ScrollArea } from './layout/scroll-area.js';
 import { Sidebar } from './layout/sidebar.js';
 import { Spacer } from './layout/spacer.js';
 import { Stack } from './layout/stack.js';
+import { Section } from './layout/section.js';
 import { Tabs } from './layout/tabs.js';
 import { AlertDialog } from './overlay/alert-dialog.js';
 import { Dialog } from './overlay/dialog.js';
@@ -92,6 +93,7 @@ export const defaultRegistry = defineRegistry({
 	Collapsible,
 	Resizable,
 	ScrollArea,
+	Section,
 	Sidebar,
 	Header,
 	Text,

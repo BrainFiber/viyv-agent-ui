@@ -2,31 +2,40 @@ import { z } from 'zod';
 import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
-import { buildCommonLayoutStyle, buildBoxLayoutStyle } from '../lib/layout-style.js';
-import type { CommonLayoutProps, BoxLayoutProps } from '../lib/layout-style.js';
+import { buildCommonLayoutStyle, buildBoxLayoutStyle, buildBgStyle, bgGradientPropsSchema, bgImagePropsSchema, hoverEffectPropsSchema } from '../lib/layout-style.js';
+import type { CommonLayoutProps, BoxLayoutProps, BgGradientProps, BgImageProps } from '../lib/layout-style.js';
+import { useAnimation } from '../lib/use-animation.js';
+import { animationPropsSchema, type AnimationProps } from '../lib/animation-style.js';
 
-export interface BoxProps extends CommonLayoutProps, BoxLayoutProps {
+export interface BoxProps extends CommonLayoutProps, BoxLayoutProps, BgGradientProps, BgImageProps, AnimationProps {
 	children?: ReactNode;
 	className?: string;
 }
 
 export function Box({
 	// Common layout
-	p, px, py, bg, rounded, shadow, border,
+	p, px, py, bg, rounded, shadow, border, hoverEffect,
 	// Box layout
 	m, mx, my, w, h, maxW, minH,
 	display, position, top, right, bottom, left, zIndex,
 	overflow, flex,
+	// Background
+	bgGradient, bgImage,
+	// Animation
+	animate, animateDelay, animateDuration, animateOnScroll,
 	// Standard
 	children, className,
 }: BoxProps) {
-	const common = buildCommonLayoutStyle({ p, px, py, bg, rounded, shadow, border });
+	const common = buildCommonLayoutStyle({ p, px, py, bg, rounded, shadow, border, hoverEffect });
 	const box = buildBoxLayoutStyle({ m, mx, my, w, h, maxW, minH, display, position, top, right, bottom, left, zIndex, overflow, flex });
+	const bgStyle = buildBgStyle({ bgGradient, bgImage });
+	const anim = useAnimation({ animate, animateDelay, animateDuration, animateOnScroll });
 
 	return (
 		<div
+			ref={anim.ref as React.RefObject<HTMLDivElement>}
 			className={cn(common.className, box.className, className)}
-			style={{ ...common.style, ...box.style }}
+			style={{ ...common.style, ...box.style, ...bgStyle.style, ...anim.style }}
 		>
 			{children}
 		</div>
@@ -36,7 +45,7 @@ export function Box({
 export const boxMeta: ComponentMeta = {
 	type: 'Box',
 	label: 'Box',
-	description: 'Generic layout container with spacing, sizing, position, and visual control',
+	description: 'Generic layout container with spacing, sizing, position, visual control, gradient/image backgrounds, and entrance animations',
 	category: 'layout',
 	propsSchema: z.object({
 		p: z.number().optional(),
@@ -62,6 +71,6 @@ export const boxMeta: ComponentMeta = {
 		rounded: z.enum(['none', 'sm', 'md', 'lg', 'xl', 'full']).optional(),
 		shadow: z.enum(['none', 'sm', 'md', 'lg', 'xl']).optional(),
 		border: z.boolean().optional(),
-	}),
+	}).merge(bgGradientPropsSchema).merge(bgImagePropsSchema).merge(hoverEffectPropsSchema).merge(animationPropsSchema),
 	acceptsChildren: true,
 };

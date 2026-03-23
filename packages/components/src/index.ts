@@ -31,6 +31,8 @@ export { ScrollArea } from './layout/scroll-area.js';
 export type { ScrollAreaProps } from './layout/scroll-area.js';
 export { Resizable } from './layout/resizable.js';
 export type { ResizableProps } from './layout/resizable.js';
+export { Section } from './layout/section.js';
+export type { SectionProps } from './layout/section.js';
 
 // Overlay
 export { AlertDialog } from './overlay/alert-dialog.js';

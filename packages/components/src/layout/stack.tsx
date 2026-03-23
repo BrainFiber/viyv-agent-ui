@@ -2,10 +2,12 @@ import { z } from 'zod';
 import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { cn } from '../lib/cn.js';
-import { buildCommonLayoutStyle, buildSizingStyle } from '../lib/layout-style.js';
+import { buildCommonLayoutStyle, buildSizingStyle, hoverEffectPropsSchema } from '../lib/layout-style.js';
 import type { CommonLayoutProps, SizingProps } from '../lib/layout-style.js';
+import { useAnimation } from '../lib/use-animation.js';
+import { animationPropsSchema, type AnimationProps } from '../lib/animation-style.js';
 
-export interface StackProps extends CommonLayoutProps, SizingProps {
+export interface StackProps extends CommonLayoutProps, SizingProps, AnimationProps {
 	direction?: 'vertical' | 'horizontal';
 	gap?: number;
 	align?: 'start' | 'center' | 'end' | 'stretch' | 'baseline';
@@ -38,18 +40,22 @@ export function Stack({
 	justify,
 	wrap,
 	// Common layout
-	p, px, py, bg, rounded, shadow, border,
+	p, px, py, bg, rounded, shadow, border, hoverEffect,
 	// Sizing
 	w, maxW, minH,
+	// Animation
+	animate, animateDelay, animateDuration, animateOnScroll,
 	// Standard
 	children,
 	className,
 }: StackProps) {
-	const layout = buildCommonLayoutStyle({ p, px, py, bg, rounded, shadow, border });
+	const layout = buildCommonLayoutStyle({ p, px, py, bg, rounded, shadow, border, hoverEffect });
 	const sizing = buildSizingStyle({ w, maxW, minH });
+	const anim = useAnimation({ animate, animateDelay, animateDuration, animateOnScroll });
 
 	return (
 		<div
+			ref={anim.ref as React.RefObject<HTMLDivElement>}
 			className={cn(
 				'flex',
 				direction === 'vertical' ? 'flex-col' : 'flex-row',
@@ -59,7 +65,7 @@ export function Stack({
 				layout.className,
 				className,
 			)}
-			style={{ gap: `${gap}px`, ...layout.style, ...sizing }}
+			style={{ gap: `${gap}px`, ...layout.style, ...sizing, ...anim.style }}
 		>
 			{children}
 		</div>
@@ -69,7 +75,7 @@ export function Stack({
 export const stackMeta: ComponentMeta = {
 	type: 'Stack',
 	label: 'Stack',
-	description: 'Vertical or horizontal stack layout',
+	description: 'Vertical or horizontal stack layout with animation and hover effects',
 	category: 'layout',
 	propsSchema: z.object({
 		direction: z.enum(['vertical', 'horizontal']).default('vertical'),
@@ -87,6 +93,6 @@ export const stackMeta: ComponentMeta = {
 		rounded: z.enum(['none', 'sm', 'md', 'lg', 'xl', 'full']).optional(),
 		shadow: z.enum(['none', 'sm', 'md', 'lg', 'xl']).optional(),
 		border: z.boolean().optional(),
-	}),
+	}).merge(hoverEffectPropsSchema).merge(animationPropsSchema),
 	acceptsChildren: true,
 };

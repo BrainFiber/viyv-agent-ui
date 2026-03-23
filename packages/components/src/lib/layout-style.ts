@@ -1,6 +1,7 @@
+import { z } from 'zod';
 import type { CSSProperties } from 'react';
 
-// ── Common Layout Props (used by Stack, Grid, Card, Box, Container) ──
+// ── Common Layout Props (used by Stack, Grid, Card, Box, Container, Section) ──
 
 export interface CommonLayoutProps {
 	p?: number;
@@ -10,7 +11,80 @@ export interface CommonLayoutProps {
 	rounded?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 	shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
 	border?: boolean;
+	hoverEffect?: 'lift' | 'glow' | 'scale' | 'none';
 }
+
+// ── Background Gradient / Image Props ──
+
+export interface BgGradientProps {
+	bgGradient?: {
+		from: string;
+		to: string;
+		via?: string;
+		direction?: 'to-t' | 'to-tr' | 'to-r' | 'to-br' | 'to-b' | 'to-bl' | 'to-l' | 'to-tl';
+	};
+}
+
+export interface BgImageProps {
+	bgImage?: string;
+}
+
+const GRADIENT_DIRECTION_MAP: Record<string, string> = {
+	'to-t': 'to top',
+	'to-tr': 'to top right',
+	'to-r': 'to right',
+	'to-br': 'to bottom right',
+	'to-b': 'to bottom',
+	'to-bl': 'to bottom left',
+	'to-l': 'to left',
+	'to-tl': 'to top left',
+};
+
+export function buildBgStyle(props: BgGradientProps & BgImageProps): { style: CSSProperties } {
+	const style: CSSProperties = {};
+	if (props.bgGradient) {
+		const { from, to, via, direction = 'to-r' } = props.bgGradient;
+		const dir = GRADIENT_DIRECTION_MAP[direction] ?? 'to right';
+		const stops = via ? `${from}, ${via}, ${to}` : `${from}, ${to}`;
+		style.background = `linear-gradient(${dir}, ${stops})`;
+	}
+	if (props.bgImage) {
+		style.backgroundImage = `url(${props.bgImage})`;
+		style.backgroundSize = 'cover';
+		style.backgroundPosition = 'center';
+	}
+	return { style };
+}
+
+// ── Shared Max Width Map (used by Container, Section) ──
+
+export const MAX_WIDTH_MAP: Record<string, string> = {
+	sm: '640px',
+	md: '768px',
+	lg: '1024px',
+	xl: '1280px',
+	'2xl': '1536px',
+	full: '100%',
+};
+
+// ── Shared Zod Schemas (for DRY component Meta definitions) ──
+
+export const bgGradientPropsSchema = z.object({
+	bgGradient: z.object({
+		from: z.string(),
+		to: z.string(),
+		via: z.string().optional(),
+		direction: z.enum(['to-t', 'to-tr', 'to-r', 'to-br', 'to-b', 'to-bl', 'to-l', 'to-tl']).optional(),
+	}).optional(),
+});
+
+export const bgImagePropsSchema = z.object({
+	bgImage: z.string().optional(),
+});
+
+export const hoverEffectPropsSchema = z.object({
+	hoverEffect: z.enum(['lift', 'glow', 'scale', 'none']).optional(),
+});
 
 const BG_MAP: Record<string, string> = {
 	'surface': 'bg-surface',
@@ -41,6 +115,12 @@ const SHADOW_MAP: Record<string, string> = {
 	'xl': 'shadow-xl',
 };
 
+const HOVER_EFFECT_MAP: Record<string, string> = {
+	lift: 'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer',
+	glow: 'transition-shadow duration-300 hover:shadow-lg hover:shadow-primary/20 cursor-pointer',
+	scale: 'transition-transform duration-200 hover:scale-105 cursor-pointer',
+};
+
 export function buildCommonLayoutStyle(props: CommonLayoutProps): { className: string; style: CSSProperties } {
 	const style: CSSProperties = {};
 	const classes: string[] = [];
@@ -57,10 +137,22 @@ export function buildCommonLayoutStyle(props: CommonLayoutProps): { className: s
 	}
 
 	// Visual → literal class map
-	if (props.bg && BG_MAP[props.bg]) classes.push(BG_MAP[props.bg]);
+	if (props.bg) {
+		if (BG_MAP[props.bg]) {
+			classes.push(BG_MAP[props.bg]);
+		} else {
+			// Fallback: treat as arbitrary CSS color value
+			style.backgroundColor = props.bg;
+		}
+	}
 	if (props.rounded && ROUNDED_MAP[props.rounded]) classes.push(ROUNDED_MAP[props.rounded]);
 	if (props.shadow && SHADOW_MAP[props.shadow]) classes.push(SHADOW_MAP[props.shadow]);
 	if (props.border) classes.push('border', 'border-border');
+
+	// Hover effect → Tailwind classes
+	if (props.hoverEffect && props.hoverEffect !== 'none' && HOVER_EFFECT_MAP[props.hoverEffect]) {
+		classes.push(HOVER_EFFECT_MAP[props.hoverEffect]);
+	}
 
 	return { className: classes.join(' '), style };
 }

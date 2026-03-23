@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { Theme } from '@viyv/agent-ui-schema';
-import { derivePrimaryPalette } from './color-utils.js';
+import { buildThemeStyle } from './build-theme-style.js';
+import { useFontLoader } from './use-font-loader.js';
 
 export interface ThemeWrapperProps {
 	theme?: Theme;
@@ -9,10 +10,16 @@ export interface ThemeWrapperProps {
 }
 
 export function ThemeWrapper({ theme, children }: ThemeWrapperProps) {
-	const style = useMemo(() => {
-		if (!theme?.accentColor) return undefined;
-		return derivePrimaryPalette(theme.accentColor) as React.CSSProperties;
-	}, [theme?.accentColor]);
+	const accentColor = theme?.accentColor;
+	const fontPrimary = theme?.fontFamily?.primary;
+	const fontAccent = theme?.fontFamily?.accent;
+	const borderRadius = theme?.borderRadius;
+
+	const style = useMemo(
+		() => buildThemeStyle(theme),
+		[accentColor, fontPrimary, fontAccent, borderRadius],
+	);
+	useFontLoader(theme?.fontFamily);
 
 	return style ? <div style={style}>{children}</div> : <>{children}</>;
 }

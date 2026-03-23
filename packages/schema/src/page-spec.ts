@@ -13,6 +13,11 @@ export const ThemeSchema = z.object({
 	colorScheme: z.enum(['light', 'dark', 'auto']).default('auto'),
 	accentColor: z.string().optional(),
 	spacing: z.enum(['compact', 'default', 'relaxed']).default('default'),
+	fontFamily: z.object({
+		primary: z.string().optional(),
+		accent: z.string().optional(),
+	}).optional(),
+	borderRadius: z.enum(['none', 'sm', 'md', 'lg', 'xl']).optional(),
 });
 
 export const PageMetaSchema = z.object({

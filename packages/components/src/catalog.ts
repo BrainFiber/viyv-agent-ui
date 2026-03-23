@@ -15,6 +15,7 @@ import { aspectRatioMeta } from './layout/aspect-ratio.js';
 import { collapsibleMeta } from './layout/collapsible.js';
 import { scrollAreaMeta } from './layout/scroll-area.js';
 import { resizableMeta } from './layout/resizable.js';
+import { sectionMeta } from './layout/section.js';
 
 // Overlay
 import { alertDialogMeta } from './overlay/alert-dialog.js';
@@ -113,6 +114,7 @@ const allMeta: ComponentMeta[] = [
 	collapsibleMeta,
 	scrollAreaMeta,
 	resizableMeta,
+	sectionMeta,
 
 	// Overlay
 	alertDialogMeta,

@@ -10,6 +10,7 @@ import { navigationShowcaseSpec } from '../data/navigation-showcase';
 import { overlayFeedbackSpec } from '../data/overlay-feedback';
 import { kanbanProjectSpec } from '../data/kanban-project';
 import { timelineActivitySpec } from '../data/timeline-activity';
+import { delightfulShowcaseSpec } from '../data/delightful-showcase';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -26,6 +27,7 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(overlayFeedbackSpec);
 			await pageStore.save(kanbanProjectSpec);
 			await pageStore.save(timelineActivitySpec);
+			await pageStore.save(delightfulShowcaseSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

@@ -129,6 +129,16 @@ export function buildSchemaGuide(catalog?: ComponentCatalog): SchemaGuide {
 		colorScheme: { type: 'enum', values: ['light', 'dark', 'auto'], default: 'auto' },
 		accentColor: { type: 'string', description: 'CSS color value to override primary color', optional: true },
 		spacing: { type: 'enum', values: ['compact', 'default', 'relaxed'], default: 'default' },
+		fontFamily: {
+			type: 'object',
+			description: 'Custom font families (loaded from Google Fonts)',
+			optional: true,
+			properties: {
+				primary: 'string — e.g. "Inter", "Noto Sans JP"',
+				accent: 'string — e.g. "Playfair Display" (for display/hero text)',
+			},
+		},
+		borderRadius: { type: 'enum', values: ['none', 'sm', 'md', 'lg', 'xl'], description: 'Global border radius scale', optional: true },
 	};
 
 	const visibility = {

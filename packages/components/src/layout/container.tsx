@@ -3,32 +3,27 @@ import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import type { CSSProperties } from 'react';
 import { cn } from '../lib/cn.js';
+import { MAX_WIDTH_MAP, buildCommonLayoutStyle, hoverEffectPropsSchema } from '../lib/layout-style.js';
+import { useAnimation } from '../lib/use-animation.js';
+import { animationPropsSchema, type AnimationProps } from '../lib/animation-style.js';
 
-export interface ContainerProps {
+export interface ContainerProps extends AnimationProps {
 	maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 	center?: boolean;
 	p?: number;
 	px?: number;
 	py?: number;
+	hoverEffect?: 'lift' | 'glow' | 'scale' | 'none';
 	children?: ReactNode;
 	className?: string;
 }
 
-const MAX_WIDTH_MAP: Record<string, string> = {
-	sm: '640px',
-	md: '768px',
-	lg: '1024px',
-	xl: '1280px',
-	'2xl': '1536px',
-	full: '100%',
-};
-
 export function Container({
 	maxWidth = 'lg',
 	center = true,
-	p,
-	px,
-	py,
+	p, px, py,
+	hoverEffect,
+	animate, animateDelay, animateDuration, animateOnScroll,
 	children,
 	className,
 }: ContainerProps) {
@@ -49,8 +44,15 @@ export function Container({
 		style.paddingBottom = `${py}px`;
 	}
 
+	const hover = buildCommonLayoutStyle({ hoverEffect });
+	const anim = useAnimation({ animate, animateDelay, animateDuration, animateOnScroll });
+
 	return (
-		<div className={cn(className)} style={style}>
+		<div
+			ref={anim.ref as React.RefObject<HTMLDivElement>}
+			className={cn(hover.className, className)}
+			style={{ ...style, ...anim.style }}
+		>
 			{children}
 		</div>
 	);
@@ -59,7 +61,7 @@ export function Container({
 export const containerMeta: ComponentMeta = {
 	type: 'Container',
 	label: 'Container',
-	description: 'Centered max-width page container',
+	description: 'Centered max-width page container with entrance animations',
 	category: 'layout',
 	propsSchema: z.object({
 		maxWidth: z.enum(['sm', 'md', 'lg', 'xl', '2xl', 'full']).optional(),
@@ -67,6 +69,6 @@ export const containerMeta: ComponentMeta = {
 		p: z.number().optional(),
 		px: z.number().optional(),
 		py: z.number().optional(),
-	}),
+	}).merge(hoverEffectPropsSchema).merge(animationPropsSchema),
 	acceptsChildren: true,
 };

@@ -60,7 +60,7 @@ export function Grid({
 			<style>{mediaStyles}</style>
 			<div
 				id={gridId}
-				className={cn('grid', layout.className, className)}
+				className={cn('grid items-stretch', layout.className, className)}
 				style={{
 					gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
 					gap: `${gap}px`,
