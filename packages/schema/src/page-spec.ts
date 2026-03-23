@@ -3,6 +3,12 @@ import { ActionDefSchema } from './action-def.js';
 import { ElementDefSchema } from './element-def.js';
 import { HookDefSchema } from './hook-def.js';
 
+export const ParamDefSchema = z.object({
+	type: z.enum(['string', 'number']).default('string'),
+	default: z.unknown().optional(),
+	description: z.string().optional(),
+});
+
 export const ThemeSchema = z.object({
 	colorScheme: z.enum(['light', 'dark', 'auto']).default('auto'),
 	accentColor: z.string().optional(),
@@ -25,10 +31,12 @@ export const PageSpecSchema = z.object({
 	elements: z.record(ElementDefSchema),
 	state: z.record(z.unknown()).default({}),
 	actions: z.record(ActionDefSchema).default({}),
+	params: z.record(ParamDefSchema).optional(),
 	theme: ThemeSchema.optional(),
 	meta: PageMetaSchema.optional(),
 });
 
 export type PageSpec = z.infer<typeof PageSpecSchema>;
+export type ParamDef = z.infer<typeof ParamDefSchema>;
 export type Theme = z.infer<typeof ThemeSchema>;
 export type PageMeta = z.infer<typeof PageMetaSchema>;

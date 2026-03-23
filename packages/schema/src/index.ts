@@ -38,8 +38,8 @@ export {
 export type { ActionDef } from './action-def.js';
 
 // Page spec
-export { PageSpecSchema, ThemeSchema, PageMetaSchema } from './page-spec.js';
-export type { PageSpec, Theme, PageMeta } from './page-spec.js';
+export { PageSpecSchema, ParamDefSchema, ThemeSchema, PageMetaSchema } from './page-spec.js';
+export type { PageSpec, ParamDef, Theme, PageMeta } from './page-spec.js';
 
 // Catalog
 export { defineCatalog } from './catalog.js';

@@ -15,7 +15,9 @@ async function main() {
 		apiKey: process.env.AGENT_UI_API_KEY,
 	});
 
-	const server = createMcpServer(client);
+	const server = createMcpServer(client, {
+		baseUrl: process.env.AGENT_UI_BASE_URL,
+	});
 	const transport = new StdioServerTransport();
 	await server.connect(transport);
 }

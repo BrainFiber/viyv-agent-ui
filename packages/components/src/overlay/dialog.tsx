@@ -29,7 +29,7 @@ export const dialogMeta: ComponentMeta = {
 	type: 'Dialog',
 	label: 'Dialog',
 	description: 'Modal dialog overlay with title',
-	category: 'layout',
+	category: 'overlay',
 	propsSchema: z.object({
 		title: z.string(),
 	}),

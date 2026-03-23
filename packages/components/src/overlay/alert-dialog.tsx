@@ -59,7 +59,7 @@ export const alertDialogMeta: ComponentMeta = {
 	type: 'AlertDialog',
 	label: 'Alert Dialog',
 	description: 'Confirmation dialog requiring explicit user action',
-	category: 'layout',
+	category: 'overlay',
 	propsSchema: z.object({
 		title: z.string(),
 		description: z.string(),

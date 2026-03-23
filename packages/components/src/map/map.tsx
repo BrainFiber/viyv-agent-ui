@@ -84,7 +84,7 @@ export const mapMeta: ComponentMeta = {
 	type: 'Map',
 	label: 'Map',
 	description: 'Interactive map with markers (OpenStreetMap / Leaflet)',
-	category: 'display',
+	category: 'map',
 	propsSchema: z.object({
 		center: z.tuple([z.number(), z.number()]),
 		zoom: z.number().int().min(1).max(20).default(13),

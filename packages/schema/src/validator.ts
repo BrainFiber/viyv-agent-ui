@@ -119,6 +119,13 @@ function validateExpressionRef(
 			severity: 'error',
 		});
 	}
+	if (ref.type === 'param' && spec.params && !(ref.name in spec.params)) {
+		errors.push({
+			path,
+			message: `Param "${ref.name}" not defined in params`,
+			severity: 'error',
+		});
+	}
 	// $item is validated for Repeater ancestry in validateExpressions
 }
 

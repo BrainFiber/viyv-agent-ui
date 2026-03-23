@@ -7,6 +7,7 @@ export type ExpressionRef =
 	| { type: 'bindState'; key: string }
 	| { type: 'action'; actionId: string }
 	| { type: 'item'; path: string[] }
+	| { type: 'param'; name: string }
 	| { type: 'expr'; code: string };
 
 // Pattern matchers — identifiers allow word chars plus hyphens (e.g. "my-hook")
@@ -16,6 +17,7 @@ const STATE_PATTERN = new RegExp(`^\\$state\\.(${ID})$`);
 const BIND_STATE_PATTERN = new RegExp(`^\\$bindState\\.(${ID})$`);
 const ACTION_PATTERN = new RegExp(`^\\$action\\.(${ID})$`);
 const ITEM_PATTERN = /^\$item(\.(.+))?$/;
+const PARAM_PATTERN = new RegExp(`^\\$param\\.(${ID})$`);
 const EXPR_PATTERN = /^\$expr\((.+)\)$/s;
 
 export function isExpression(value: unknown): value is string {
@@ -53,6 +55,11 @@ export function parseExpression(value: string): ExpressionRef | null {
 		const rest = match[2];
 		const path = rest ? rest.split('.') : [];
 		return { type: 'item', path };
+	}
+
+	match = value.match(PARAM_PATTERN);
+	if (match) {
+		return { type: 'param', name: match[1] };
 	}
 
 	match = value.match(EXPR_PATTERN);

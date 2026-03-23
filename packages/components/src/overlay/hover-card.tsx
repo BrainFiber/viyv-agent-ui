@@ -29,7 +29,7 @@ export const hoverCardMeta: ComponentMeta = {
 	type: 'HoverCard',
 	label: 'Hover Card',
 	description: 'Card popup displayed on hover',
-	category: 'layout',
+	category: 'overlay',
 	propsSchema: z.object({
 		content: z.string().optional(),
 	}),

@@ -1,5 +1,7 @@
 import { PageSpecSchema, validatePageSpec } from '@viyv/agent-ui-schema';
-import type { PageStore } from '@viyv/agent-ui-schema';
+import type { ComponentCatalog, PageStore } from '@viyv/agent-ui-schema';
+import { serializeCatalog, serializeComponentMeta } from '../catalog/catalog-serializer.js';
+import { buildSchemaGuide } from '../catalog/schema-guide.js';
 import type { DataSourceRegistry } from '../data/data-source-registry.js';
 import { QueryExecutor } from '../data/query-executor.js';
 
@@ -7,6 +9,8 @@ export interface AgentUiHandlerOptions {
 	pageStore: PageStore;
 	registry: DataSourceRegistry;
 	basePath?: string;
+	/** Component catalog for schema info endpoints (GET /catalog/*) */
+	catalog?: ComponentCatalog;
 }
 
 export interface HandlerRequest {
@@ -23,12 +27,12 @@ export interface HandlerResponse {
 }
 
 export function createHandler(options: AgentUiHandlerOptions) {
-	const { pageStore, registry } = options;
+	const { pageStore, registry, catalog } = options;
 	const executor = new QueryExecutor(pageStore, registry);
 
 	return async (req: HandlerRequest): Promise<HandlerResponse> => {
 		try {
-			return await route(req, pageStore, executor);
+			return await route(req, pageStore, executor, catalog);
 		} catch (err) {
 			// Return known domain errors with their message; hide details of unexpected errors
 			if (err instanceof Error) {
@@ -59,10 +63,30 @@ async function route(
 	req: HandlerRequest,
 	pageStore: PageStore,
 	executor: QueryExecutor,
+	catalog?: ComponentCatalog,
 ): Promise<HandlerResponse> {
 	const { method, path } = req;
 
-	// Pages
+	// ── Catalog endpoints ──
+	if (method === 'GET' && path === '/catalog/guide') {
+		return json(200, buildSchemaGuide(catalog));
+	}
+
+	if (method === 'GET' && path === '/catalog/components') {
+		if (!catalog) return json(404, { error: 'No component catalog configured' });
+		const category = req.query?.category;
+		return json(200, { components: serializeCatalog(catalog, category) });
+	}
+
+	const catalogMatch = path.match(/^\/catalog\/components\/([^/]+)$/);
+	if (method === 'GET' && catalogMatch) {
+		if (!catalog) return json(404, { error: 'No component catalog configured' });
+		const meta = catalog.components[catalogMatch[1]];
+		if (!meta) return json(404, { error: `Component "${catalogMatch[1]}" not found` });
+		return json(200, serializeComponentMeta(meta));
+	}
+
+	// ── Pages ──
 	if (method === 'GET' && path === '/pages') {
 		const allPages = await pageStore.list();
 		const q = req.query?.q;

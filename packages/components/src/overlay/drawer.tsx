@@ -53,7 +53,7 @@ export const drawerMeta: ComponentMeta = {
 	type: 'Drawer',
 	label: 'Drawer',
 	description: 'Slide-in side panel overlay',
-	category: 'layout',
+	category: 'overlay',
 	propsSchema: z.object({
 		title: z.string(),
 		position: z.enum(['left', 'right']).optional(),

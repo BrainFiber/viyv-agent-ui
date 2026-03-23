@@ -4,7 +4,7 @@ export interface ComponentMeta {
 	type: string;
 	label: string;
 	description: string;
-	category: 'layout' | 'display' | 'data' | 'chart' | 'input' | 'control' | 'navigation' | 'feedback';
+	category: 'layout' | 'display' | 'data' | 'chart' | 'input' | 'control' | 'navigation' | 'overlay' | 'feedback' | 'map';
 	propsSchema: z.ZodType;
 	acceptsChildren: boolean;
 	/** When true, ElementRenderer passes `open` prop from visibility instead of unmounting */

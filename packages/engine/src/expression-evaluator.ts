@@ -6,6 +6,7 @@ export interface EvalContext {
 	state: Record<string, unknown>;
 	actions: Record<string, (...args: unknown[]) => void>;
 	item?: unknown;
+	params?: Record<string, unknown>;
 }
 
 /**
@@ -46,6 +47,8 @@ export function resolveValue(value: unknown, ctx: EvalContext): unknown {
 			}
 			return result;
 		}
+		case 'param':
+			return ctx.params?.[ref.name];
 		case 'expr':
 			return evaluateSafeExpression(ref.code, ctx);
 	}

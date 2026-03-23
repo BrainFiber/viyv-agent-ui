@@ -1,5 +1,6 @@
 import type { HookDef, PageStore } from '@viyv/agent-ui-schema';
 import type { DataSourceRegistry } from './data-source-registry.js';
+import { interpolateParams, validateParamValues } from './param-interpolator.js';
 import { sanitizeQuery } from './query-sanitizer.js';
 
 export interface HookExecuteRequest {
@@ -57,7 +58,11 @@ export class QueryExecutor {
 		return { data, hookId, cached: false };
 	}
 
-	private async executeHook(hook: HookDef, _params?: Record<string, unknown>): Promise<unknown> {
+	private async executeHook(hook: HookDef, params?: Record<string, unknown>): Promise<unknown> {
+		// Validate and coerce params if provided
+		const safeParams =
+			params && Object.keys(params).length > 0 ? validateParamValues(params) : undefined;
+
 		switch (hook.use) {
 			case 'useState':
 				return hook.params.initial;
@@ -68,15 +73,20 @@ export class QueryExecutor {
 				return null;
 
 			case 'useFetch': {
+				const fetchUrl = safeParams
+					? interpolateParams(hook.params.url, safeParams, 'url')
+					: hook.params.url;
 				let response: Response;
 				try {
-					response = await fetch(hook.params.url, {
+					response = await fetch(fetchUrl, {
 						method: hook.params.method ?? 'GET',
 						headers: hook.params.headers,
 						body: hook.params.body ? JSON.stringify(hook.params.body) : undefined,
 					});
 				} catch (err) {
-					throw new Error(`Fetch failed: ${err instanceof Error ? err.message : 'network error'}`);
+					throw new Error(
+						`Fetch failed: ${err instanceof Error ? err.message : 'network error'}`,
+					);
 				}
 				if (!response.ok) {
 					throw new Error(`Fetch failed: ${response.status}`);
@@ -89,7 +99,10 @@ export class QueryExecutor {
 			}
 
 			case 'useSqlQuery': {
-				const result = sanitizeQuery(hook.params.query);
+				const query = safeParams
+					? interpolateParams(hook.params.query, safeParams, 'sql')
+					: hook.params.query;
+				const result = sanitizeQuery(query);
 				if (!result.safe) {
 					throw new Error(`Unsafe SQL query: ${result.errors.join(', ')}`);
 				}
@@ -97,13 +110,16 @@ export class QueryExecutor {
 				if (!connector) {
 					throw new Error(`Data source "${hook.params.connection}" not found`);
 				}
-				return connector.query({ sql: hook.params.query });
+				return connector.query({ sql: query });
 			}
 
 			case 'useAgentQuery': {
+				const endpoint = safeParams
+					? interpolateParams(hook.params.endpoint, safeParams, 'url')
+					: hook.params.endpoint;
 				let response: Response;
 				try {
-					response = await fetch(hook.params.endpoint, {
+					response = await fetch(endpoint, {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify(hook.params.query ?? {}),

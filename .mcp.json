@@ -5,7 +5,7 @@
       "args": [
         "/Users/hiroki/myworkspace/ai_project/viyv-db/packages/mcp-server/dist/index.js",
         "--postgres-url",
-        "postgres://postgres:test@localhost:5433/viyvdb",
+        "postgres://viyv:viyv@localhost:5434/viyv_space",
         "--tenant",
         "default",
         "--embedding"
@@ -17,7 +17,8 @@
         "/Users/hiroki/myworkspace/ai_project/viyv-agent-ui/packages/mcp/dist/cli.js"
       ],
       "env": {
-        "AGENT_UI_API_URL": "http://localhost:3100/api/agent-ui"
+        "AGENT_UI_API_URL": "http://localhost:3100/api/agent-ui",
+        "AGENT_UI_BASE_URL": "http://localhost:3100"
       }
     }
   }

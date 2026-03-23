@@ -6,12 +6,12 @@ import { useInteractionContext } from '../providers/interaction-provider.js';
 import { useItemContext } from '../providers/item-provider.js';
 
 export function useEvalContext(): EvalContext {
-	const { hookData } = useHookDataContext();
+	const { hookData, params } = useHookDataContext();
 	const { state, actions } = useInteractionContext();
 	const itemCtx = useItemContext();
 	return useMemo(
-		() => ({ hooks: hookData, state, actions, item: itemCtx?.item }),
-		[hookData, state, actions, itemCtx?.item],
+		() => ({ hooks: hookData, state, actions, item: itemCtx?.item, params }),
+		[hookData, state, actions, itemCtx?.item, params],
 	);
 }
 

@@ -10,6 +10,11 @@
 			"import": "./dist/index.js",
 			"types": "./dist/index.d.ts"
 		},
+		"./catalog": {
+			"development": "./src/catalog.ts",
+			"import": "./dist/catalog.js",
+			"types": "./dist/catalog.d.ts"
+		},
 		"./theme.css": "./src/theme.css",
 		"./theme-vars.css": "./src/theme-vars.css",
 		"./fonts/*": "./src/fonts/*"

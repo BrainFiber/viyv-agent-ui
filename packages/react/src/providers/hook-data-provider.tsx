@@ -9,6 +9,7 @@ export interface HookDataContextValue {
 	hookData: Record<string, unknown>;
 	isLoading: boolean;
 	errors: Record<string, Error>;
+	params: Record<string, string>;
 	setHookData: (hookId: string, value: unknown) => void;
 	refetchHook: (hookId: string) => void;
 }
@@ -17,6 +18,7 @@ const HookDataContext = createContext<HookDataContextValue>({
 	hookData: {},
 	isLoading: false,
 	errors: {},
+	params: {},
 	setHookData: () => {},
 	refetchHook: () => {},
 });
@@ -35,12 +37,16 @@ async function fetchHookData(
 	hookId: string,
 	pageId?: string,
 	previewId?: string,
+	params?: Record<string, string>,
 ): Promise<unknown> {
 	const body: Record<string, unknown> = { hookId };
 	if (previewId) {
 		body.previewId = previewId;
 	} else if (pageId) {
 		body.pageId = pageId;
+	}
+	if (params && Object.keys(params).length > 0) {
+		body.params = params;
 	}
 
 	const response = await fetch(`${queryEndpoint}/hooks/execute`, {
@@ -67,6 +73,16 @@ export function HookDataProvider({
 }: HookDataProviderProps) {
 	const [useStateOverrides, setUseStateOverrides] = useState<Record<string, unknown>>({});
 
+	const flatParams = useMemo(() => {
+		if (!searchParams) return {};
+		const flat: Record<string, string> = {};
+		for (const [k, v] of Object.entries(searchParams)) {
+			if (typeof v === 'string') flat[k] = v;
+			else if (Array.isArray(v) && v.length > 0) flat[k] = v[0];
+		}
+		return flat;
+	}, [searchParams]);
+
 	const setHookData = useCallback((hookId: string, value: unknown) => {
 		setUseStateOverrides((prev) => ({ ...prev, [hookId]: value }));
 	}, []);
@@ -90,8 +106,8 @@ export function HookDataProvider({
 			const hook = spec.hooks[hookId];
 			const refreshInterval = getRefreshInterval(hook);
 			return {
-				queryKey: ['agent-ui-hook', pageId ?? previewId, hookId],
-				queryFn: () => fetchHookData(queryEndpoint, hookId, pageId, previewId),
+				queryKey: ['agent-ui-hook', pageId ?? previewId, hookId, flatParams],
+				queryFn: () => fetchHookData(queryEndpoint, hookId, pageId, previewId, flatParams),
 				refetchInterval: refreshInterval,
 				staleTime: refreshInterval ? refreshInterval / 2 : 60_000,
 			};
@@ -116,14 +132,9 @@ export function HookDataProvider({
 		const hookData: Record<string, unknown> = {};
 		const errors: Record<string, Error> = {};
 
-		// Inject URL search params as _params
-		if (searchParams) {
-			const flat: Record<string, string> = {};
-			for (const [k, v] of Object.entries(searchParams)) {
-				if (typeof v === 'string') flat[k] = v;
-				else if (Array.isArray(v) && v.length > 0) flat[k] = v[0];
-			}
-			hookData['_params'] = flat;
+		// Inject URL search params as _params (backward compat)
+		if (Object.keys(flatParams).length > 0) {
+			hookData['_params'] = flatParams;
 		}
 
 		// Set useState hooks
@@ -165,8 +176,8 @@ export function HookDataProvider({
 
 		const isLoading = queries.some((q) => q.isLoading);
 
-		return { hookData, isLoading, errors, setHookData, refetchHook };
-	}, [queries, dag.order, spec.hooks, serverHookIds, searchParams, useStateOverrides, setHookData, refetchHook]);
+		return { hookData, isLoading, errors, params: flatParams, setHookData, refetchHook };
+	}, [queries, dag.order, spec.hooks, serverHookIds, flatParams, useStateOverrides, setHookData, refetchHook]);
 
 	return <HookDataContext.Provider value={value}>{children}</HookDataContext.Provider>;
 }

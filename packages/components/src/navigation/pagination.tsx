@@ -1,5 +1,22 @@
+import type { ComponentMeta } from '@viyv/agent-ui-schema';
+import { z } from 'zod';
 import { cn } from '../lib/cn.js';
 import { ChevronLeft, ChevronRight } from '../lib/icons.js';
+
+export const paginationMeta: ComponentMeta = {
+	type: 'Pagination',
+	label: 'Pagination',
+	description: 'Page navigation with previous/next buttons and page info',
+	category: 'navigation',
+	propsSchema: z.object({
+		currentPage: z.number(),
+		totalPages: z.number(),
+		totalItems: z.number(),
+		pageSize: z.number(),
+		onPageChange: z.unknown(),
+	}),
+	acceptsChildren: false,
+};
 
 export interface PaginationProps {
 	currentPage: number;

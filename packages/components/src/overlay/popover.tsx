@@ -33,7 +33,7 @@ export const popoverMeta: ComponentMeta = {
 	type: 'Popover',
 	label: 'Popover',
 	description: 'Floating content panel triggered by a button',
-	category: 'layout',
+	category: 'overlay',
 	propsSchema: z.object({
 		trigger: z.string().optional(),
 		side: z.enum(['top', 'bottom', 'left', 'right']).optional(),

@@ -32,7 +32,7 @@ export const tooltipMeta: ComponentMeta = {
 	type: 'Tooltip',
 	label: 'Tooltip',
 	description: 'Hover hint popup',
-	category: 'display',
+	category: 'overlay',
 	propsSchema: z.object({
 		content: z.string(),
 		position: z.enum(['top', 'bottom', 'left', 'right']).optional(),

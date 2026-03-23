@@ -88,6 +88,7 @@ import { contextMenuMeta } from './navigation/context-menu.js';
 import { dropdownMenuMeta } from './navigation/dropdown-menu.js';
 import { menubarMeta } from './navigation/menubar.js';
 import { navigationMenuMeta } from './navigation/navigation-menu.js';
+import { paginationMeta } from './navigation/pagination.js';
 import { stepperMeta } from './navigation/stepper.js';
 import { menuMeta } from './navigation/menu.js';
 
@@ -183,6 +184,7 @@ const allMeta: ComponentMeta[] = [
 	dropdownMenuMeta,
 	menubarMeta,
 	navigationMenuMeta,
+	paginationMeta,
 	stepperMeta,
 	menuMeta,
 
