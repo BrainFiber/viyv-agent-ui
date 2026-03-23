@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
+import * as RadioGroupUI from '../ui/radio-group.js';
 
 export interface RadioGroupOption {
 	value: string;
@@ -27,33 +28,38 @@ export function RadioGroup({
 	onChange,
 	className,
 }: RadioGroupProps) {
-	const groupName = useId();
+	const instanceId = useId();
 	const errorId = useId();
 	return (
-		<fieldset className={cn('space-y-2', className)} aria-invalid={!!error} aria-describedby={error ? errorId : undefined}>
-			{label && <legend className="text-sm font-medium text-fg-secondary">{label}</legend>}
-			{options.map((opt) => (
-				<label
-					key={opt.value}
-					className={cn(
-						'flex items-center gap-2',
-						disabled && 'cursor-not-allowed opacity-50',
-					)}
-				>
-					<input
-						type="radio"
-						name={groupName}
-						value={opt.value}
-						checked={value === opt.value}
-						disabled={disabled}
-						onChange={() => onChange?.(opt.value)}
-						className="h-4 w-4 border-border-strong text-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-1"
-					/>
-					<span className="text-sm text-fg-secondary">{opt.label}</span>
-				</label>
-			))}
-			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
-		</fieldset>
+		<div className={cn('space-y-2', className)}>
+			{label && <span className="block text-sm font-medium text-fg-secondary">{label}</span>}
+			<RadioGroupUI.Root
+				value={value}
+				disabled={disabled}
+				onValueChange={(v) => onChange?.(v)}
+				aria-invalid={!!error || undefined}
+				aria-describedby={error ? errorId : undefined}
+			>
+				{options.map((opt) => {
+					const itemId = `${instanceId}-${opt.value}`;
+					return (
+						<div key={opt.value} className="flex items-center gap-2">
+							<RadioGroupUI.Item value={opt.value} id={itemId}>
+								<RadioGroupUI.Indicator />
+							</RadioGroupUI.Item>
+							<label htmlFor={itemId} className="text-sm text-fg-secondary">
+								{opt.label}
+							</label>
+						</div>
+					);
+				})}
+			</RadioGroupUI.Root>
+			{error && (
+				<span id={errorId} role="alert" className="text-sm text-danger">
+					{error}
+				</span>
+			)}
+		</div>
 	);
 }
 

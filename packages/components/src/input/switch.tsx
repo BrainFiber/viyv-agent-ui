@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
+import * as SwitchUI from '../ui/switch.js';
 
 export interface SwitchProps {
 	label?: string;
@@ -13,34 +14,33 @@ export interface SwitchProps {
 }
 
 export function Switch({ label, checked, disabled, error, onChange, className }: SwitchProps) {
+	const id = useId();
 	const errorId = useId();
 	return (
 		<div className={className}>
-			<label className={cn('inline-flex items-center gap-3', disabled && 'cursor-not-allowed opacity-50')}>
-				<button
-					type="button"
-					role="switch"
-					aria-checked={checked ?? false}
-					aria-invalid={!!error}
-					aria-describedby={error ? errorId : undefined}
+			<div className={cn('inline-flex items-center gap-3', disabled && 'cursor-not-allowed opacity-50')}>
+				<SwitchUI.Root
+					id={id}
+					checked={checked ?? false}
 					disabled={disabled}
-					onClick={() => onChange?.(!checked)}
-					className={cn(
-						'relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-2',
-						checked ? 'bg-primary' : 'bg-muted-strong',
-					)}
+					aria-invalid={!!error || undefined}
+					aria-describedby={error ? errorId : undefined}
+					onCheckedChange={(v) => onChange?.(v === true)}
+					className={cn(error && 'ring-2 ring-danger/30')}
 				>
-					<span
-						aria-hidden="true"
-						className={cn(
-							'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-md ring-0 transition-transform',
-							checked ? 'translate-x-5' : 'translate-x-0',
-						)}
-					/>
-				</button>
-				{label && <span className="text-sm text-fg-secondary">{label}</span>}
-			</label>
-			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
+					<SwitchUI.Thumb />
+				</SwitchUI.Root>
+				{label && (
+					<label htmlFor={id} className="text-sm text-fg-secondary">
+						{label}
+					</label>
+				)}
+			</div>
+			{error && (
+				<span id={errorId} role="alert" className="mt-1 block text-sm text-danger">
+					{error}
+				</span>
+			)}
 		</div>
 	);
 }

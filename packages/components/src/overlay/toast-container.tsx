@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import type { ReactNode } from 'react';
+import * as T from '../ui/toast.js';
 import { cn } from '../lib/cn.js';
 
 export interface ToastContainerProps {
@@ -10,35 +11,25 @@ export interface ToastContainerProps {
 }
 
 const positionStyles: Record<string, string> = {
-	top: 'top-4 left-1/2 -translate-x-1/2 items-center',
-	bottom: 'bottom-4 left-1/2 -translate-x-1/2 items-center',
-	'top-right': 'top-4 right-2 sm:right-4 items-end',
-	'bottom-right': 'bottom-4 right-2 sm:right-4 items-end',
+	top: 'top-0 left-1/2 -translate-x-1/2',
+	bottom: 'bottom-0 left-1/2 -translate-x-1/2',
+	'top-right': 'top-0 right-0',
+	'bottom-right': 'bottom-0 right-0',
 };
 
-export function ToastContainer({
-	position = 'top-right',
-	children,
-	className,
-}: ToastContainerProps) {
+export function ToastContainer({ position = 'top-right', children, className }: ToastContainerProps) {
 	return (
-		<div
-			aria-live="polite"
-			className={cn(
-				'fixed z-50 flex flex-col gap-3',
-				positionStyles[position] ?? positionStyles['top-right'],
-				className,
-			)}
-		>
+		<T.Provider>
 			{children}
-		</div>
+			<T.Viewport className={cn(positionStyles[position] ?? positionStyles['top-right'], className)} />
+		</T.Provider>
 	);
 }
 
 export const toastContainerMeta: ComponentMeta = {
 	type: 'ToastContainer',
 	label: 'Toast Container',
-	description: 'Stacking container for multiple Toast notifications',
+	description: 'Container that manages toast positioning and stacking',
 	category: 'feedback',
 	propsSchema: z.object({
 		position: z.enum(['top', 'bottom', 'top-right', 'bottom-right']).optional(),

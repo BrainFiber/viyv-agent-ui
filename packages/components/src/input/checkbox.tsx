@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
+import * as CheckboxUI from '../ui/checkbox.js';
 
 export interface CheckboxProps {
 	label?: string;
@@ -20,22 +21,33 @@ export function Checkbox({
 	onChange,
 	className,
 }: CheckboxProps) {
+	const id = useId();
 	const errorId = useId();
 	return (
 		<div className={className}>
-			<label className={cn('inline-flex items-center gap-2', disabled && 'cursor-not-allowed opacity-50')}>
-				<input
-					type="checkbox"
+			<div className={cn('inline-flex items-center gap-2', disabled && 'cursor-not-allowed opacity-50')}>
+				<CheckboxUI.Root
+					id={id}
 					checked={checked ?? false}
 					disabled={disabled}
-					aria-invalid={!!error}
+					aria-invalid={!!error || undefined}
 					aria-describedby={error ? errorId : undefined}
-					onChange={(e) => onChange?.(e.target.checked)}
-					className="h-4 w-4 rounded border-border-strong text-primary focus:ring-2 focus:ring-ring/30 focus:ring-offset-1"
-				/>
-				{label && <span className="text-sm text-fg-secondary">{label}</span>}
-			</label>
-			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
+					onCheckedChange={(v) => onChange?.(v === true)}
+					className={cn(error && 'border-danger')}
+				>
+					<CheckboxUI.Indicator />
+				</CheckboxUI.Root>
+				{label && (
+					<label htmlFor={id} className="text-sm text-fg-secondary">
+						{label}
+					</label>
+				)}
+			</div>
+			{error && (
+				<span id={errorId} role="alert" className="mt-1 block text-sm text-danger">
+					{error}
+				</span>
+			)}
 		</div>
 	);
 }

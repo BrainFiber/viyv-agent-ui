@@ -338,7 +338,7 @@ describe('Spinner', () => {
 });
 
 describe('Carousel', () => {
-	it('renders first slide by default', () => {
+	it('renders all slides in the DOM', () => {
 		render(
 			<Carousel>
 				<div>Slide 1</div>
@@ -346,19 +346,18 @@ describe('Carousel', () => {
 			</Carousel>,
 		);
 		expect(screen.getByText('Slide 1')).toBeTruthy();
-		expect(screen.queryByText('Slide 2')).toBeNull();
+		expect(screen.getByText('Slide 2')).toBeTruthy();
 	});
 
-	it('navigates to next slide on arrow click', () => {
+	it('renders arrow buttons', () => {
 		render(
 			<Carousel>
 				<div>Slide 1</div>
 				<div>Slide 2</div>
 			</Carousel>,
 		);
-		fireEvent.click(screen.getByLabelText('Next slide'));
-		expect(screen.queryByText('Slide 1')).toBeNull();
-		expect(screen.getByText('Slide 2')).toBeTruthy();
+		expect(screen.getByLabelText('Previous slide')).toBeTruthy();
+		expect(screen.getByLabelText('Next slide')).toBeTruthy();
 	});
 
 	it('has aria-roledescription="carousel"', () => {

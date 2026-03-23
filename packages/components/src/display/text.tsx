@@ -1,9 +1,44 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import type { CSSProperties } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '../lib/cn.js';
 
-export interface TextProps {
+const textVariants = cva('', {
+	variants: {
+		variant: {
+			heading: 'text-xl font-bold text-fg',
+			subheading: 'text-lg font-semibold text-fg',
+			body: 'text-base font-normal text-fg-secondary',
+			caption: 'text-sm font-normal text-fg-muted',
+			price: 'text-lg font-bold text-fg',
+		},
+		size: {
+			xs: 'text-xs',
+			sm: 'text-sm',
+			md: 'text-base',
+			lg: 'text-lg',
+			xl: 'text-xl',
+			'2xl': 'text-2xl',
+		},
+		weight: {
+			normal: 'font-normal',
+			medium: 'font-medium',
+			semibold: 'font-semibold',
+			bold: 'font-bold',
+		},
+		color: {
+			default: 'text-fg-secondary',
+			muted: 'text-fg-muted',
+			primary: 'text-primary',
+			success: 'text-success',
+			warning: 'text-warning',
+			danger: 'text-danger',
+		},
+	},
+});
+
+export interface TextProps extends VariantProps<typeof textVariants> {
 	content: string;
 	variant?: 'heading' | 'subheading' | 'body' | 'caption' | 'price';
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
@@ -12,39 +47,6 @@ export interface TextProps {
 	truncate?: boolean | number;
 	className?: string;
 }
-
-const variantDefaults: Record<string, { size: string; weight: string; color: string }> = {
-	heading: { size: 'text-xl', weight: 'font-bold', color: 'text-fg' },
-	subheading: { size: 'text-lg', weight: 'font-semibold', color: 'text-fg' },
-	body: { size: 'text-base', weight: 'font-normal', color: 'text-fg-secondary' },
-	caption: { size: 'text-sm', weight: 'font-normal', color: 'text-fg-muted' },
-	price: { size: 'text-lg', weight: 'font-bold', color: 'text-fg' },
-};
-
-const sizeMap: Record<string, string> = {
-	xs: 'text-xs',
-	sm: 'text-sm',
-	md: 'text-base',
-	lg: 'text-lg',
-	xl: 'text-xl',
-	'2xl': 'text-2xl',
-};
-
-const weightMap: Record<string, string> = {
-	normal: 'font-normal',
-	medium: 'font-medium',
-	semibold: 'font-semibold',
-	bold: 'font-bold',
-};
-
-const colorMap: Record<string, string> = {
-	default: 'text-fg-secondary',
-	muted: 'text-fg-muted',
-	primary: 'text-primary',
-	success: 'text-success',
-	warning: 'text-warning',
-	danger: 'text-danger',
-};
 
 function getTruncateStyles(truncate?: boolean | number): { className?: string; style?: CSSProperties } {
 	if (truncate === true) return { className: 'truncate' };
@@ -62,22 +64,25 @@ function getTruncateStyles(truncate?: boolean | number): { className?: string; s
 }
 
 export function Text({ content, variant, size, weight, color, truncate, className }: TextProps) {
-	const defaults = variant ? variantDefaults[variant] : undefined;
-
-	const sizeClass = size ? sizeMap[size] : defaults?.size;
-	const weightClass = weight ? weightMap[weight] : defaults?.weight;
-	const colorClass = color ? colorMap[color] : (defaults?.color ?? 'text-fg-secondary');
+	/* When no variant is set and no color override, default to text-fg-secondary */
+	const effectiveColor = color ?? (!variant ? 'default' : undefined);
 	const truncStyles = getTruncateStyles(truncate);
 
 	return (
 		<p
-			className={cn(sizeClass, weightClass, colorClass, truncStyles.className, className)}
+			className={cn(
+				textVariants({ variant: variant ?? null, size: size ?? null, weight: weight ?? null, color: effectiveColor ?? null }),
+				truncStyles.className,
+				className,
+			)}
 			style={truncStyles.style}
 		>
 			{content}
 		</p>
 	);
 }
+
+export { textVariants };
 
 export const textMeta: ComponentMeta = {
 	type: 'Text',

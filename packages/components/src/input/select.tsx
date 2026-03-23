@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
+import * as SelectUI from '../ui/select.js';
 
 export interface SelectOption {
 	value: string;
@@ -31,33 +32,34 @@ export function Select({
 }: SelectProps) {
 	const errorId = useId();
 	return (
-		<label className={cn('block space-y-1', className)}>
-			{label && <span className="text-sm font-medium text-fg-secondary">{label}</span>}
-			<select
-				value={value ?? ''}
+		<div className={cn('block space-y-1', className)}>
+			{label && <span className="block text-sm font-medium text-fg-secondary">{label}</span>}
+			<SelectUI.Root
+				value={value}
 				disabled={disabled}
-				aria-invalid={!!error}
-				aria-describedby={error ? errorId : undefined}
-				onChange={(e) => onChange?.(e.target.value)}
-				className={cn(
-					'w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm shadow-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/30',
-					disabled && 'cursor-not-allowed bg-muted opacity-50',
-					error && 'border-danger',
-				)}
+				onValueChange={(v) => onChange?.(v)}
 			>
-				{placeholder && (
-					<option value="" disabled>
-						{placeholder}
-					</option>
-				)}
-				{options.map((opt) => (
-					<option key={opt.value} value={opt.value}>
-						{opt.label}
-					</option>
-				))}
-			</select>
-			{error && <span id={errorId} role="alert" className="text-sm text-danger">{error}</span>}
-		</label>
+				<SelectUI.Trigger
+					aria-invalid={!!error || undefined}
+					aria-describedby={error ? errorId : undefined}
+					className={cn(error && 'border-danger')}
+				>
+					<SelectUI.Value placeholder={placeholder} />
+				</SelectUI.Trigger>
+				<SelectUI.Content>
+					{options.map((opt) => (
+						<SelectUI.Item key={opt.value} value={opt.value}>
+							{opt.label}
+						</SelectUI.Item>
+					))}
+				</SelectUI.Content>
+			</SelectUI.Root>
+			{error && (
+				<span id={errorId} role="alert" className="text-sm text-danger">
+					{error}
+				</span>
+			)}
+		</div>
 	);
 }
 

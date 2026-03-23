@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useId } from 'react';
 import { cn } from '../lib/cn.js';
+import * as SliderUI from '../ui/slider.js';
 
 export interface SliderProps {
 	min?: number;
@@ -32,31 +33,38 @@ export function Slider({
 	const errorId = useId();
 	const current = value ?? min;
 	return (
-		<div className={cn('space-y-1', className)}>
+		<div className={cn('space-y-2', className)}>
 			{(label || showValue) && (
 				<div className="flex items-center justify-between">
-					{label && <label htmlFor={id} className="text-sm font-medium text-fg-secondary">{label}</label>}
+					{label && (
+						<label htmlFor={id} className="text-sm font-medium text-fg-secondary">
+							{label}
+						</label>
+					)}
 					{showValue && <span className="text-sm text-fg-muted">{current}</span>}
 				</div>
 			)}
-			<input
+			<SliderUI.Root
 				id={id}
-				type="range"
 				min={min}
 				max={max}
 				step={step}
-				value={current}
+				value={[current]}
 				disabled={disabled}
 				aria-invalid={!!error || undefined}
 				aria-describedby={error ? errorId : undefined}
-				onChange={(e) => onChange?.(Number(e.target.value))}
-				className={cn(
-					'w-full accent-primary',
-					disabled && 'cursor-not-allowed opacity-50',
-					error && 'accent-danger',
-				)}
-			/>
-			{error && <span id={errorId} role="alert" className="mt-1 block text-sm text-danger">{error}</span>}
+				onValueChange={(vals) => onChange?.(vals[0])}
+			>
+				<SliderUI.Track>
+					<SliderUI.Range className={cn(error && 'bg-danger')} />
+				</SliderUI.Track>
+				<SliderUI.Thumb />
+			</SliderUI.Root>
+			{error && (
+				<span id={errorId} role="alert" className="mt-1 block text-sm text-danger">
+					{error}
+				</span>
+			)}
 		</div>
 	);
 }

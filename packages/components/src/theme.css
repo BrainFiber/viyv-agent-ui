@@ -166,4 +166,38 @@
 	}
 }
 
-/* Animations are now handled by Motion (framer-motion) via JS */
+/* ── Animations (Radix data-[state] + CSS keyframes) ── */
+@keyframes accordion-down {
+	from { height: 0; opacity: 0; }
+	to { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+	from { height: var(--radix-accordion-content-height); opacity: 1; }
+	to { height: 0; opacity: 0; }
+}
+@keyframes dialog-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialog-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dialog-content-in {
+	from { opacity: 0; scale: 0.95; translate: 0 8px; }
+	to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes dialog-content-out {
+	from { opacity: 1; scale: 1; translate: 0 0; }
+	to { opacity: 0; scale: 0.95; translate: 0 8px; }
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slide-in-from-right { from { translate: 100% 0; } to { translate: 0 0; } }
+@keyframes slide-out-to-right { from { translate: 0 0; } to { translate: 100% 0; } }
+@keyframes slide-in-from-left { from { translate: -100% 0; } to { translate: 0 0; } }
+@keyframes slide-out-to-left { from { translate: 0 0; } to { translate: -100% 0; } }
+@keyframes toast-slide-in {
+	from { translate: 0 -8px; opacity: 0; scale: 0.95; }
+	to { translate: 0 0; opacity: 1; scale: 1; }
+}
+@keyframes toast-slide-out {
+	from { opacity: 1; scale: 1; }
+	to { opacity: 0; scale: 0.95; }
+}
+@keyframes tooltip-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tooltip-out { from { opacity: 1; } to { opacity: 0; } }

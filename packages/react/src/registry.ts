@@ -1,9 +1,10 @@
 import type { ComponentType } from 'react';
 
-export type ComponentRegistry = Map<string, ComponentType<Record<string, unknown>>>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ComponentRegistry = Map<string, ComponentType<any>>;
 
 export function defineRegistry(
-	entries: Record<string, ComponentType<Record<string, unknown>>>,
+	entries: Record<string, ComponentType<any>>,
 ): ComponentRegistry {
 	return new Map(Object.entries(entries));
 }

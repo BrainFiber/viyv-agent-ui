@@ -1,10 +1,8 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
-import { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
 import { X } from '../lib/icons.js';
-import { toastVariants } from '../lib/motion-presets.js';
+import * as T from '../ui/toast.js';
 
 export interface ToastProps {
 	message: string;
@@ -22,66 +20,26 @@ const typeStyles: Record<string, string> = {
 	error: 'border-danger-soft-border bg-danger-soft text-danger-soft-fg',
 };
 
-const positionStyles: Record<string, string> = {
-	top: 'top-4 left-1/2 -translate-x-1/2',
-	bottom: 'bottom-4 left-1/2 -translate-x-1/2',
-	'top-right': 'top-4 right-2 sm:right-4',
-	'bottom-right': 'bottom-4 right-2 sm:right-4',
-};
-
-export function Toast({
-	message,
-	type = 'info',
-	duration = 5000,
-	position,
-	closable = true,
-	className,
-}: ToastProps) {
-	const [visible, setVisible] = useState(true);
-
-	useEffect(() => {
-		if (duration <= 0) return;
-		const timer = setTimeout(() => setVisible(false), duration);
-		return () => clearTimeout(timer);
-	}, [duration]);
-
-	const isStandalone = !!position;
-
+export function Toast({ message, type = 'info', duration = 5000, closable = true, className }: ToastProps) {
 	return (
-		<AnimatePresence>
-			{visible && (
-				<motion.div
-					role="status"
-					aria-live="polite"
-					aria-atomic="true"
-					variants={toastVariants}
-					initial="hidden"
-					animate="visible"
-					exit="exit"
-					className={cn(
-						'min-w-0 max-w-[calc(100vw-2rem)] rounded-xl border p-4 shadow-lg sm:min-w-[280px] sm:max-w-sm',
-						isStandalone && 'fixed z-50',
-						isStandalone && (positionStyles[position] ?? positionStyles['top-right']),
-						typeStyles[type] ?? typeStyles.info,
-						className,
-					)}
-				>
-					<div className="flex items-start justify-between gap-2">
-						<p className="text-sm">{message}</p>
-						{closable && (
-							<button
-								type="button"
-								onClick={() => setVisible(false)}
-								aria-label="Close"
-								className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
-							>
-								<X aria-hidden="true" className="h-4 w-4" />
-							</button>
-						)}
-					</div>
-				</motion.div>
+		<T.Root
+			duration={duration}
+			type={type === 'error' || type === 'warning' ? 'foreground' : 'background'}
+			className={cn(
+				'min-w-0 max-w-[calc(100vw-2rem)] sm:min-w-[280px] sm:max-w-sm',
+				typeStyles[type] ?? typeStyles.info,
+				className,
 			)}
-		</AnimatePresence>
+		>
+			<div className="flex items-start justify-between gap-2">
+				<T.Description className="text-sm">{message}</T.Description>
+				{closable && (
+					<T.Close aria-label="Close">
+						<X aria-hidden="true" className="h-4 w-4" />
+					</T.Close>
+				)}
+			</div>
+		</T.Root>
 	);
 }
 

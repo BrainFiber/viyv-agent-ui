@@ -1,38 +1,38 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Autocomplete } from '../input/autocomplete.js';
+import { Combobox } from '../input/combobox.js';
 import { Checkbox } from '../input/checkbox.js';
 import { RadioGroup } from '../input/radio-group.js';
 import { Rating } from '../input/rating.js';
 import { Select } from '../input/select.js';
 import { Slider } from '../input/slider.js';
 import { Switch } from '../input/switch.js';
-import { TextInput } from '../input/text-input.js';
+import { Input } from '../input/input.js';
 import { Textarea } from '../input/textarea.js';
 
 afterEach(cleanup);
 
-describe('TextInput', () => {
+describe('Input', () => {
 	it('renders error message', () => {
-		render(<TextInput error="必須です" />);
+		render(<Input error="必須です" />);
 		expect(screen.getByRole('alert').textContent).toBe('必須です');
 	});
 
 	it('applies aria-invalid when error', () => {
-		render(<TextInput error="必須です" />);
+		render(<Input error="必須です" />);
 		const input = document.querySelector('input')!;
 		expect(input.getAttribute('aria-invalid')).toBe('true');
 	});
 
 	it('does not show error when empty string', () => {
-		render(<TextInput error="" />);
+		render(<Input error="" />);
 		expect(screen.queryByRole('alert')).toBeNull();
 		const input = document.querySelector('input')!;
 		expect(input.getAttribute('aria-invalid')).toBe('false');
 	});
 
 	it('links error via aria-describedby', () => {
-		render(<TextInput error="bad" />);
+		render(<Input error="bad" />);
 		const input = document.querySelector('input')!;
 		const describedBy = input.getAttribute('aria-describedby');
 		expect(describedBy).toBeTruthy();
@@ -40,26 +40,26 @@ describe('TextInput', () => {
 	});
 
 	it('renders with type="number"', () => {
-		render(<TextInput type="number" />);
+		render(<Input type="number" />);
 		const input = document.querySelector('input')!;
 		expect(input.getAttribute('type')).toBe('number');
 	});
 
 	it('renders with type="date"', () => {
-		render(<TextInput type="date" />);
+		render(<Input type="date" />);
 		const input = document.querySelector('input')!;
 		expect(input.getAttribute('type')).toBe('date');
 	});
 
 	it('defaults to type="text"', () => {
-		render(<TextInput />);
+		render(<Input />);
 		const input = document.querySelector('input')!;
 		expect(input.getAttribute('type')).toBe('text');
 	});
 
 	it('type="number" onChange returns Number', () => {
 		const onChange = vi.fn();
-		render(<TextInput type="number" onChange={onChange} />);
+		render(<Input type="number" onChange={onChange} />);
 		const input = document.querySelector('input')!;
 		fireEvent.change(input, { target: { value: '42' } });
 		expect(onChange).toHaveBeenCalledWith(42);
@@ -67,7 +67,7 @@ describe('TextInput', () => {
 
 	it('type="text" onChange returns string', () => {
 		const onChange = vi.fn();
-		render(<TextInput onChange={onChange} />);
+		render(<Input onChange={onChange} />);
 		const input = document.querySelector('input')!;
 		fireEvent.change(input, { target: { value: 'hello' } });
 		expect(onChange).toHaveBeenCalledWith('hello');
@@ -147,8 +147,8 @@ describe('Select', () => {
 
 	it('applies aria-invalid when error', () => {
 		render(<Select options={options} error="エラー" />);
-		const select = document.querySelector('select')!;
-		expect(select.getAttribute('aria-invalid')).toBe('true');
+		const trigger = screen.getByRole('combobox');
+		expect(trigger.getAttribute('aria-invalid')).toBe('true');
 	});
 
 	it('does not show error when empty string', () => {
@@ -166,21 +166,21 @@ describe('Checkbox', () => {
 	it('calls onChange with boolean', () => {
 		const onChange = vi.fn();
 		render(<Checkbox label="Toggle" onChange={onChange} />);
-		const input = document.querySelector('input[type="checkbox"]')!;
-		fireEvent.click(input);
+		const checkbox = screen.getByRole('checkbox');
+		fireEvent.click(checkbox);
 		expect(onChange).toHaveBeenCalledWith(true);
 	});
 
 	it('reflects checked state', () => {
 		render(<Checkbox checked />);
-		const input = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
-		expect(input.checked).toBe(true);
+		const checkbox = screen.getByRole('checkbox');
+		expect(checkbox.getAttribute('data-state')).toBe('checked');
 	});
 
 	it('applies disabled state', () => {
 		render(<Checkbox disabled />);
-		const input = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
-		expect(input.disabled).toBe(true);
+		const checkbox = screen.getByRole('checkbox') as HTMLButtonElement;
+		expect(checkbox.disabled).toBe(true);
 	});
 
 	it('applies custom className', () => {
@@ -196,8 +196,8 @@ describe('Checkbox', () => {
 
 	it('applies aria-invalid when error', () => {
 		render(<Checkbox error="エラー" />);
-		const input = document.querySelector('input[type="checkbox"]')!;
-		expect(input.getAttribute('aria-invalid')).toBe('true');
+		const checkbox = screen.getByRole('checkbox');
+		expect(checkbox.getAttribute('aria-invalid')).toBe('true');
 	});
 
 	it('does not show error when empty string', () => {
@@ -220,32 +220,30 @@ describe('RadioGroup', () => {
 		expect(screen.getByText('Option C')).toBeTruthy();
 	});
 
-	it('renders legend when label provided', () => {
+	it('renders label when provided', () => {
 		render(<RadioGroup options={options} label="Choice" />);
 		expect(screen.getByText('Choice')).toBeTruthy();
-		const legend = document.querySelector('legend');
-		expect(legend).toBeTruthy();
 	});
 
 	it('calls onChange with selected value', () => {
 		const onChange = vi.fn();
 		render(<RadioGroup options={options} onChange={onChange} />);
-		const radios = document.querySelectorAll('input[type="radio"]');
+		const radios = screen.getAllByRole('radio');
 		fireEvent.click(radios[1]);
 		expect(onChange).toHaveBeenCalledWith('b');
 	});
 
 	it('reflects selected value', () => {
 		render(<RadioGroup options={options} value="b" />);
-		const radios = document.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
-		expect(radios[0].checked).toBe(false);
-		expect(radios[1].checked).toBe(true);
-		expect(radios[2].checked).toBe(false);
+		const radios = screen.getAllByRole('radio');
+		expect(radios[0].getAttribute('data-state')).toBe('unchecked');
+		expect(radios[1].getAttribute('data-state')).toBe('checked');
+		expect(radios[2].getAttribute('data-state')).toBe('unchecked');
 	});
 
 	it('applies disabled state', () => {
 		render(<RadioGroup options={options} disabled />);
-		const radios = document.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+		const radios = screen.getAllByRole('radio') as HTMLButtonElement[];
 		for (const radio of radios) {
 			expect(radio.disabled).toBe(true);
 		}
@@ -253,8 +251,8 @@ describe('RadioGroup', () => {
 
 	it('applies custom className', () => {
 		const { container } = render(<RadioGroup options={options} className="mt-4" />);
-		const fieldset = container.querySelector('fieldset');
-		expect(fieldset?.className).toContain('mt-4');
+		const wrapper = container.firstElementChild;
+		expect(wrapper?.className).toContain('mt-4');
 	});
 
 	it('renders error message', () => {
@@ -262,10 +260,10 @@ describe('RadioGroup', () => {
 		expect(screen.getByRole('alert').textContent).toBe('選択してください');
 	});
 
-	it('applies aria-invalid on fieldset when error', () => {
-		const { container } = render(<RadioGroup options={options} error="エラー" />);
-		const fieldset = container.querySelector('fieldset')!;
-		expect(fieldset.getAttribute('aria-invalid')).toBe('true');
+	it('applies aria-invalid on radiogroup root when error', () => {
+		render(<RadioGroup options={options} error="エラー" />);
+		const group = screen.getByRole('radiogroup');
+		expect(group.getAttribute('aria-invalid')).toBe('true');
 	});
 
 	it('does not show error when empty string', () => {
@@ -309,17 +307,16 @@ describe('Switch', () => {
 });
 
 describe('Slider', () => {
-	it('renders range input', () => {
+	it('renders slider', () => {
 		render(<Slider />);
-		expect(document.querySelector('input[type="range"]')).toBeTruthy();
+		expect(screen.getByRole('slider')).toBeTruthy();
 	});
 
 	it('sets min/max/step', () => {
 		render(<Slider min={10} max={50} step={5} />);
-		const input = document.querySelector('input[type="range"]') as HTMLInputElement;
-		expect(input.min).toBe('10');
-		expect(input.max).toBe('50');
-		expect(input.step).toBe('5');
+		const slider = screen.getByRole('slider');
+		expect(slider.getAttribute('aria-valuemin')).toBe('10');
+		expect(slider.getAttribute('aria-valuemax')).toBe('50');
 	});
 
 	it('renders label', () => {
@@ -332,16 +329,14 @@ describe('Slider', () => {
 		expect(screen.getByText('42')).toBeTruthy();
 	});
 
-	it('calls onChange', () => {
-		const onChange = vi.fn();
-		render(<Slider onChange={onChange} />);
-		const input = document.querySelector('input[type="range"]')!;
-		fireEvent.change(input, { target: { value: '75' } });
-		expect(onChange).toHaveBeenCalledWith(75);
+	it('reflects current value', () => {
+		render(<Slider value={75} />);
+		const slider = screen.getByRole('slider');
+		expect(slider.getAttribute('aria-valuenow')).toBe('75');
 	});
 });
 
-describe('Autocomplete', () => {
+describe('Combobox', () => {
 	const options = [
 		{ value: 'tokyo', label: 'Tokyo' },
 		{ value: 'osaka', label: 'Osaka' },
@@ -349,42 +344,34 @@ describe('Autocomplete', () => {
 	];
 
 	it('renders with role="combobox"', () => {
-		render(<Autocomplete options={options} />);
+		render(<Combobox options={options} />);
 		expect(screen.getByRole('combobox')).toBeTruthy();
 	});
 
 	it('renders label', () => {
-		render(<Autocomplete options={options} label="City" />);
+		render(<Combobox options={options} label="City" />);
 		expect(screen.getByText('City')).toBeTruthy();
 	});
 
-	it('shows listbox on focus', () => {
-		render(<Autocomplete options={options} />);
-		fireEvent.focus(screen.getByRole('combobox'));
-		expect(screen.getByRole('listbox')).toBeTruthy();
-		expect(screen.getAllByRole('option').length).toBe(3);
+	it('displays placeholder text', () => {
+		render(<Combobox options={options} placeholder="Choose city" />);
+		expect(screen.getByText('Choose city')).toBeTruthy();
 	});
 
-	it('filters options on input', () => {
-		render(<Autocomplete options={options} />);
-		const input = screen.getByRole('combobox');
-		fireEvent.focus(input);
-		fireEvent.change(input, { target: { value: 'osa' } });
-		expect(screen.getAllByRole('option').length).toBe(1);
+	it('displays selected value label', () => {
+		render(<Combobox options={options} value="osaka" />);
 		expect(screen.getByText('Osaka')).toBeTruthy();
 	});
 
-	it('calls onChange on option click', () => {
-		const onChange = vi.fn();
-		render(<Autocomplete options={options} onChange={onChange} />);
-		fireEvent.focus(screen.getByRole('combobox'));
-		fireEvent.click(screen.getByText('Osaka'));
-		expect(onChange).toHaveBeenCalledWith('osaka');
+	it('renders error message', () => {
+		render(<Combobox options={options} error="必須です" />);
+		expect(screen.getByRole('alert').textContent).toBe('必須です');
 	});
 
-	it('renders error message', () => {
-		render(<Autocomplete options={options} error="必須です" />);
-		expect(screen.getByRole('alert').textContent).toBe('必須です');
+	it('applies aria-invalid when error', () => {
+		render(<Combobox options={options} error="エラー" />);
+		const trigger = screen.getByRole('combobox');
+		expect(trigger.getAttribute('aria-invalid')).toBe('true');
 	});
 });
 

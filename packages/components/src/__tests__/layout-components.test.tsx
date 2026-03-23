@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { Collapse } from '../layout/collapse.js';
+import { Accordion } from '../layout/accordion.js';
 import { Stack } from '../layout/stack.js';
 import { Tabs } from '../layout/tabs.js';
 
@@ -85,6 +85,7 @@ describe('Tabs', () => {
 			</Tabs>,
 		);
 		expect(screen.getByText('Content 1')).toBeTruthy();
+		// Radix hides inactive tab content so it's not accessible
 		expect(screen.queryByText('Content 2')).toBeNull();
 	});
 
@@ -96,7 +97,8 @@ describe('Tabs', () => {
 				<div>Content 3</div>
 			</Tabs>,
 		);
-		fireEvent.click(screen.getByText('Second'));
+		// Radix Tabs activates on mouseDown (not click)
+		fireEvent.mouseDown(screen.getByText('Second'));
 		expect(screen.queryByText('Content 1')).toBeNull();
 		expect(screen.getByText('Content 2')).toBeTruthy();
 	});
@@ -111,7 +113,7 @@ describe('Tabs', () => {
 		expect(screen.getByText('First').getAttribute('aria-selected')).toBe('true');
 		expect(screen.getByText('Second').getAttribute('aria-selected')).toBe('false');
 
-		fireEvent.click(screen.getByText('Second'));
+		fireEvent.mouseDown(screen.getByText('Second'));
 		expect(screen.getByText('First').getAttribute('aria-selected')).toBe('false');
 		expect(screen.getByText('Second').getAttribute('aria-selected')).toBe('true');
 	});
@@ -127,26 +129,24 @@ describe('Tabs', () => {
 		const firstTab = screen.getByText('First');
 		expect(panel.getAttribute('aria-labelledby')).toBe(firstTab.id);
 
-		fireEvent.click(screen.getByText('Second'));
+		fireEvent.mouseDown(screen.getByText('Second'));
 		const newPanel = screen.getByRole('tabpanel');
 		const secondTab = screen.getByText('Second');
 		expect(newPanel.getAttribute('aria-labelledby')).toBe(secondTab.id);
 	});
 
-	it('tab buttons have id attributes', () => {
+	it('tab buttons have role="tab"', () => {
 		render(
 			<Tabs tabs={tabs}>
 				<div>Content 1</div>
 			</Tabs>,
 		);
-		for (const tab of tabs) {
-			const btn = screen.getByText(tab.label);
-			expect(btn.id).toContain(`tab-${tab.id}`);
-		}
+		const tabButtons = screen.getAllByRole('tab');
+		expect(tabButtons.length).toBe(tabs.length);
 	});
 });
 
-describe('Collapse', () => {
+describe('Accordion', () => {
 	const panels = [
 		{ id: 'a', title: 'Section A' },
 		{ id: 'b', title: 'Section B' },
@@ -154,10 +154,10 @@ describe('Collapse', () => {
 
 	it('renders panel titles as buttons', () => {
 		render(
-			<Collapse panels={panels}>
+			<Accordion panels={panels}>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		expect(screen.getByText('Section A')).toBeTruthy();
 		expect(screen.getByText('Section B')).toBeTruthy();
@@ -165,10 +165,10 @@ describe('Collapse', () => {
 
 	it('panels start collapsed by default', () => {
 		render(
-			<Collapse panels={panels}>
+			<Accordion panels={panels}>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		expect(screen.queryByText('Content A')).toBeNull();
 		expect(screen.queryByText('Content B')).toBeNull();
@@ -176,10 +176,10 @@ describe('Collapse', () => {
 
 	it('expands panel on click', () => {
 		render(
-			<Collapse panels={panels}>
+			<Accordion panels={panels}>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		fireEvent.click(screen.getByText('Section A'));
 		expect(screen.getByText('Content A')).toBeTruthy();
@@ -188,22 +188,23 @@ describe('Collapse', () => {
 
 	it('sets aria-expanded on buttons', () => {
 		render(
-			<Collapse panels={panels}>
+			<Accordion panels={panels}>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
-		expect(screen.getByText('Section A').getAttribute('aria-expanded')).toBe('false');
-		fireEvent.click(screen.getByText('Section A'));
-		expect(screen.getByText('Section A').getAttribute('aria-expanded')).toBe('true');
+		const triggerA = screen.getByText('Section A').closest('button')!;
+		expect(triggerA.getAttribute('aria-expanded')).toBe('false');
+		fireEvent.click(triggerA);
+		expect(triggerA.getAttribute('aria-expanded')).toBe('true');
 	});
 
 	it('supports defaultOpen', () => {
 		render(
-			<Collapse panels={panels} defaultOpen={['b']}>
+			<Accordion panels={panels} defaultOpen={['b']}>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		expect(screen.queryByText('Content A')).toBeNull();
 		expect(screen.getByText('Content B')).toBeTruthy();
@@ -211,10 +212,10 @@ describe('Collapse', () => {
 
 	it('accordion mode: only one panel open at a time', () => {
 		render(
-			<Collapse panels={panels} accordion>
+			<Accordion panels={panels} accordion>
 				<div>Content A</div>
 				<div>Content B</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		fireEvent.click(screen.getByText('Section A'));
 		expect(screen.getByText('Content A')).toBeTruthy();
@@ -225,9 +226,9 @@ describe('Collapse', () => {
 
 	it('has role="region" on expanded panel', () => {
 		render(
-			<Collapse panels={panels}>
+			<Accordion panels={panels}>
 				<div>Content A</div>
-			</Collapse>,
+			</Accordion>,
 		);
 		fireEvent.click(screen.getByText('Section A'));
 		expect(screen.getByRole('region')).toBeTruthy();

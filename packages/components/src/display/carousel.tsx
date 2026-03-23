@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
-import { useState, Children, useEffect, useCallback } from 'react';
-import type { ReactNode, KeyboardEvent } from 'react';
+import { useState, useCallback, useEffect, Children } from 'react';
+import type { ReactNode } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
 import { cn } from '../lib/cn.js';
 import { ChevronLeft, ChevronRight } from '../lib/icons.js';
 
@@ -22,81 +24,81 @@ export function Carousel({
 	children,
 	className,
 }: CarouselProps) {
+	const plugins = autoplay ? [Autoplay({ delay: interval, stopOnInteraction: true })] : [];
+	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, plugins);
+	const [selectedIndex, setSelectedIndex] = useState(0);
 	const childArray = Children.toArray(children);
-	const total = childArray.length;
-	const [active, setActive] = useState(0);
+	const slideCount = childArray.length;
 
-	const next = useCallback(() => setActive((i) => (i + 1) % total), [total]);
-	const prev = useCallback(() => setActive((i) => (i - 1 + total) % total), [total]);
+	const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+	const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
 	useEffect(() => {
-		if (!autoplay || total <= 1) return;
-		const timer = setInterval(next, interval);
-		return () => clearInterval(timer);
-	}, [autoplay, interval, total, next, active]);
+		if (!emblaApi) return;
+		const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+		emblaApi.on('select', onSelect);
+		onSelect();
+		return () => {
+			emblaApi.off('select', onSelect);
+		};
+	}, [emblaApi]);
 
-	if (total === 0) return null;
-
-	const handleKeyDown = useCallback(
-		(e: KeyboardEvent) => {
-			if (e.key === 'ArrowLeft') {
-				e.preventDefault();
-				prev();
-			} else if (e.key === 'ArrowRight') {
-				e.preventDefault();
-				next();
-			}
-		},
-		[prev, next],
-	);
+	if (slideCount === 0) return null;
 
 	return (
 		<div
 			role="region"
 			aria-roledescription="carousel"
 			aria-label="Slideshow"
-			tabIndex={0}
-			onKeyDown={handleKeyDown}
-			className={cn('relative overflow-hidden', className)}
+			className={cn('relative', className)}
 		>
-			<div
-				role="group"
-				aria-roledescription="slide"
-				aria-label={`Slide ${active + 1} of ${total}`}
-			>
-				{childArray[active]}
+			<div ref={emblaRef} className="overflow-hidden rounded-xl">
+				<div className="flex">
+					{childArray.map((child, i) => (
+						<div
+							key={i}
+							role="group"
+							aria-roledescription="slide"
+							aria-label={`Slide ${i + 1} of ${slideCount}`}
+							className="min-w-0 flex-[0_0_100%]"
+						>
+							{child}
+						</div>
+					))}
+				</div>
 			</div>
-			{showArrows && total > 1 && (
+			{showArrows && slideCount > 1 && (
 				<>
 					<button
 						type="button"
-						onClick={prev}
+						onClick={scrollPrev}
 						aria-label="Previous slide"
-						className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
+						className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/80 p-1.5 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
 					>
 						<ChevronLeft aria-hidden="true" className="h-5 w-5" />
 					</button>
 					<button
 						type="button"
-						onClick={next}
+						onClick={scrollNext}
 						aria-label="Next slide"
-						className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
+						className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-surface/80 p-1.5 shadow-md backdrop-blur-sm transition-all hover:bg-surface hover:shadow-lg"
 					>
 						<ChevronRight aria-hidden="true" className="h-5 w-5" />
 					</button>
 				</>
 			)}
-			{showDots && total > 1 && (
-				<div className="mt-3 flex justify-center gap-2">
+			{showDots && slideCount > 1 && (
+				<div className="mt-3 flex justify-center gap-1.5">
 					{childArray.map((_, i) => (
 						<button
 							key={i}
 							type="button"
-							onClick={() => setActive(i)}
+							aria-current={i === selectedIndex || undefined}
 							aria-label={`Go to slide ${i + 1}`}
+							onClick={() => emblaApi?.scrollTo(i)}
 							className={cn(
-								'h-2.5 w-2.5 rounded-full transition-colors',
-								i === active ? 'bg-primary' : 'bg-fg-disabled',
+								'h-2 w-2 rounded-full transition-colors',
+								i === selectedIndex ? 'bg-primary' : 'bg-muted-strong',
 							)}
 						/>
 					))}

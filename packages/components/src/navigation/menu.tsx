@@ -2,10 +2,8 @@ import { z } from 'zod';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
 import { cn } from '../lib/cn.js';
 import { ChevronDown } from '../lib/icons.js';
-import { collapseVariants } from '../lib/motion-presets.js';
 
 export interface MenuItem {
 	label: string;
@@ -92,17 +90,14 @@ function MenuItemComponent({
 					{content}
 				</button>
 			)}
-			<AnimatePresence>
-				{hasChildren && open && !collapsed && (
-					<motion.ul
-						role="menu"
-						className="ml-4 mt-1 space-y-1"
-						variants={collapseVariants}
-						initial="hidden"
-						animate="visible"
-						exit="exit"
-						style={{ overflow: 'hidden' }}
-					>
+			{hasChildren && !collapsed && (
+				<div
+					className={cn(
+						'ml-4 mt-1 grid transition-[grid-template-rows] duration-200',
+						open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+					)}
+				>
+					<ul role="menu" className="overflow-hidden space-y-1">
 						{item.items!.map((child) => (
 							<MenuItemComponent
 								key={child.label}
@@ -112,9 +107,9 @@ function MenuItemComponent({
 								onRequestFocus={() => {}}
 							/>
 						))}
-					</motion.ul>
-				)}
-			</AnimatePresence>
+					</ul>
+				</div>
+			)}
 		</li>
 	);
 }

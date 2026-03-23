@@ -121,8 +121,10 @@ describe('Menu', () => {
 
 	it('expands sub-items on click', () => {
 		render(<Menu items={items} />);
-		expect(screen.queryByText('Profile')).toBeNull();
-		fireEvent.click(screen.getByText('Settings'));
+		const btn = screen.getByText('Settings').closest('button');
+		expect(btn?.getAttribute('aria-expanded')).toBe('false');
+		fireEvent.click(btn!);
+		expect(btn?.getAttribute('aria-expanded')).toBe('true');
 		expect(screen.getByText('Profile')).toBeTruthy();
 	});
 

@@ -1,11 +1,9 @@
 import { z } from 'zod';
 import type { ReactNode } from 'react';
 import type { ComponentMeta } from '@viyv/agent-ui-schema';
-import { AnimatePresence, motion } from 'motion/react';
+import * as Drw from '../ui/drawer.js';
 import { cn } from '../lib/cn.js';
 import { X } from '../lib/icons.js';
-import { backdropVariants, drawerVariants } from '../lib/motion-presets.js';
-import { useOverlay } from './use-overlay.js';
 
 export interface DrawerProps {
 	title: string;
@@ -18,59 +16,36 @@ export interface DrawerProps {
 }
 
 export function Drawer({ title, position = 'right', width = 400, open = true, onClose, children, className }: DrawerProps) {
-	const { overlayRef, titleId, unlockScroll } = useOverlay(open);
-
 	return (
-		<AnimatePresence onExitComplete={unlockScroll}>
-			{open && (
-				<motion.div
-					className="fixed inset-0 z-50 flex"
-					exit={{ opacity: 0 }}
-					transition={{ duration: 0.2 }}
+		<Drw.Root open={open} onOpenChange={(o) => { if (!o) onClose?.(); }} direction={position}>
+			<Drw.Portal>
+				<Drw.Overlay />
+				<Drw.Content
+					aria-describedby={undefined}
+					style={{ width: `${width}px` }}
+					className={cn(
+						position === 'right' ? 'right-0 border-l' : 'left-0 border-r',
+						className,
+					)}
 				>
-					<motion.div
-						variants={backdropVariants}
-						initial="hidden"
-						animate="visible"
-						exit="exit"
-						className="absolute inset-0 bg-overlay backdrop-blur-sm"
-						aria-hidden="true"
-					/>
-					<motion.div
-						ref={overlayRef}
-						role="dialog"
-						aria-modal="true"
-						aria-labelledby={titleId}
-						tabIndex={-1}
-						style={{ width: `${width}px` }}
-						variants={drawerVariants[position]}
-						initial="hidden"
-						animate="visible"
-						exit="exit"
-						className={cn(
-							'relative z-10 flex h-full max-w-full flex-col bg-surface shadow-xl focus:outline-none',
-							position === 'right' ? 'ml-auto border-l' : 'mr-auto border-r',
-							className,
-						)}
-					>
-						<div className="flex items-center justify-between border-b px-6 py-4">
-							<h2 id={titleId} className="text-lg font-semibold tracking-tight text-fg">{title}</h2>
-							{onClose && (
+					<div className="flex items-center justify-between border-b px-6 py-4">
+						<Drw.Title className="text-lg font-semibold tracking-tight text-fg">{title}</Drw.Title>
+						{onClose && (
+							<Drw.Close asChild>
 								<button
 									type="button"
-									onClick={onClose}
 									aria-label="Close"
 									className="shrink-0 rounded p-1 text-fg-subtle transition-colors hover:text-fg-muted"
 								>
 									<X aria-hidden="true" className="h-4 w-4" />
 								</button>
-							)}
-						</div>
-						<div className="flex-1 overflow-y-auto px-6 py-4">{children}</div>
-					</motion.div>
-				</motion.div>
-			)}
-		</AnimatePresence>
+							</Drw.Close>
+						)}
+					</div>
+					<div className="flex-1 overflow-y-auto px-6 py-4">{children}</div>
+				</Drw.Content>
+			</Drw.Portal>
+		</Drw.Root>
 	);
 }
 

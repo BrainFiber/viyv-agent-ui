@@ -25,9 +25,9 @@ describe('defaultRegistry', () => {
 			'AreaChart',
 			'PieChart',
 			'GanttChart',
-			'ProgressBar',
+			'Progress',
 			'Button',
-			'TextInput',
+			'Input',
 			'Select',
 			'Textarea',
 			'Checkbox',
@@ -39,7 +39,7 @@ describe('defaultRegistry', () => {
 			'Empty',
 			'Skeleton',
 			'Spinner',
-			'Collapse',
+			'Accordion',
 			'Drawer',
 			'Breadcrumbs',
 			'Stepper',
@@ -48,17 +48,43 @@ describe('defaultRegistry', () => {
 			'Carousel',
 			'Descriptions',
 			'Menu',
-			'Autocomplete',
+			'Combobox',
 			'Rating',
 			'Tooltip',
 			'Calendar',
+			// New components
+			'AlertDialog',
+			'Popover',
+			'HoverCard',
+			'DropdownMenu',
+			'ContextMenu',
+			'NavigationMenu',
+			'Menubar',
+			'Toggle',
+			'ToggleGroup',
+			'CommandPalette',
+			'Field',
+			'InputGroup',
+			'InputOTP',
+			'Form',
+			'ButtonGroup',
+			'NativeSelect',
+			'Label',
+			'Kbd',
+			'Item',
+			'Table',
+			'Sidebar',
+			'AspectRatio',
+			'Collapsible',
+			'ScrollArea',
+			'Resizable',
 		];
 		for (const type of types) {
 			expect(defaultRegistry.has(type), `Missing component: ${type}`).toBe(true);
 		}
 	});
 
-	it('has exactly 53 components', () => {
-		expect(defaultRegistry.size).toBe(53);
+	it('has exactly 79 components', () => {
+		expect(defaultRegistry.size).toBe(79);
 	});
 });
