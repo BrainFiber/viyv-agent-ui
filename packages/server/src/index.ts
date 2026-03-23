@@ -13,5 +13,6 @@ export type { SerializedComponentMeta, SerializedComponentSummary } from './cata
 export { buildSchemaGuide } from './catalog/schema-guide.js';
 export type { SchemaGuide } from './catalog/schema-guide.js';
 export { MemoryPageStore } from './store/memory-page-store.js';
+export { MemoryFeedbackStore } from './store/memory-feedback-store.js';
 export { createHandler } from './api/handler.js';
 export type { AgentUiHandlerOptions, HandlerRequest, HandlerResponse } from './api/handler.js';

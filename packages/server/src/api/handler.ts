@@ -1,9 +1,11 @@
 import { PageSpecSchema, validatePageSpec } from '@viyv/agent-ui-schema';
-import type { ComponentCatalog, PageStore } from '@viyv/agent-ui-schema';
+import type { ComponentCatalog, FeedbackStore, PageStore } from '@viyv/agent-ui-schema';
 import { serializeCatalog, serializeComponentMeta } from '../catalog/catalog-serializer.js';
 import { buildSchemaGuide } from '../catalog/schema-guide.js';
 import type { DataSourceRegistry } from '../data/data-source-registry.js';
 import { QueryExecutor } from '../data/query-executor.js';
+import { MemoryFeedbackStore } from '../store/memory-feedback-store.js';
+import { routeFeedback } from './feedback-routes.js';
 
 export interface AgentUiHandlerOptions {
 	pageStore: PageStore;
@@ -11,6 +13,8 @@ export interface AgentUiHandlerOptions {
 	basePath?: string;
 	/** Component catalog for schema info endpoints (GET /catalog/*) */
 	catalog?: ComponentCatalog;
+	/** Feedback store for annotation system. Defaults to in-memory store. */
+	feedbackStore?: FeedbackStore;
 }
 
 export interface HandlerRequest {
@@ -28,11 +32,12 @@ export interface HandlerResponse {
 
 export function createHandler(options: AgentUiHandlerOptions) {
 	const { pageStore, registry, catalog } = options;
+	const feedbackStore = options.feedbackStore ?? new MemoryFeedbackStore();
 	const executor = new QueryExecutor(pageStore, registry);
 
 	return async (req: HandlerRequest): Promise<HandlerResponse> => {
 		try {
-			return await route(req, pageStore, executor, catalog);
+			return await route(req, pageStore, executor, catalog, feedbackStore);
 		} catch (err) {
 			// Return known domain errors with their message; hide details of unexpected errors
 			if (err instanceof Error) {
@@ -40,6 +45,7 @@ export function createHandler(options: AgentUiHandlerOptions) {
 					'Page ',
 					'Hook ',
 					'Preview ',
+					'Feedback ',
 					'Unsafe SQL',
 					'Data source ',
 					'Dataset ',
@@ -63,7 +69,8 @@ async function route(
 	req: HandlerRequest,
 	pageStore: PageStore,
 	executor: QueryExecutor,
-	catalog?: ComponentCatalog,
+	catalog: ComponentCatalog | undefined,
+	feedbackStore: FeedbackStore,
 ): Promise<HandlerResponse> {
 	const { method, path } = req;
 
@@ -230,6 +237,10 @@ async function route(
 		});
 		return json(200, result);
 	}
+
+	// ── Feedback endpoints (delegated) ──
+	const fbResult = await routeFeedback(req, feedbackStore);
+	if (fbResult) return fbResult;
 
 	return json(404, { error: 'Not found' });
 }

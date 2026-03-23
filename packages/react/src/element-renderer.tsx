@@ -31,12 +31,16 @@ export function ElementRenderer({ elementId }: ElementRendererProps) {
 
 	const effectiveProps = isOverlay ? { ...resolvedProps, open: visible } : resolvedProps;
 
+	const idWrapper = { display: 'contents' } as const;
+
 	// Type handler (Repeater etc.)
 	const TypeHandler = getTypeHandler(element.type);
 	if (TypeHandler) {
 		return (
 			<ElementErrorBoundary elementId={elementId} elementType={element.type}>
-				<TypeHandler element={element} resolvedProps={effectiveProps} />
+				<div data-element-id={elementId} style={idWrapper}>
+					<TypeHandler element={element} resolvedProps={effectiveProps} />
+				</div>
 			</ElementErrorBoundary>
 		);
 	}
@@ -46,11 +50,13 @@ export function ElementRenderer({ elementId }: ElementRendererProps) {
 
 	return (
 		<ElementErrorBoundary elementId={elementId} elementType={element.type}>
-			<Component {...effectiveProps}>
-				{element.children?.map((childId) => (
-					<ElementRenderer key={childId} elementId={childId} />
-				))}
-			</Component>
+			<div data-element-id={elementId} style={idWrapper}>
+				<Component {...effectiveProps}>
+					{element.children?.map((childId) => (
+						<ElementRenderer key={childId} elementId={childId} />
+					))}
+				</Component>
+			</div>
 		</ElementErrorBoundary>
 	);
 }

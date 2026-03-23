@@ -224,5 +224,82 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 		},
 	);
 
+	// ── Feedback tools ──
+
+	server.tool(
+		'feedback_list',
+		'List all feedback threads for a page. Returns threads with element IDs, comments, and status. Use this to see what feedback humans have left on UI components.',
+		{
+			pageId: z.string().describe('The page ID to list feedback for'),
+			status: z
+				.enum(['open', 'resolved'])
+				.optional()
+				.describe('Filter by status (omit for all)'),
+		},
+		async ({ pageId, status }) => {
+			let query = `?pageId=${encodeURIComponent(pageId)}`;
+			if (status) query += `&status=${encodeURIComponent(status)}`;
+			const threads = await client.get(`/feedback${query}`);
+			return {
+				content: [{ type: 'text', text: JSON.stringify(threads, null, 2) }],
+			};
+		},
+	);
+
+	server.tool(
+		'feedback_reply',
+		'Reply to an existing feedback thread with a comment. Use this to ask clarifying questions or provide status updates.',
+		{
+			threadId: z.string().describe('The feedback thread ID to reply to'),
+			body: z.string().describe('The reply comment text'),
+		},
+		async ({ threadId, body }) => {
+			const comment = await client.post(
+				`/feedback/${encodeURIComponent(threadId)}/comments`,
+				{
+					author: { name: 'AI Assistant', type: 'ai' },
+					body,
+				},
+			);
+			return {
+				content: [
+					{
+						type: 'text',
+						text: `Reply added.\n${JSON.stringify(comment, null, 2)}`,
+					},
+				],
+			};
+		},
+	);
+
+	server.tool(
+		'feedback_resolve',
+		'Mark a feedback thread as resolved after addressing the feedback. Include a comment explaining what was changed.',
+		{
+			threadId: z.string().describe('The feedback thread ID to resolve'),
+			body: z
+				.string()
+				.optional()
+				.describe('Resolution comment explaining what was changed'),
+		},
+		async ({ threadId, body }) => {
+			const thread = await client.post(
+				`/feedback/${encodeURIComponent(threadId)}/resolve`,
+				{
+					author: { name: 'AI Assistant', type: 'ai' },
+					body,
+				},
+			);
+			return {
+				content: [
+					{
+						type: 'text',
+						text: `Thread resolved.\n${JSON.stringify(thread, null, 2)}`,
+					},
+				],
+			};
+		},
+	);
+
 	return server;
 }

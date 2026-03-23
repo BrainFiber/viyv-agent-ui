@@ -48,6 +48,15 @@ export type { ComponentMeta, ComponentCatalog } from './catalog.js';
 // Page store
 export type { PageStore, PageStorePage } from './page-store.js';
 
+// Feedback store
+export type {
+	FeedbackStore,
+	FeedbackThread,
+	FeedbackComment,
+	FeedbackAuthor,
+	FeedbackStatus,
+} from './feedback-store.js';
+
 // Data source
 export {
 	DataSourceMetaSchema,

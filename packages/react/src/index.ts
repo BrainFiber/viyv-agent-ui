@@ -51,3 +51,15 @@ export type { ThemeWrapperProps } from './theme-wrapper.js';
 // Type handlers
 export { getTypeHandler } from './renderers/index.js';
 export type { TypeHandlerComponent, TypeHandlerProps } from './renderers/index.js';
+
+// Feedback
+export { FeedbackProvider, useFeedbackContext } from './providers/feedback-provider.js';
+export type { FeedbackContextValue, FeedbackProviderProps } from './providers/feedback-provider.js';
+export {
+	FeedbackToggle,
+	FeedbackOverlay,
+	FeedbackPopover,
+	FeedbackIndicators,
+	FeedbackPanel,
+	FeedbackAuthorPrompt,
+} from './feedback/index.js';

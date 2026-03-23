@@ -47,6 +47,7 @@ export default function PageView({
 			loading={<LoadingSkeleton />}
 			error={ErrorDisplay}
 			searchParams={sp}
+			enableFeedback
 		/>
 	);
 }

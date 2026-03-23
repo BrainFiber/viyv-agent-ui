@@ -1,7 +1,16 @@
 import type { PageSpec } from '@viyv/agent-ui-schema';
 import { useEffect, useState } from 'react';
 import { ElementRenderer } from './element-renderer.js';
+import {
+	FeedbackAuthorPrompt,
+	FeedbackIndicators,
+	FeedbackOverlay,
+	FeedbackPanel,
+	FeedbackPopover,
+	FeedbackToggle,
+} from './feedback/index.js';
 import { HookDataProvider } from './providers/hook-data-provider.js';
+import { FeedbackProvider } from './providers/feedback-provider.js';
 import { InteractionProvider } from './providers/interaction-provider.js';
 import { PageProvider } from './providers/page-provider.js';
 import type { ComponentRegistry } from './registry.js';
@@ -26,6 +35,8 @@ export interface PageRendererProps {
 	searchParams?: Record<string, string | string[] | undefined>;
 	/** Component type names that receive `open` prop from visibility instead of unmounting */
 	overlayTypes?: Set<string>;
+	/** Enable the feedback/annotation system */
+	enableFeedback?: boolean;
 }
 
 export function PageRenderer({
@@ -38,6 +49,7 @@ export function PageRenderer({
 	error: ErrorComponent,
 	searchParams,
 	overlayTypes,
+	enableFeedback,
 }: PageRendererProps) {
 	const [spec, setSpec] = useState<PageSpec | null>(directSpec ?? null);
 	const [loadError, setLoadError] = useState<Error | null>(null);
@@ -104,7 +116,7 @@ export function PageRenderer({
 		return <div>No page spec provided</div>;
 	}
 
-	return (
+	const content = (
 		<PageProvider
 			spec={spec}
 			registry={registry}
@@ -128,4 +140,20 @@ export function PageRenderer({
 			</HookDataProvider>
 		</PageProvider>
 	);
+
+	if (enableFeedback && pageId) {
+		return (
+			<FeedbackProvider queryEndpoint={queryEndpoint} pageId={pageId}>
+				{content}
+				<FeedbackOverlay />
+				<FeedbackIndicators />
+				<FeedbackPopover />
+				<FeedbackPanel />
+				<FeedbackAuthorPrompt />
+				<FeedbackToggle />
+			</FeedbackProvider>
+		);
+	}
+
+	return content;
 }
