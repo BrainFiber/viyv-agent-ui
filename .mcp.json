@@ -5,9 +5,10 @@
       "args": [
         "/Users/hiroki/myworkspace/ai_project/viyv-db/packages/mcp-server/dist/index.js",
         "--postgres-url",
-        "postgres://viyv:viyv@localhost:5434/viyv_space",
+        "postgres://viyv:viyv@localhost:5432/viyvdb",
         "--tenant",
-        "default",
+        "agent-ui",
+        "--schema-isolation",
         "--embedding"
       ]
     },

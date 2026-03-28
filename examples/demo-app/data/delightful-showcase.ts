@@ -6,6 +6,8 @@ export const delightfulShowcaseSpec: PageSpec = {
 	description: 'Section, グラデーション, テキストグラデーション, アニメーション, ホバーエフェクトの新機能デモ',
 	root: 'root',
 	theme: {
+		colorScheme: 'auto',
+		spacing: 'default',
 		accentColor: '#6366f1',
 		fontFamily: { primary: 'Inter' },
 		borderRadius: 'lg',

@@ -59,7 +59,7 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 
 	// ── Page management tools ──
 
-	server.tool('list_pages', 'List all saved pages.', {}, async () => {
+	server.tool('list_pages', 'List all saved PageSpec pages with metadata.', {}, async () => {
 		const pages = await client.get<Array<Record<string, unknown>>>('/pages');
 		if (baseUrl && Array.isArray(pages)) {
 			for (const page of pages) {
@@ -73,7 +73,7 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 
 	server.tool(
 		'get_page',
-		'Get the full PageSpec of a saved page.',
+		'Retrieve the full PageSpec JSON definition of a saved page.',
 		{ pageId: z.string().describe('The page ID to retrieve') },
 		async ({ pageId }) => {
 			const spec = await client.get(`/pages/${pageId}`);
@@ -228,9 +228,9 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 
 	server.tool(
 		'feedback_list',
-		'List all feedback threads for a page. Returns threads with element IDs, comments, and status. Use this to see what feedback humans have left on UI components.',
+		'List PageSpec design feedback threads for a page. Returns threads with element IDs, comments, and status from human reviewers.',
 		{
-			pageId: z.string().describe('The page ID to list feedback for'),
+			pageId: z.string().describe('PageSpec page ID to list design feedback for'),
 			status: z
 				.enum(['open', 'resolved'])
 				.optional()
@@ -248,9 +248,9 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 
 	server.tool(
 		'feedback_reply',
-		'Reply to an existing feedback thread with a comment. Use this to ask clarifying questions or provide status updates.',
+		'Reply to a PageSpec design feedback thread. Use to ask clarifying questions or provide status updates.',
 		{
-			threadId: z.string().describe('The feedback thread ID to reply to'),
+			threadId: z.string().describe('PageSpec design feedback thread ID to reply to'),
 			body: z.string().describe('The reply comment text'),
 		},
 		async ({ threadId, body }) => {
@@ -274,9 +274,9 @@ export function createMcpServer(client: ApiClient, options?: McpServerOptions): 
 
 	server.tool(
 		'feedback_resolve',
-		'Mark a feedback thread as resolved after addressing the feedback. Include a comment explaining what was changed.',
+		'Resolve a PageSpec design feedback thread after addressing it. Include a comment explaining what was changed.',
 		{
-			threadId: z.string().describe('The feedback thread ID to resolve'),
+			threadId: z.string().describe('PageSpec design feedback thread ID to resolve'),
 			body: z
 				.string()
 				.optional()
