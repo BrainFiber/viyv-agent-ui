@@ -64,6 +64,32 @@ export function buildSchemaGuide(catalog?: ComponentCatalog): SchemaGuide {
 			},
 			example: { use: 'useAgentQuery', params: { endpoint: '/api/search', query: { q: 'test' } } },
 		},
+		{
+			use: 'useWebSocket',
+			description: 'Server-side WebSocket connection with message buffering. Server maintains the connection; client polls for snapshots. Use $secret.XXX in subscribe to reference server-side environment variables (never exposed to client).',
+			params: {
+				url: 'string — WebSocket endpoint (wss:// recommended)',
+				subscribe: 'Record<string, unknown> (optional) — JSON message sent on connection open. Supports $secret.ENV_VAR_NAME for credentials.',
+				bufferSize: 'number (default: 50) — max messages to keep in rolling buffer',
+				refreshInterval: 'number in ms (default: 5000) — client polling interval',
+				messageKey: 'string (optional) — extract sub-object from each message before buffering (e.g. "MetaData")',
+			},
+			example: {
+				use: 'useWebSocket',
+				params: {
+					url: 'wss://stream.aisstream.io/v0/stream',
+					subscribe: {
+						Apikey: '$secret.AISSTREAM_KEY',
+						BoundingBoxes: [[[25, 47], [31, 57]]],
+						FilterMessageTypes: ['PositionReport'],
+					},
+					bufferSize: 50,
+					refreshInterval: 5000,
+					messageKey: 'MetaData',
+				},
+			},
+			notes: 'Response shape: { messages: [...], state: "connecting"|"open"|"reconnecting"|"closed", messageCount: number }. Access messages via $hook.{hookId}.messages. Connections are automatically shared across pages/users with same parameters and garbage-collected after 5 min idle.',
+		},
 	];
 
 	const actions = [
@@ -123,6 +149,7 @@ export function buildSchemaGuide(catalog?: ComponentCatalog): SchemaGuide {
 		{ prefix: '$item.{path}', description: 'Current item in Repeater/Feed context', example: '$item.title' },
 		{ prefix: '$param.{name}', description: 'URL query parameter value (for dynamic pages)', example: '$param.product_key' },
 		{ prefix: '$expr({code})', description: 'Inline JavaScript expression (sandbox-evaluated)', example: '$expr(state.count + 1)' },
+		{ prefix: '$secret.{ENV_VAR}', description: 'Server-side environment variable (resolved at execution time, never sent to client). Only uppercase names: [A-Z_][A-Z0-9_]*. Use in useWebSocket subscribe field for API keys.', example: '$secret.AISSTREAM_KEY' },
 	];
 
 	const theme = {

@@ -54,7 +54,7 @@ description: >
 - **Image**: `{ src: string, alt?: string, width?: number, height?: number, objectFit?: 'cover'|'contain'|'fill'|'none' }`
 - **Avatar**: `{ src?: string, name: string, size?: 'sm'|'md'|'lg' }` — 円形アバター。画像エラー時はイニシャルフォールバック
 - **ProgressBar**: `{ value: number, label?: string, color?: 'blue'|'green'|'yellow'|'red'|'gray', size?: 'sm'|'md'|'lg', showValue?: boolean }` — プログレスバー。`value` は 0-100。`showValue` で横にパーセント表示
-- **Map**: `{ center: [lat, lng], zoom?: number, markers?: "$hook.xxx", latKey?: string, lngKey?: string, labelKey?: string, popupKey?: string, height?: number }` — OpenStreetMap ベースの地図。マーカーにラベル・ポップアップ表示可能
+- **Map**: `{ center: [lat, lng], zoom?, markers?, overlays?, latKey?, lngKey?, labelKey?, popupKey?, height? }` — OpenStreetMap ベースの地図。マーカー + オーバーレイ（Circle/Polyline/Polygon/Rectangle）対応。`overlays` は `[{ type: "circle", center, radius, color?, fillOpacity?, label?, popup? }, { type: "polyline", positions, color?, weight?, dashArray?, label? }, ...]` の配列。`label` は Tooltip で常時表示。
 
 ### データ
 - **DataTable**: `{ data: "$hook.xxx" 参照, columns: [{ key: string, label: string, sortable?: boolean, format?: string }], pageSize?: number }`
@@ -143,6 +143,25 @@ description: >
 ※ `connection` にはサーバーに登録されたデータソースIDを指定する。
   viyv-db 接続の場合は `"viyv-db"` を使用する。
 
+### useWebSocket — WebSocket リアルタイムデータ
+```json
+{
+  "use": "useWebSocket",
+  "params": {
+    "url": "wss://stream.example.com/v1",
+    "subscribe": { "Apikey": "$secret.API_KEY", "filters": ["type1"] },
+    "bufferSize": 50,
+    "refreshInterval": 5000,
+    "messageKey": "MetaData"
+  }
+}
+```
+※ サーバーが WebSocket 接続を管理。クライアントは REST ポーリングでスナップショットを取得。
+※ `$secret.XXX` で環境変数を参照（サーバー側で解決、クライアントに漏洩しない）。
+※ `messageKey` を指定すると、各メッセージからサブオブジェクトを抽出してバッファに保存。
+※ レスポンス: `{ messages: [...], state: "open"|"connecting"|..., messageCount: N }`。`$hook.{id}.messages` でアクセス。
+※ 同じ URL + subscribe のページ間で接続を共有。5分間ポーリングされないと自動切断。
+
 ## 参照構文
 
 - `$hook.hookId` — hook の結果データを参照
@@ -150,6 +169,7 @@ description: >
 - `$state.key` — ページ状態を読み取り（読み取り専用）
 - `$bindState.key` — 入力コンポーネントの双方向バインディング（props の value / checked に使用）
 - `$action.actionId` — アクション参照（props の onChange / onClick に使用）
+- `$secret.ENV_VAR` — サーバー側の環境変数（useWebSocket の subscribe 内で使用）
 - `$item` — Repeater 内でイテレーションアイテム全体を参照
 - `$item.xxx` — Repeater 内でアイテムのプロパティを参照（例: `$item.name`, `$item.address.city`）
 - `$expr(式)` — 条件式（例: `$expr(hook.sales.length > 0)`）。Repeater 内では `$expr(item.price * item.quantity)` のように `item` を使用可能
