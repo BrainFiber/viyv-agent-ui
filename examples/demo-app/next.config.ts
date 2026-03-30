@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
 		'viyv-db-client',
 		'viyv-db-postgres',
 		'viyv-db-core',
+		'ws',
+		'bufferutil',
+		'utf-8-validate',
 	],
 	transpilePackages: [
 		'@viyv/agent-ui-schema',
