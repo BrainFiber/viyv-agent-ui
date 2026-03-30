@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 
-interface LeafletModules {
+export interface LeafletModules {
 	L: typeof import('leaflet');
 	RL: typeof import('react-leaflet');
 }

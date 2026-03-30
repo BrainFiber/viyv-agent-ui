@@ -84,7 +84,7 @@ describe('defaultRegistry', () => {
 		}
 	});
 
-	it('has exactly 79 components', () => {
-		expect(defaultRegistry.size).toBe(79);
+	it('has exactly 80 components', () => {
+		expect(defaultRegistry.size).toBe(80);
 	});
 });

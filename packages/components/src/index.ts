@@ -97,7 +97,7 @@ export type { ItemProps } from './display/item.js';
 // Map
 export { Map } from './map/map.js';
 export type { MapProps } from './map/map.js';
-export type { MapMarker } from './map/map-utils.js';
+export type { MapMarker, MapOverlay, OverlayPathOptions, CircleOverlay, PolylineOverlay, PolygonOverlay, RectangleOverlay } from './map/map-utils.js';
 
 // Data
 export { DataTable } from './data/data-table.js';
