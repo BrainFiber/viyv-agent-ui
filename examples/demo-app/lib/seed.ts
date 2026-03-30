@@ -12,6 +12,7 @@ import { kanbanProjectSpec } from '../data/kanban-project';
 import { timelineActivitySpec } from '../data/timeline-activity';
 import { delightfulShowcaseSpec } from '../data/delightful-showcase';
 import { nuclearSimulationSpec } from '../data/nuclear-simulation';
+import { chatDemoSpec } from '../data/chat-demo';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -30,6 +31,7 @@ export function ensureSeeded(): Promise<void> {
 			await pageStore.save(timelineActivitySpec);
 			await pageStore.save(delightfulShowcaseSpec);
 			await pageStore.save(nuclearSimulationSpec);
+			await pageStore.save(chatDemoSpec);
 
 			const connector = await getViyvDbConnector();
 			if (connector) {

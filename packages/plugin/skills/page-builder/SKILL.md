@@ -72,6 +72,13 @@ description: >
   - `labelKey` で `<article>` の `aria-label` に使うフィールドを指定（AI オペラビリティ用）
   - アイテム間に自動で区切り線（`divider: false` で非表示）
   - データ空時に `emptyMessage` を表示（デフォルト: "データがありません"）
+- **Chat**: `{ endpoint: string, agent?: string, title?: string, placeholder?: string, height?: number, showTokenUsage?: boolean, welcomeMessage?: string }`
+  - AI エージェント Gateway (viyv-claw) に接続するチャットインターフェース
+  - ブラウザから Gateway に直接 HTTP + SSE 接続（hook 不要）
+  - SSE ストリーミングでリアルタイムテキスト表示、ツール実行パネル、思考過程表示
+  - マルチターン会話（sessionId 自動管理）、HITL（承認/質問）対応
+  - `endpoint` は Gateway の URL（例: `http://localhost:8080`）
+  - `agent` は対象エージェント名（省略時 `"default"`）
 
 ### チャート
 - **BarChart**: `{ data: "$hook.xxx" 参照, xKey: string, yKey: string, title?: string, color?: string }`

@@ -28,6 +28,7 @@ import { Descriptions } from './display/descriptions.js';
 import { Tag } from './display/tag.js';
 import { Text } from './display/text.js';
 import { Map } from './map/map.js';
+import { Chat } from './chat/chat.js';
 import { Button } from './input/button.js';
 import { ButtonGroup } from './input/button-group.js';
 import { Checkbox } from './input/checkbox.js';
@@ -108,6 +109,7 @@ export const defaultRegistry = defineRegistry({
 	Kbd,
 	Label,
 	Map,
+	Chat,
 	DataTable,
 	List,
 	Table,

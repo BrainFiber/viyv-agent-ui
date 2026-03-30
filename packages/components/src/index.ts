@@ -94,6 +94,10 @@ export type { KbdProps } from './display/kbd.js';
 export { Item } from './display/item.js';
 export type { ItemProps } from './display/item.js';
 
+// Chat
+export { Chat } from './chat/chat.js';
+export type { ChatProps } from './chat/chat.js';
+
 // Map
 export { Map } from './map/map.js';
 export type { MapProps } from './map/map.js';

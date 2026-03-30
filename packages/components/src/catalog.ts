@@ -48,6 +48,9 @@ import { itemMeta } from './display/item.js';
 // Map
 import { mapMeta } from './map/map.js';
 
+// Chat
+import { chatMeta } from './chat/chat.js';
+
 // Data
 import { dataTableMeta } from './data/data-table.js';
 import { listMeta } from './data/list.js';
@@ -144,6 +147,9 @@ const allMeta: ComponentMeta[] = [
 	kbdMeta,
 	itemMeta,
 	mapMeta,
+
+	// Chat
+	chatMeta,
 
 	// Data
 	dataTableMeta,

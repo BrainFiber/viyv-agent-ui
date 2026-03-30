@@ -18,4 +18,10 @@ export {
 	ArrowUp,
 	ArrowDown,
 	Dot,
+	Send,
+	Bot,
+	Wrench,
+	Brain,
+	ShieldCheck,
+	RotateCcw,
 } from 'lucide-react';
