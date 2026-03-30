@@ -52,6 +52,7 @@ export function createHandler(options: AgentUiHandlerOptions) {
 					'Fetch failed',
 					'Agent query failed',
 					'REST query failed',
+					'Secret ',
 					'Unknown hook type',
 				];
 				const isDomainError = knownPrefixes.some((p) => err.message.startsWith(p));

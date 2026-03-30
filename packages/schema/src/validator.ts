@@ -69,6 +69,9 @@ export function validatePageSpec(input: unknown, catalog?: ComponentCatalog): Va
 	// 6. SQL safety check
 	validateSqlSafety(spec.hooks, errors, warnings);
 
+	// 6b. WebSocket safety check
+	validateWebSocketSafety(spec.hooks, errors, warnings);
+
 	// 7. CRUD action hookId validation
 	validateActions(spec, errors);
 
@@ -315,6 +318,40 @@ const SQL_DANGEROUS_PATTERNS = [
 	/--/, // SQL comments (potential injection)
 	/\/\*/, // block comments
 ];
+
+function validateWebSocketSafety(
+	hooks: Record<string, HookDef>,
+	errors: ValidationError[],
+	warnings: ValidationError[],
+): void {
+	for (const [hookId, hook] of Object.entries(hooks)) {
+		if (hook.use !== 'useWebSocket') continue;
+
+		if (hook.params.url.startsWith('ws://')) {
+			warnings.push({
+				path: `hooks.${hookId}.params.url`,
+				message: 'WebSocket URL uses unencrypted ws:// — consider wss://',
+				severity: 'warning',
+			});
+		}
+
+		if (hook.params.url.includes('$secret.')) {
+			errors.push({
+				path: `hooks.${hookId}.params.url`,
+				message: '$secret references are not allowed in WebSocket URL (use subscribe instead)',
+				severity: 'error',
+			});
+		}
+
+		if (hook.params.bufferSize != null && hook.params.bufferSize > 1000) {
+			warnings.push({
+				path: `hooks.${hookId}.params.bufferSize`,
+				message: 'bufferSize > 1000 may cause high memory usage',
+				severity: 'warning',
+			});
+		}
+	}
+}
 
 function validateSqlSafety(
 	hooks: Record<string, HookDef>,

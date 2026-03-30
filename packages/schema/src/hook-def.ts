@@ -63,12 +63,24 @@ export const UseAgentQueryHookSchema = z.object({
 	}),
 });
 
+export const UseWebSocketHookSchema = z.object({
+	use: z.literal('useWebSocket'),
+	params: z.object({
+		url: z.string().url(),
+		subscribe: z.record(z.unknown()).optional(),
+		bufferSize: z.number().int().positive().default(50),
+		refreshInterval: z.number().int().positive().default(5000),
+		messageKey: z.string().optional(),
+	}),
+});
+
 export const HookDefSchema = z.discriminatedUnion('use', [
 	UseStateHookSchema,
 	UseDerivedHookSchema,
 	UseFetchHookSchema,
 	UseSqlQueryHookSchema,
 	UseAgentQueryHookSchema,
+	UseWebSocketHookSchema,
 ]);
 
 export type HookDef = z.infer<typeof HookDefSchema>;
@@ -77,3 +89,4 @@ export type UseDerivedHook = z.infer<typeof UseDerivedHookSchema>;
 export type UseFetchHook = z.infer<typeof UseFetchHookSchema>;
 export type UseSqlQueryHook = z.infer<typeof UseSqlQueryHookSchema>;
 export type UseAgentQueryHook = z.infer<typeof UseAgentQueryHookSchema>;
+export type UseWebSocketHook = z.infer<typeof UseWebSocketHookSchema>;

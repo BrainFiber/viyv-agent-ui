@@ -2,6 +2,8 @@ import type { HookDef, PageStore } from '@viyv/agent-ui-schema';
 import type { DataSourceRegistry } from './data-source-registry.js';
 import { interpolateParams, validateParamValues } from './param-interpolator.js';
 import { sanitizeQuery } from './query-sanitizer.js';
+import { resolveSecrets } from './secret-resolver.js';
+import { WebSocketManager } from './websocket-manager.js';
 
 export interface HookExecuteRequest {
 	pageId: string;
@@ -16,10 +18,15 @@ export interface HookExecuteResult {
 }
 
 export class QueryExecutor {
+	private wsManager: WebSocketManager | null;
+
 	constructor(
 		private pageStore: PageStore,
 		private registry: DataSourceRegistry,
-	) {}
+		wsManager?: WebSocketManager,
+	) {
+		this.wsManager = wsManager ?? null;
+	}
 
 	async execute(request: HookExecuteRequest): Promise<HookExecuteResult> {
 		// 1. Load spec from store
@@ -137,6 +144,22 @@ export class QueryExecutor {
 				} catch {
 					throw new Error('Agent query failed: response is not valid JSON');
 				}
+			}
+
+			case 'useWebSocket': {
+				if (!this.wsManager) {
+					this.wsManager = new WebSocketManager();
+				}
+				const resolvedSubscribe = hook.params.subscribe
+					? (resolveSecrets(hook.params.subscribe) as Record<string, unknown>)
+					: undefined;
+				const connectionKey = this.wsManager.getOrCreate({
+					url: hook.params.url,
+					subscribe: resolvedSubscribe,
+					bufferSize: hook.params.bufferSize ?? 50,
+					messageKey: hook.params.messageKey,
+				});
+				return this.wsManager.getMessages(connectionKey);
 			}
 
 			default:

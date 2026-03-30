@@ -10,6 +10,7 @@ export {
 	UseFetchHookSchema,
 	UseSqlQueryHookSchema,
 	UseAgentQueryHookSchema,
+	UseWebSocketHookSchema,
 } from './hook-def.js';
 export type {
 	HookDef,
@@ -18,6 +19,7 @@ export type {
 	UseFetchHook,
 	UseSqlQueryHook,
 	UseAgentQueryHook,
+	UseWebSocketHook,
 } from './hook-def.js';
 
 // Element definitions

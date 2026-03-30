@@ -173,6 +173,61 @@ describe('validatePageSpec', () => {
 		expect(result.warnings).toHaveLength(0);
 	});
 
+	// -- WebSocket safety -------------------------------------------------------
+
+	it('warns when WebSocket URL uses ws:// (unencrypted)', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			hooks: {
+				ws: { use: 'useWebSocket', params: { url: 'ws://example.com/stream', bufferSize: 10, refreshInterval: 5000 } },
+			},
+		});
+		expect(result.valid).toBe(true);
+		expect(result.warnings.some((w) => w.message.includes('unencrypted ws://'))).toBe(true);
+	});
+
+	it('errors when $secret is used in WebSocket URL', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			hooks: {
+				ws: { use: 'useWebSocket', params: { url: 'wss://example.com/$secret.KEY', bufferSize: 10, refreshInterval: 5000 } },
+			},
+		});
+		expect(result.valid).toBe(false);
+		expect(result.errors.some((e) => e.message.includes('$secret references are not allowed in WebSocket URL'))).toBe(true);
+	});
+
+	it('warns when WebSocket bufferSize exceeds 1000', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			hooks: {
+				ws: { use: 'useWebSocket', params: { url: 'wss://example.com/stream', bufferSize: 5000, refreshInterval: 5000 } },
+			},
+		});
+		expect(result.valid).toBe(true);
+		expect(result.warnings.some((w) => w.message.includes('bufferSize > 1000'))).toBe(true);
+	});
+
+	it('passes validation for valid WebSocket hook', () => {
+		const result = validatePageSpec({
+			...validSpec,
+			hooks: {
+				ws: {
+					use: 'useWebSocket',
+					params: {
+						url: 'wss://stream.example.com/v1',
+						subscribe: { APIKey: '$secret.MY_KEY', filter: 'test' },
+						bufferSize: 50,
+						refreshInterval: 5000,
+					},
+				},
+			},
+		});
+		expect(result.valid).toBe(true);
+		expect(result.errors).toHaveLength(0);
+		expect(result.warnings).toHaveLength(0);
+	});
+
 	it('warns for $item outside Repeater context', () => {
 		const result = validatePageSpec({
 			...validSpec,

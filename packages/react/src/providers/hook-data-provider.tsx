@@ -95,7 +95,7 @@ export function HookDataProvider({
 			dag.order.filter((id) => {
 				const hook = spec.hooks[id];
 				return (
-					hook.use === 'useFetch' || hook.use === 'useSqlQuery' || hook.use === 'useAgentQuery'
+					hook.use === 'useFetch' || hook.use === 'useSqlQuery' || hook.use === 'useAgentQuery' || hook.use === 'useWebSocket'
 				);
 			}),
 		[dag.order, spec.hooks],
@@ -190,5 +190,6 @@ function getRefreshInterval(hook: HookDef): number | undefined {
 	if (hook.use === 'useFetch') return hook.params.refreshInterval;
 	if (hook.use === 'useSqlQuery') return hook.params.refreshInterval;
 	if (hook.use === 'useAgentQuery') return hook.params.refreshInterval;
+	if (hook.use === 'useWebSocket') return hook.params.refreshInterval;
 	return undefined;
 }

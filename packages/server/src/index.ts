@@ -8,6 +8,9 @@ export type { HookExecuteRequest, HookExecuteResult } from './data/query-executo
 export { sanitizeQuery } from './data/query-sanitizer.js';
 export type { SanitizeResult } from './data/query-sanitizer.js';
 export { interpolateParams, validateParamValues } from './data/param-interpolator.js';
+export { WebSocketManager } from './data/websocket-manager.js';
+export type { WebSocketManagerOptions, WebSocketConnectionOptions, WebSocketSnapshot } from './data/websocket-manager.js';
+export { resolveSecrets, containsSecrets } from './data/secret-resolver.js';
 export { serializeCatalog, serializeComponentMeta, serializeComponentSummary } from './catalog/catalog-serializer.js';
 export type { SerializedComponentMeta, SerializedComponentSummary } from './catalog/catalog-serializer.js';
 export { buildSchemaGuide } from './catalog/schema-guide.js';
